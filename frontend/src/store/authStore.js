@@ -22,15 +22,17 @@ export const useAuthStore = create((set)=>({
             set({
                 isAuthenticated:true,
                 user:response.data.user,
+                message:response.data.message,
                 error:null,
             });
+            return true;
         } catch (error) {
             set({
                 isAuthenticated:false,
                 user:null,
                 error:error.response?.data?.message || "Error in logging in!"
             });
-            throw error;
+            return false;
         }
     },
 
