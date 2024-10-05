@@ -4,7 +4,7 @@ const benefits = [
   { id: 1, name: 'Health Insurance', description: 'Comprehensive health insurance plan', cost: 100 },
   { id: 2, name: 'Dental Insurance', description: 'Comprehensive dental insurance plan', cost: 50 },
   { id: 3, name: 'Vision Insurance', description: 'Comprehensive vision insurance plan', cost: 25 },
-  { id: 4, name: '401(k) Plan', description: 'Retirement savings plan', cost: 0 },
+  { id: 4, name: '401(k) Plans', description: 'Retirement savings plans', cost: 0 },
   { id: 5, name: 'Life Insurance', description: 'Basic life insurance plan', cost: 25 },
 ];
 
