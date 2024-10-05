@@ -233,7 +233,7 @@ const EmployeeSidebar = () => {
           }`}
         >
           <li><Link to="/salary-projections">Salary Projections</Link></li>
-          <li><Link to="/equity-adjustments">Equity Adjustments</Link></li>
+          <li><Link to="/equity-adjustment">Equity Adjustment</Link></li>
         </ul>
       </div>
 

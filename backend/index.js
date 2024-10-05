@@ -11,7 +11,7 @@ import benefitRoute from './routes/benefitRoute.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 7687;
 
 app.use(cors({origin:"http://localhost:5173",credentials:true}));
 app.use(cookieParser());
