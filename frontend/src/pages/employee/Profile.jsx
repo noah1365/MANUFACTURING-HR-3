@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-
 import { useEmployeeStore } from "../../store/employeeStore";
 
 import defaultimage from '../../assets/defaultimage.png';
