@@ -2,7 +2,7 @@ import {create} from 'zustand'
 import axios from 'axios'
 
  const API_URL = process.env.NODE_ENV === "production" 
-? "https://backend-hr3.jjm-manufacturing.com/api/auth" 
+? "https://manufacturing-hr-3-1.onrender.com/api/auth" 
 : "http://localhost:7687/api/auth";
 
 //  const API_URL = "https://backend-hr3.jjm-manufacturing.com/api/auth";
