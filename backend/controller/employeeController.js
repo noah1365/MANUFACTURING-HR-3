@@ -89,8 +89,8 @@ export const registerUser = async (req, res) => {
             }
         });
 
-        const baseUrl = process.env.NODE_ENV === "production"
-        ? process.env.CLIENT_URL
+        const baseUrl = process.env.NODE_ENV === "production" 
+        ? "https://hr3.jjm-manufacturing.com" 
         : "http://localhost:5173";
 
         const mailOptions = {
@@ -212,8 +212,8 @@ export const verifyAccount = async (req, res) => {
             },
         });
 
-        const baseUrl = process.env.NODE_ENV === "production"
-        ? process.env.CLIENT_URL
+        const baseUrl = process.env.NODE_ENV === "production" 
+        ? "https://hr3.jjm-manufacturing.com" 
         : "http://localhost:5173";
 
         const mailOptions = {
@@ -292,8 +292,8 @@ export const resendVerification = async (req,res) => {
             },
         });
 
-        const baseUrl = process.env.NODE_ENV === "production"
-        ? process.env.CLIENT_URL
+        const baseUrl = process.env.NODE_ENV === "production" 
+        ? "https://hr3.jjm-manufacturing.com" 
         : "http://localhost:5173";
 
         const mailOptions = {

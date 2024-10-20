@@ -24,7 +24,9 @@ const ManagerSidebar = () => {
   return (
     <div className="flex">
       <div
-        className={`flex flex-col bg-white text-black px-4 py-4 border-r-2 sticky top-0 h-screen w-72`} // Fixed width of the sidebar
+        className={`flex flex-col bg-white text-black px-4 py-4 border-r-2 
+          md:sticky md:top-0 h-screen w-full fixed top-0 left-0 
+          md:h-auto md:w-full md:bg-transparent md:shadow-none mt-6 z-50`}
         aria-label="Sidebar"
       >
         <div className="flex items-center gap-2 cursor-pointer mb-8 justify-center" aria-label="Dashboard Logo">
@@ -44,6 +46,7 @@ const ManagerSidebar = () => {
     </div>
   );
 };
+
 
 const DashboardLink = ({ icon, text, to, isActive, onClick }) => (
   <Link to={to} className={`flex items-center gap-2 p-2 rounded-md hover:bg-gray-200 transition duration-200`} onClick={onClick}>

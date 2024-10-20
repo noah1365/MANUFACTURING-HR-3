@@ -174,7 +174,7 @@ const Profile = () => {
 
       <div className="mt-8">
         <h3 className="text-xl font-medium text-gray-700 mb-4">Personal Information</h3>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <p className="text-sm text-gray-500">Email</p>
             <p className="text-lg text-gray-700 font-medium">{user?.email || "N/A"}</p>
