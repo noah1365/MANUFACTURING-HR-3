@@ -13,15 +13,12 @@ import employeeRoute from "./routes/employeeRoute.js";
 dotenv.config();
 connectDB();
 
-
 const app = express();
 const PORT = process.env.PORT || 7687;
 
 app.use(cors({
     origin: process.env.NODE_ENV === "production"
-    ? "https://hr3.jjm-manufacturing.com"
-    : process.env.NODE_ENV === "render"
-    ? "https://manufacturing-hr-3-1.onrender.com"
+    ? process.env.CLIENT_URL
     : "http://localhost:5173",
 credentials: true,
 }));

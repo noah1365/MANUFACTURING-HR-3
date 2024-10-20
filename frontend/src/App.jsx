@@ -71,12 +71,10 @@ import MyCommissions from './pages/employee/incentives/MyCommissions';
 import IncentiveRequest from './pages/employee/incentives/IncentiveRequest';
 import IncentiveHistory from './pages/employee/incentives/IncentiveHistory';
 
-
 import MySalaryInfo from './pages/employee/payroll/MySalaryInfo';
 import SalaryRequest from './pages/employee/payroll/SalaryRequest';
 import MyPaySlip from './pages/employee/payroll/MyPaySlip';
 import MyOvertimeBonuses from './pages/employee/payroll/MyOvertimeBonuses';
-
 
 import VerifyAccount from './components/VerifyAccount';
 import ResendVerification from './components/ResendVerification';
