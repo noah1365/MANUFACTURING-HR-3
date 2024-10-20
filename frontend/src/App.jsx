@@ -47,7 +47,7 @@ import LeaveRequest from './pages/manager/benefits/LeaveRequest';
 import Deductions from './pages/manager/benefits/Deductions';
 
 /* incentives management */
-import IncentivesManagement from './pages/manager/incentives/IncentivesManagement';
+import IncentivesManagement from './pages/manager/Incentives/IncentivesManagement';
 import IncentivesRequest from './pages/manager/incentives/IncentivesRequest';
 import SalesCommissions from './pages/manager/incentives/SalesCommissions';
 import RecognitionPrograms from './pages/manager/incentives/RecognitionPrograms';
