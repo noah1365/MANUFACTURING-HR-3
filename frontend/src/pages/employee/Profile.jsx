@@ -143,20 +143,21 @@ const Profile = () => {
   };
   const [newRole, setNewRole] = useState('');
 
-  const handleChangeRole = async () => {
+  const handleChangeRole = async (role) => {
     
     if(!user || !user._id){
         toast.error('User data is not available. Please refresh and try again.');
         return;
     }
 
-    if(!newRole){
+    if(!role){
         toast.error('Please select a role before changing.');
         return;
     }
     try {
-        await changeUserRole(user._id, newRole);
-        toast.success('User role changed successfully!');
+        await changeUserRole(user._id, role);
+        toast.success(`Change role to ${role}!`);
+        window.location.reload();
     } catch (error) {
         console.error("Error changing user role:", error);
 
@@ -178,23 +179,21 @@ const Profile = () => {
     <div className="container mx-auto mt-10 p-8 max-w-4xl bg-white shadow-lg border-2 rounded-lg">
       <ToastContainer />
       <div className="flex flex-col items-center mb-6">
-        <div>
-      <select
-          value={newRole}
-          onChange={(e) => setNewRole(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 w-full"
-      >
-          <option value="">Select Role</option>
-          <option value="Employee">Employee</option>
-          <option value="Manager">Manager</option>
-      </select>
-      <button
-          onClick={handleChangeRole}
-          className="mt-4 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700"
-      >
-          Change Role
-      </button>
-        </div>
+      <div>
+        {(user?.uniqueRole?.length === 0 || user?.uniqueRole !== 'employee') && (
+          <div className="mt-4">      
+            <select
+              value={newRole}
+              onChange={(e) => handleChangeRole(e.target.value)}
+              className="border border-gray-300 rounded p-1 w-full mb-2"
+            >
+              <option disabled value="">Select Role</option>
+              <option value="Employee">Employee</option>
+              <option value="Manager">Manager</option>
+            </select>
+          </div>
+        )}
+      </div>
         <button className="relative group">
           <img
             src={user?.profilePic || defaultimage}
