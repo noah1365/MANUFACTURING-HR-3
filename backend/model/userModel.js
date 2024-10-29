@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema({
     position:{
         type:String,
         required:true,
-        enum:["CEO", "Secretary", "Production Head", "Resellers Sales Head","Reseller","Manager"]
     },
     lastName:{
         type:String,
@@ -31,6 +30,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
          default: false
      },
+     passwordResetOTP:{
+        type:String,
+        default:null,
+    },
+    passwordResetOTPExpiration:{
+        type:Date,
+        default:null,
+    },
+    lastOtpSentAt: Date,
     phoneNumber:{
         type:String,
         required:true

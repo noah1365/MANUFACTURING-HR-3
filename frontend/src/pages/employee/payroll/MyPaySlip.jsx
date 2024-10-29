@@ -3,87 +3,43 @@ import React, { useEffect, useState } from 'react';
 const MyPaySlip = () => {
     const payrollData = [
         {
+            month: "September 2024",
+            payPeriod: "September 1 - September 30, 2024",
+            grossSalary: 24000,
+            deductions: {
+                sss: 950,
+                philhealth: 480,
+                pagIbig: 200,
+            },
+        },
+        {
             month: "October 2024",
-            employeeName: "John Lloyd",
-            payPeriod: "October 1 - October 15, 2024",
+            payPeriod: "October 1 - October 31, 2024",
             grossSalary: 25000,
             deductions: {
                 sss: 1000,
                 philhealth: 500,
                 pagIbig: 200,
-                tax: 1500,
             },
         },
         {
-            month: "September 2024",
-            employeeName: "John Lloyd",
-            payPeriod: "September 1 - September 15, 2024",
+            month: "November 2024",
+            payPeriod: "November 1 - November 30, 2024",
             grossSalary: 24000,
             deductions: {
                 sss: 950,
                 philhealth: 480,
                 pagIbig: 200,
-                tax: 1400,
             },
         },
         {
-            month: "September 2024",
-            employeeName: "John Lloyd",
-            payPeriod: "September 1 - September 15, 2024",
-            grossSalary: 24000,
+            month: "December 2024",
+            payPeriod: "December 1 - December 31, 2024",
+            grossSalary: 26000,
             deductions: {
-                sss: 950,
-                philhealth: 480,
+                sss: 1000,
+                philhealth: 500,
                 pagIbig: 200,
-                tax: 1400,
-            },
-        },
-        {
-            month: "September 2024",
-            employeeName: "John Lloyd",
-            payPeriod: "September 1 - September 15, 2024",
-            grossSalary: 24000,
-            deductions: {
-                sss: 950,
-                philhealth: 480,
-                pagIbig: 200,
-                tax: 1400,
-            },
-        },
-        {
-            month: "September 2024",
-            employeeName: "John Lloyd",
-            payPeriod: "September 1 - September 15, 2024",
-            grossSalary: 24000,
-            deductions: {
-                sss: 950,
-                philhealth: 480,
-                pagIbig: 200,
-                tax: 1400,
-            },
-        },
-        {
-            month: "September 2024",
-            employeeName: "John Lloyd",
-            payPeriod: "September 1 - September 15, 2024",
-            grossSalary: 24000,
-            deductions: {
-                sss: 950,
-                philhealth: 480,
-                pagIbig: 200,
-                tax: 1400,
-            },
-        },
-        {
-            month: "September 2024",
-            employeeName: "John Lloyd",
-            payPeriod: "September 1 - September 15, 2024",
-            grossSalary: 24000,
-            deductions: {
-                sss: 950,
-                philhealth: 480,
-                pagIbig: 200,
-                tax: 1400,
             },
         },
     ];
@@ -100,7 +56,8 @@ const MyPaySlip = () => {
 
     useEffect(() => {
         document.title = "My Payslip";
-      });
+    }, []);
+    
     return (
         <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
             <h1 className="text-2xl font-semibold mb-6 text-center text-gray-800">Payroll Slips</h1>
@@ -135,7 +92,6 @@ const MyPaySlip = () => {
                         </button>
 
                         <h2 className="text-2xl font-bold text-center mb-4">{expandedData.month}</h2>
-                        <p className="text-gray-600 mb-2"><strong>Name:</strong> {expandedData.employeeName}</p>
                         <p className="text-gray-600 mb-2"><strong>Pay Period:</strong> {expandedData.payPeriod}</p>
 
                         <div className="mt-4">
@@ -149,7 +105,6 @@ const MyPaySlip = () => {
                                 <li>SSS: ₱{expandedData.deductions.sss.toLocaleString()}</li>
                                 <li>PhilHealth: ₱{expandedData.deductions.philhealth.toLocaleString()}</li>
                                 <li>PAG-IBIG: ₱{expandedData.deductions.pagIbig.toLocaleString()}</li>
-                                <li>Tax: ₱{expandedData.deductions.tax.toLocaleString()}</li>
                             </ul>
                             <p className="font-bold text-gray-700 mt-2">
                                 Total Deductions: ₱{Object.values(expandedData.deductions).reduce((acc, val) => acc + val, 0).toLocaleString()}

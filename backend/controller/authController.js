@@ -43,27 +43,27 @@ export const login = async (req, res) => {
 export const checkAuth = async (req, res) => {
     try {
         const token = req.cookies.token; 
-        if (!token) {
-            return res.status(401).json({ success: false, message: "No token found" });
+        if(!token){
+            return res.status(401).json({success:false,message:"No token found"});
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.userId); 
 
-        if (!user) {
-            return res.status(401).json({ success: false, message: "User not found" });
+        if(!user){
+            return res.status(401).json({success:false,message:"User not found"});
         }
 
-        res.json({ success: true, user });
+        res.json({success:true,user});
     } catch (error) {
         console.error("Error in checkAuth:", error);
 
-        if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({ success: false, message: "Invalid token" });
-        } else if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ success: false, message: "Token expired" });
-        } else {
-            return res.status(500).json({ success: false, message: "Server error" });
+        if(error.name === 'JsonWebTokenError'){
+            return res.status(401).json({success:false,message:"Invalid token"});
+        } else if(error.name === 'TokenExpiredError'){
+            return res.status(401).json({success:false,message:"Token expired"});
+        } else{
+            return res.status(500).json({success:false,message:"Server error"});
         }
     }
 };
@@ -106,3 +106,17 @@ export const getUsers = async (req, res) => {
     }
 };
 
+
+export const deleteUser = async (req,res) => {
+    const {id} = req.params;
+    try {
+        const user = await User.findByIdAndDelete(id);
+        if(!user){
+            return res.status(404).json({success:false,message:"User not Found"});
+        }
+        res.status(200).json({success:true,message:"User delete successfully!"});
+    } catch (error) {
+        console.error("Error deleting users:", error);
+        res.status(500).json({success:false,message:"Server error"});
+    }
+}

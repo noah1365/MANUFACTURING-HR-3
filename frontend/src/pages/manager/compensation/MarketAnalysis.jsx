@@ -167,7 +167,7 @@ const MarketAnalysis = () => {
         <div className="mt-4">
           <p className="font-bold">Average Daily Wage in Industry: ₱{averageIndustryWage.toFixed(2).toLocaleString()}</p>
         </div>
-        <button onClick={downloadCSV} className="btn btn-primary mt-4">Download CSV</button>
+        <button onClick={downloadCSV} className="btn btn-primary mt-4">Download</button>
       </div>
 
       <div className="my-4">
@@ -205,7 +205,7 @@ const MarketAnalysis = () => {
         <div className="mt-4">
           <p className="font-bold">Average Daily Wage by Location: ₱{averageGeographicWage.toFixed(2).toLocaleString()}</p>
         </div>
-        <button onClick={downloadCSV} className="btn btn-primary mt-4">Download CSV</button>
+        <button onClick={downloadCSV} className="btn btn-primary mt-4">Download</button>
 
       </div>
 

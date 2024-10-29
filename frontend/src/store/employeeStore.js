@@ -15,6 +15,8 @@ export const useEmployeeStore = create((set)=>({
     isCheckingAuth:true,
     message:null,
     error:null,
+    otp: null,
+    email: null,
 
       registerUser: async (formData) => {
         try {
@@ -137,4 +139,54 @@ export const useEmployeeStore = create((set)=>({
             return false;
         }
     },
+
+    forgotPassword: async (email) => {
+      try {
+          console.log('Sending email:', email);
+          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+          const csrfToken = csrfResponse.data.csrfToken;
+  
+          const response = await axios.post(`${API_URL}/forgot-password`, { email }, {
+              headers: { 'csrf-token': csrfToken }
+          });
+  
+          set({
+              email,
+              message: response.data.message,
+              error: null,
+              otp: null,
+          });
+  
+          return response.data;
+      } catch (error) {
+          console.error('Error in forgotPassword:', error);
+          const errorMessage = error.response?.data?.message || "Error requesting password reset.";
+          set({ error: errorMessage });
+          throw new Error(errorMessage);
+      }
+  },
+  
+  resetPasswordOtp: async (email,otp, newPassword) => {
+      try {
+          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+          const csrfToken = csrfResponse.data.csrfToken;
+  
+          const response = await axios.post(`${API_URL}/reset-password-otp`, { email,otp, newPassword }, {
+              headers: { 'csrf-token': csrfToken }
+          });
+  
+          set({
+              message:response.data.message || "Password reset successfully.",
+              error:null,
+          });
+  
+          return response.data;
+      } catch (error) {
+          console.error('Error in resetPasswordOtp:', error);
+          const errorMessage = error.response?.data?.message || "Error resetting password.";
+          set({error:errorMessage});
+          throw new Error(errorMessage);
+      }
+  },
+
 }));

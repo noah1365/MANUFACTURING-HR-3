@@ -18,40 +18,72 @@ const {fetchUsers,users} = useAuthStore();
     
     fetchUserData();
   }, [fetchUsers]);
+
+  const attendanceData = [
+    {
+      employeeName: 'John Lloyd',
+      totalRegularHours: 176,
+      totalAbsent: 2,
+      totalPresent: 18,
+      totalOvertime: 15,
+      totalHoliday: 1,
+      totalHours: 176 - (2 * 8) + 15,
+      monthlySalary: 25000,
+      totalSalary: (25000 / 176) * (176 - (2 * 8) + 15),
+      attendancePercentage: ((18 / 22) * 100).toFixed(2) + '%',
+    },
+    {
+      employeeName: 'Abby',
+      totalRegularHours: 176,
+      totalAbsent: 0,
+      totalPresent: 20,
+      totalOvertime: 12,
+      totalHoliday: 2,
+      totalHours: 176 - (0 * 8) + 12,
+      monthlySalary: 25000,
+      totalSalary: (25000 / 176) * (176 - (0 * 8) + 12),
+      attendancePercentage: ((20 / 22) * 100).toFixed(2) + '%',
+    },
+  ];
+  
+
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-8 text-center">Payroll Processing</h1>
+      <h2 className="text-xl font-bold mb-4">Attendance Records</h2>
+      <table className="table-auto w-full border-collapse border border-gray-200">
+        <thead>
+          <tr className="bg-primary text-white">
+            <th className="border border-gray-300 px-4 py-2">Employee Name</th>
+            <th className="border border-gray-300 px-4 py-2">Total Hours</th>
+            <th className="border border-gray-300 px-4 py-2">Total Present</th>
+            <th className="border border-gray-300 px-4 py-2">Total Absent</th>
+            <th className="border border-gray-300 px-4 py-2">Total Overtime</th>
+            <th className="border border-gray-300 px-4 py-2">Total Holiday</th>
+          </tr>
+        </thead>
+        <tbody>
+          {attendanceData.map((employee, index) => (
+            <tr key={index} className="hover:bg-neutral hover:text-white">
+              <td className="border border-gray-300 px-4 py-2">{employee.employeeName}</td>
+              <td className="border border-gray-300 px-4 py-2">{employee.totalHours}</td>
+              <td className="border border-gray-300 px-4 py-2">{employee.totalPresent}</td>
+              <td className="border border-gray-300 px-4 py-2">{employee.totalAbsent}</td>
+              <td className="border border-gray-300 px-4 py-2">{employee.totalOvertime}</td>
+              <td className="border border-gray-300 px-4 py-2">{employee.totalHoliday}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Attendance Summary</h2>
-            <p>Track attendance and working hours.</p>
-            <Link to="/attendance" className="btn btn-primary"><button>View Attendance</button></Link>
-          </div>
-        </div>
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">Salary Computation</h2>
             <p>Compute employee salaries based on attendance and performance.</p>
             <Link to="/salary-computation" className="btn btn-primary"><button>Salary Computation</button></Link>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Deductions Management</h2>
-            <p>Apply deductions like insurance, etc.</p>
-            <Link to="/deductions-management" className="btn btn-primary"><button>Deductions management</button></Link>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Compliance Tracking</h2>
-            <p>Track compliance with labor laws, and other payroll rules.</p>
-            <Link to="/compliance-tracking" className="btn btn-primary"><button>Track Compliance</button></Link>
           </div>
         </div>
 

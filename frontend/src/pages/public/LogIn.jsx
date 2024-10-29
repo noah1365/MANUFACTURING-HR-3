@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 
+import { Link } from "react-router-dom";
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -66,7 +68,6 @@ const LogIn = () => {
           <form className="card-body" onSubmit={handleLogin}>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Email</span>
               </label>
               <input
                 type="email"
@@ -96,7 +97,7 @@ const LogIn = () => {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  className="mr-2"
+                  className="mr-2 ml-1"
                   checked={showPassword}
                   onChange={() => setShowPassword(!showPassword)}
                 />
@@ -106,6 +107,7 @@ const LogIn = () => {
             <div className="form-control mt-6">
               <button className="btn btn-primary">Login</button>
             </div>
+            <span className="text-center underline"><Link to="/forgot-password">Forgot password?</Link></span>
           </form>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const EnrollmentSubmission = () => {
+const BenefitsRequested = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -9,8 +9,8 @@ const EnrollmentSubmission = () => {
     const mockData = [
       {
         id: 1,
-        lastName: 'Doe',
-        firstName: 'John',
+        lastName: 'Borlagdatan',
+        firstName: 'John Lloyd',
         middleName: 'M',
         dateOfBirth: '1990-01-01',
         phoneNumber: '09171234567',
@@ -27,12 +27,13 @@ const EnrollmentSubmission = () => {
           { id: 1, name: 'Front ID.jpg', url: 'https://example.com/files/front_id.jpg' },
           { id: 2, name: 'Back ID.jpg', url: 'https://example.com/files/back_id.jpg' }
         ],
-        status: 'Pending'
+        status: 'Pending',
+        submittedToAdmin: false
       },
       {
         id: 2,
-        lastName: 'Smith',
-        firstName: 'Jane',
+        lastName: 'Canja',
+        firstName: 'Abeguel',
         middleName: 'A',
         dateOfBirth: '1988-05-20',
         phoneNumber: '09179876543',
@@ -49,7 +50,8 @@ const EnrollmentSubmission = () => {
           { id: 3, name: 'Front ID.jpg', url: 'https://example.com/files/front_id.jpg' },
           { id: 4, name: 'Back ID.jpg', url: 'https://example.com/files/back_id.jpg' }
         ],
-        status: 'Pending'
+        status: 'Pending',
+        submittedToAdmin: false
       }
     ];
     return new Promise((resolve) => {
@@ -60,6 +62,7 @@ const EnrollmentSubmission = () => {
   };
 
   useEffect(() => {
+    document.title = 'Benefit Enrollment requested'
     const loadRequests = async () => {
       const data = await fetchEnrollmentRequests();
       setRequests(data);
@@ -75,7 +78,7 @@ const EnrollmentSubmission = () => {
         request.id === id ? { ...request, status: 'Approved' } : request
       )
     );
-    setSelectedRequest(null); // Clear the selection on approval
+    setSelectedRequest(null);
   };
 
   const handleDenial = (id) => {
@@ -84,7 +87,16 @@ const EnrollmentSubmission = () => {
         request.id === id ? { ...request, status: 'Denied' } : request
       )
     );
-    setSelectedRequest(null); // Clear the selection on denial
+    setSelectedRequest(null);
+  };
+
+  const handleSubmitToAdmin = (id) => {
+    setRequests((prevRequests) =>
+      prevRequests.map((request) =>
+        request.id === id ? { ...request, submittedToAdmin: true } : request
+      )
+    );
+    alert('Request submitted to admin.');
   };
 
   const handleSelectRequest = (request) => {
@@ -119,7 +131,6 @@ const EnrollmentSubmission = () => {
         </div>
       )}
 
-      {/* Modal for Request Details */}
       {selectedRequest && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full overflow-auto max-h-[90vh]">
@@ -169,6 +180,14 @@ const EnrollmentSubmission = () => {
               >
                 Close
               </button>
+              {selectedRequest.status === 'Approved' && !selectedRequest.submittedToAdmin && (
+                <button 
+                  className="btn btn-info btn-sm"
+                  onClick={() => handleSubmitToAdmin(selectedRequest.id)}
+                >
+                  Submit to Admin
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -177,4 +196,4 @@ const EnrollmentSubmission = () => {
   );
 };
 
-export default EnrollmentSubmission;
+export default BenefitsRequested;

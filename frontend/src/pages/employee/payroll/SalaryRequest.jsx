@@ -1,49 +1,88 @@
 import React, { useEffect, useState } from 'react';
+import { usePayrollStore } from '../../../store/payrollStore';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SalaryRequest = () => {
-  const [employeeName, setEmployeeName] = useState('');
-  const [salaryAmount, setSalaryAmount] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState('Cash');
-  const [gCashNumber, setGCashNumber] = useState('');
+  const { 
+    requestedAmount, 
+    setRequestedAmount, 
+    paymentMethod, 
+    setPaymentMethod, 
+    gCashNumber, 
+    setGCashNumber, 
+    message, 
+    requestSalary 
+  } = usePayrollStore();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({
-      employeeName,
-      salaryAmount,
-      paymentMethod,
-      gCashNumber: paymentMethod === 'GCash' ? gCashNumber : null,
-    });
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if(!requestedAmount){
+      newErrors.requestedAmount = 'Requested amount is required.';
+    }else if(requestedAmount <= 0){
+      newErrors.requestedAmount = 'Requested amount must be a positive number.';
+    }
+
+    if(!paymentMethod){
+      newErrors.paymentMethod = 'Payment method is required.';
+    }else if(!['Cash', 'GCash'].includes(paymentMethod)){
+      newErrors.paymentMethod = 'Payment method must be either "Cash" or "GCash".';
+    }
+
+    if(paymentMethod === 'GCash'){
+      if(!gCashNumber){
+        newErrors.gCashNumber = 'GCash number is required.';
+      }else if(!/^(09|\+639)\d{9}$/.test(gCashNumber)){
+        newErrors.gCashNumber = 'Invalid GCash number format! Must start with 09 or +639 and have 11 digits.';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if(!validateForm()){
+      return;
+    }
+
+    try {
+      await requestSalary();
+      if(message){
+        toast.success(message);
+      }else{
+        toast.error('An error occurred. Please try again.');
+      }
+    } catch (error) {
+      toast.error('An error occurred. Please try again.');
+    }
+  };
+
   useEffect(() => {
     document.title = "Salary Request";
-  });
+  }, []);
+
   return (
     <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
       <h1 className="text-2xl font-bold mb-4">Request Salary Distribution</h1>
+      <ToastContainer />
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
         <div className="mb-4">
-          <label htmlFor="employeeName" className="block mb-2">Employee Name</label>
+          <label htmlFor="requestedAmount" className="block mb-2">Amount to Request</label>
           <input
-            id="employeeName"
-            type="text"
-            value={employeeName}
-            onChange={(e) => setEmployeeName(e.target.value)}
-            className="input input-bordered w-full"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="salaryAmount" className="block mb-2">Salary Amount</label>
-          <input
-            id="salaryAmount"
+            id="requestedAmount"
             type="number"
-            value={salaryAmount}
-            onChange={(e) => setSalaryAmount(e.target.value)}
-            className="input input-bordered w-full"
+            value={requestedAmount}
+            onChange={(e) => setRequestedAmount(Number(e.target.value))}
+            className={`input input-bordered w-full ${errors.requestedAmount ? 'border-red-500' : ''}`}
             required
           />
+          {errors.requestedAmount && <p className="text-red-500">{errors.requestedAmount}</p>}
         </div>
 
         <div className="mb-4">
@@ -57,11 +96,12 @@ const SalaryRequest = () => {
                 setGCashNumber('');
               }
             }}
-            className="select select-bordered w-full"
+            className={`select select-bordered w-full ${errors.paymentMethod ? 'border-red-500' : ''}`}
           >
             <option value="Cash">Cash</option>
             <option value="GCash">GCash</option>
           </select>
+          {errors.paymentMethod && <p className="text-red-500">{errors.paymentMethod}</p>}
         </div>
 
         {paymentMethod === 'GCash' && (
@@ -72,9 +112,10 @@ const SalaryRequest = () => {
               type="text"
               value={gCashNumber}
               onChange={(e) => setGCashNumber(e.target.value)}
-              className="input input-bordered w-full"
+              className={`input input-bordered w-full ${errors.gCashNumber ? 'border-red-500' : ''}`}
               required
             />
+            {errors.gCashNumber && <p className="text-red-500">{errors.gCashNumber}</p>}
           </div>
         )}
 

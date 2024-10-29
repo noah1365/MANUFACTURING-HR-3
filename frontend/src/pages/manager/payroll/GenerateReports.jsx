@@ -5,6 +5,8 @@ const GenerateReports = () => {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const handleReportGeneration = () => {
     if (!reportType) {
@@ -16,13 +18,25 @@ const GenerateReports = () => {
     setSuccessMessage('');
 
     setTimeout(() => {
+      // Sample report data for different report types
       const sampleReportData = [
         { employeeName: 'John Lloyd', salary: 30000, paymentMethod: 'Cash', status: 'Approved', date: new Date().toLocaleDateString() },
         { employeeName: 'Oliver', salary: 32000, paymentMethod: 'GCash', status: 'Approved', date: new Date().toLocaleDateString() },
         { employeeName: 'Abby', salary: 32000, paymentMethod: 'GCash', status: 'Approved', date: new Date().toLocaleDateString() },
       ];
 
-      setReportData(sampleReportData);
+      // Filter for custom date range
+      if (reportType === 'custom' && startDate && endDate) {
+        const filteredData = sampleReportData.filter(data => {
+          const reportDate = new Date(data.date);
+          return reportDate >= new Date(startDate) && reportDate <= new Date(endDate);
+        });
+        setReportData(filteredData);
+      } else {
+        // Populate report data for other types
+        setReportData(sampleReportData);
+      }
+
       setSuccessMessage('Report generated successfully!');
       setLoading(false);
     }, 1000);
@@ -59,6 +73,8 @@ const GenerateReports = () => {
     setReportData([]);
     setSuccessMessage('');
     setReportType('');
+    setStartDate('');
+    setEndDate('');
   };
 
   useEffect(() => {
@@ -85,6 +101,31 @@ const GenerateReports = () => {
           <option value="custom">Custom Date Range Report</option>
         </select>
       </div>
+
+      {reportType === 'custom' && (
+        <div className="mb-6">
+          <label className="label" htmlFor="startDate">
+            <span className="label-text">Start Date:</span>
+          </label>
+          <input
+            type="date"
+            id="startDate"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="input input-bordered w-full mb-4"
+          />
+          <label className="label" htmlFor="endDate">
+            <span className="label-text">End Date:</span>
+          </label>
+          <input
+            type="date"
+            id="endDate"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="input input-bordered w-full mb-4"
+          />
+        </div>
+      )}
 
       <button className="btn btn-primary w-full mb-6" onClick={handleReportGeneration} disabled={loading}>
         {loading ? <span className="loading loading-spinner"></span> : 'Generate Report'}

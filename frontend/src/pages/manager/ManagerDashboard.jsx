@@ -10,14 +10,11 @@ const ManagerDashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
   const payrollData = [
-    { employee: "Alice", grossPay: 3000, netPay: 2800, deductions: 200, status: "Processed", date: "2024-08-15" },
-    { employee: "Bob", grossPay: 4000, netPay: 3800, deductions: 200, status: "Pending", date: "2024-09-10" },
+    { employee: "Borlagdatan Johnlloyd", grossPay: 3000, netPay: 2800, deductions: 200, status: "Processed", date: "2024-08-15" },
+    { employee: "Canja Abeguel", grossPay: 4000, netPay: 3800, deductions: 200, status: "Pending", date: "2024-09-10" },
   ];
 
-  const leaveRequests = [
-    { employeeName: "John Doe", leaveType: "Sick Leave", dateRequested: "2024-09-28", status: "Pending" },
-    { employeeName: "Jane Smith", leaveType: "Vacation Leave", dateRequested: "2024-09-27", status: "Approved" },
-  ];
+
 
   const incentivesData = [
     { month: "Jan", amount: 1200 },
@@ -49,28 +46,10 @@ const ManagerDashboard = () => {
     { month: "Dec", amount: 700 },
   ];
 
-  const leaveStatusCounts = leaveRequests.reduce((acc, request) => {
-    acc[request.status] = (acc[request.status] || 0) + 1;
-    return acc;
-  }, {});
-
-  const pieChartData = [
-    { name: "Approved", value: leaveStatusCounts["Approved"] || 0 },
-    { name: "Pending", value: leaveStatusCounts["Pending"] || 0 },
-    { name: "Rejected", value: leaveStatusCounts["Rejected"] || 0 },
-  ];
-
   const filterPayrollData = () => {
     return payrollData.filter(item => {
       const itemDate = new Date(item.date);
       return itemDate.getFullYear() === selectedYear && itemDate.getMonth() + 1 === selectedMonth;
-    });
-  };
-
-  const filterLeaveRequests = () => {
-    return leaveRequests.filter(request => {
-      const requestDate = new Date(request.dateRequested);
-      return requestDate.getFullYear() === selectedYear && requestDate.getMonth() + 1 === selectedMonth;
     });
   };
 
@@ -113,7 +92,6 @@ const ManagerDashboard = () => {
         <Card title="Incentives Overview" amount={7200} change="-1.5%" icon={<GrMoney className="text-gray-600 text-xl" />} />
         <Card title="Deductions Overview" amount={5200} change="-1.5%" icon={<GrMoney className="text-gray-600 text-xl" />} />
         <Card title="Benefits Enrollment" amount={15} change="3 New" icon={<RiPassPendingLine className="text-gray-600 text-xl" />} isPositive />
-        <Card title="Leave Requests" amount={filterLeaveRequests().length} change="1 New" icon={<RiPassPendingLine className="text-gray-600 text-xl" />} />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
@@ -144,17 +122,6 @@ const ManagerDashboard = () => {
             <Bar dataKey="amount" fill="#ff7300" />
           </BarChart>
         </div>
-        <div className="mt-4 rounded-lg bg-white p-3">
-          <p className="font-semibold text-lg">Leave Request Status</p>
-          <PieChart width={400} height={200}>
-            <Pie data={pieChartData} cx={200} cy={100} outerRadius={80} fill="#8884d8" label>
-              {pieChartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={['#0088FE', '#00C49F', '#FFBB28'][index]} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </div>
       </div>
 
             <div className="mt-4 rounded-lg bg-white p-3">
@@ -178,32 +145,6 @@ const ManagerDashboard = () => {
                   <td className="px-4 py-2">₱{row.netPay}</td>
                   <td className="px-4 py-2">₱{row.deductions}</td>
                   <td className="px-4 py-2">{row.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      
-      <div className="mt-4 rounded-lg bg-white p-3">
-        <p className="font-semibold text-lg">Leave Requests</p>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Employee Name</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Leave Type</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Date Requested</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">Status</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {leaveRequests.map((request, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2">{request.employeeName}</td>
-                  <td className="px-4 py-2">{request.leaveType}</td>
-                  <td className="px-4 py-2">{request.dateRequested}</td>
-                  <td className="px-4 py-2">{request.status}</td>
                 </tr>
               ))}
             </tbody>

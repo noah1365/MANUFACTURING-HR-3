@@ -7,8 +7,8 @@ export const loginValidation = [
 
 export const registerValidation = [
     body("position")
-    .isIn(['CEO', 'Secretary', 'Production Head', 'Resellers Sales Head','Reseller','Manager'])
-    .withMessage("Invalid position value!"),
+    .notEmpty()
+    .withMessage("Position is required"),
     body("lastName")
         .notEmpty()
         .withMessage("Lastname is required!"),
@@ -18,9 +18,11 @@ export const registerValidation = [
     body("middleName")
         .notEmpty()
         .withMessage("Middle name is required!"),
-    body("email")
-        .isEmail()
-        .withMessage("Invalid email address!"),
+        body("email")
+            .isEmail()
+            .withMessage("Invalid email address!")
+            .isLength({ max: 40 })
+            .withMessage(`Email address must not exceed 40 characters!`),
     body("phoneNumber")
         .matches(/^(09|\+639)\d{9}$/)
         .withMessage("Invalid phone format!"),
@@ -80,7 +82,7 @@ export const changePasswordValidation = [
         .notEmpty()
         .withMessage("Confirm password is required.")
         .custom((value, { req }) => {
-            if (value !== req.body.newPassword) {
+            if(value !== req.body.newPassword){
                 throw new Error("Passwords do not match.");
             }
             return true;
@@ -93,6 +95,53 @@ export const resendVerificationValidation = [
         .withMessage("Invalid email address!"),
 ];
 
+export const forgotPasswordValidation = [
+    body("email")
+        .isEmail()
+        .withMessage("Please provide a valid email address.")
+        .notEmpty()
+        .withMessage("Email is required."),
+];
+
+export const resetPasswordOtpValidation = [
+    body("otp")
+        .notEmpty()
+        .withMessage("OTP is required."),
+    body("newPassword")
+    .notEmpty()
+    .withMessage("New password is required.")
+    .isLength({ min: 8 })
+    .withMessage("New password must be at least 8 characters long.")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])/)
+    .withMessage("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."),
+];
+
+export const compensationPlanningValidation = [
+    body('position').notEmpty().withMessage('Position is required.'),
+    body('hourlyRate').isFloat({ gt: 0 }).withMessage('Hourly rate must be a positive number.'),
+    body('overTimeRate').isFloat({ gt: 0 }).withMessage('Overtime rate must be a positive number.'),
+    body('holidayRate').isFloat({ gt: 0 }).withMessage('Holiday rate must be a positive number.'),
+    body('incentives').notEmpty().withMessage('Incentives are required.'),
+    body('benefits').isString().notEmpty().withMessage('Benefits must be a non-empty string.'),
+    body('performanceMetrics').isArray().withMessage('Performance metrics must be an array.')
+        .custom(value => value.every(metric => typeof metric === 'number')).withMessage('Performance metrics must be an array of numbers.'),
+    body('salaryAdjustmentGuidelines').notEmpty().withMessage('Salary adjustment guidelines are required.'),
+    body('effectiveDate').isISO8601().withMessage('Effective date must be a valid date.')
+        .custom(value => {
+            const inputDate = new Date(value);
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+            if (inputDate < currentDate) throw new Error('Effective date cannot be in the past.');
+            return true;
+        }),
+    body('comments').optional().isString().withMessage('Comments must be a string.'),
+];
+
+export const reviewRequestValidation = [
+    body('action')
+        .isIn(['approve', 'deny'])
+        .withMessage('Action must be either "approve" or "deny".')
+];
 
 export const validate = (req,res,next) => {
     const errors = validationResult(req);

@@ -1,18 +1,25 @@
 import React, { useEffect } from 'react';
-import {PieChart,Pie,BarChart,Bar,XAxis,YAxis,Tooltip,CartesianGrid,LineChart,Line,ResponsiveContainer,} from 'recharts';
+import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line, ResponsiveContainer } from 'recharts';
+import { useEmployeeStore } from '../../store/employeeStore';
 
 const EmployeeDashboard = () => {
-  const benefitsData = [
-    { name: 'Health Insurance', value: 3000 },
-    { name: 'Retirement Plan', value: 5000 },
-    { name: '13th Month Pay', value: 2000 },
-    { name: 'Meal Allowance', value: 1000 },
+  const { user } = useEmployeeStore();
+
+  const overtimeData = [
+    { date: 'October 1, 2024', hours: 5, rate: 150, bonus: 500 },
+    { date: 'October 2, 2024', hours: 3, rate: 150, bonus: 300 },
   ];
 
-  const leaveData = [
-    { name: 'Pending', value: 1 },
-    { name: 'Approved', value: 2 },
-    { name: 'Denied', value: 0 },
+  const totalOvertime = overtimeData.reduce((acc, item) => acc + item.hours * item.rate, 0);
+  const totalBonus = overtimeData.reduce((acc, item) => acc + item.bonus, 0);
+  const totalHours = overtimeData.reduce((acc, item) => acc + item.hours, 0);
+  const totalAmount = totalOvertime + totalBonus;
+
+  const benefitsData = [
+    { name: 'Health Insurance', value: 3000 },
+    { name: 'Pag-ibig', value: 5000 },
+    { name: '13th Month Pay', value: 2000 },
+    { name: 'SSS', value: 1000 },
   ];
 
   const deductionsData = [
@@ -20,10 +27,14 @@ const EmployeeDashboard = () => {
     { month: 'October', amount: 300 },
   ];
 
-  const overtimeData = [
-    { name: 'Overtime Hours', value: 10 },
-    { name: 'Bonuses Earned', value: 2000 },
-  ];
+  const totalDeductions = deductionsData.reduce((acc, item) => acc + item.amount, 0);
+
+  const combinedBenefitsAndDeductions = benefitsData.map((benefit) => ({
+    name: benefit.name,
+    value: benefit.value,
+  }));
+
+  combinedBenefitsAndDeductions.push({ name: 'Total Deductions', value: totalDeductions });
 
   const incentiveData = [
     { name: 'Approved', value: 2 },
@@ -34,116 +45,94 @@ const EmployeeDashboard = () => {
     { date: '2024-09-01', sales: 10000, commission: 500 },
     { date: '2024-09-05', sales: 15000, commission: 600 },
   ];
+
+  const totalCommissions = commissionsData.reduce((acc, item) => acc + item.commission, 0);
+
   useEffect(() => {
-    document.title = "Dashboard";
-  });
+    document.title = "Employee Dashboard";
+  }, []);
+
   return (
     <div className="container mx-auto p-5">
       <header className="mb-4">
-        <h1 className="text-xl font-bold">Welcome, [Employee Name]!</h1>
+        <h1 className="text-2xl font-bold">Welcome, {user?.lastName} {user?.firstName}!</h1>
       </header>
 
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         {[
-          { title: 'My Benefits Enrolled', amount: '₱ 5,000' },
+          { title: 'My Benefits Deduct', amount: '₱ 5,000' },
           { title: 'Salary', amount: '₱ 30,000' },
-          { title: 'Current Deductions', amount: '₱ 5,000' },
-          { title: 'Commissions', amount: '₱ 1,500' },
+          { title: 'Commissions', amount: `₱ ${totalCommissions.toLocaleString()}` },
+          { title: 'Total Overtime', amount: `₱ ${totalOvertime.toLocaleString()}` },
+          { title: 'Total Bonuses', amount: `₱ ${totalBonus.toLocaleString()}` },
+          { title: 'Total Amount (Overtime + Bonuses)', amount: `₱ ${totalAmount.toLocaleString()}` },
         ].map((card) => (
-          <div key={card.title} className="card bg-base-100 shadow-lg">
+          <div key={card.title} className="card bg-base-100 shadow-lg transition-transform transform hover:scale-105">
             <div className="card-body">
               <h2 className="card-title">{card.title}</h2>
-              <p className="text-lg font-bold">{card.amount}</p>
+              <p className="text-lg font-bold text-green-600">{card.amount}</p>
             </div>
           </div>
         ))}
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <Chart title="Benefits Overview" data={benefitsData} type="pie" />
+        <Chart title="Benefits Overview and Deductions" data={combinedBenefitsAndDeductions} type="pie" />
         <Chart title="Incentive Requests" data={incentiveData} type="pie" />
-      </section>
-
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <Chart title="Leave Application Status" data={leaveData} type="bar" />
-        <Chart title="My Deductions" data={deductionsData} type="line" />
       </section>
 
       <section className="mb-4">
         <h2 className="font-semibold mb-2">Overtime and Bonuses</h2>
-        <div className="card bg-base-100 shadow-lg">
-          <div className="card-body">
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={overtimeData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <ResponsiveChart type="bar" data={overtimeData.map(item => ({ name: item.date, value: item.hours * item.rate + item.bonus }))} dataKey="value" />
       </section>
 
       <section className="mb-4">
         <h2 className="font-semibold mb-2">My Commissions</h2>
-        <div className="card bg-base-100 shadow-lg">
-          <div className="card-body">
-            <CommissionTable data={commissionsData} />
-          </div>
-        </div>
+        <CommissionTable data={commissionsData} />
       </section>
     </div>
   );
 };
 
-const Chart = ({ title, data, type }) => {
-  const renderChart = () => {
-    switch (type) {
-      case 'pie':
-        return (
+const Chart = ({ title, data, type }) => (
+  <div className="card bg-base-100 shadow-lg">
+    <div className="card-body">
+      <h2 className="font-semibold mb-2">{title}</h2>
+      <ResponsiveContainer width="100%" height={200}>
+        {type === 'pie' ? (
           <PieChart>
             <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} fill="#82ca9d" label />
             <Tooltip />
           </PieChart>
-        );
-      case 'bar':
-        return (
-          <BarChart data={data}>
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Bar dataKey="value" fill="#8884d8" />
-          </BarChart>
-        );
-      case 'line':
-        return (
+        ) : (
           <LineChart data={data}>
             <XAxis dataKey="month" />
             <YAxis />
             <Tooltip />
             <Line type="monotone" dataKey="amount" stroke="#ff7300" />
           </LineChart>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div>
-      <h2 className="font-semibold mb-2">{title}</h2>
-      <div className="card bg-base-100 shadow-lg">
-        <div className="card-body">
-          <ResponsiveContainer width="100%" height={200}>
-            {renderChart()}
-          </ResponsiveContainer>
-        </div>
-      </div>
+        )}
+      </ResponsiveContainer>
     </div>
-  );
-};
+  </div>
+);
+
+const ResponsiveChart = ({ type, data, dataKey }) => (
+  <div className="card bg-base-100 shadow-lg">
+    <div className="card-body">
+      <ResponsiveContainer width="100%" height={200}>
+        {type === 'bar' && (
+          <BarChart data={data}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey={dataKey} fill="#82ca9d" />
+          </BarChart>
+        )}
+      </ResponsiveContainer>
+    </div>
+  </div>
+);
 
 const CommissionTable = ({ data }) => (
   <table className="min-w-full border-collapse border border-gray-200">

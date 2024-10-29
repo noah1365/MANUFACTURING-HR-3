@@ -56,16 +56,6 @@ const EBenefitsOverview = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title">Leave Request</h2>
-            <p>Manage leave requests through this portal.</p>
-            <Link to="/leave-application" className="btn btn-primary">
-              <button>Leave Application</button>
-            </Link>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
             <h2 className="card-title">Deductions</h2>
             <p>Review and manage my deductions.</p>
             <Link to="/my-deductions" className="btn btn-primary">

@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 export const createBenefit = async (req,res) => {
     try {
         const {benefitsName,benefitsDescription,benefitsType,requiresRequest} = req.body;
-        if(!benefitsName ||!benefitsDescription ||!benefitsType ||!requiresRequest){
+        if(!benefitsName ||!benefitsDescription ||!benefitsType){
             return res.status(400).json({status:false,message:"All fields required!"});
         }
         const benefitsExist = await Benefit.findOne({benefitsName});
@@ -41,18 +41,18 @@ export const getBenefit = async (req,res) => {
 export const updateBenefit = async (req, res) => {
     try {
         const { id } = req.params;
-        const { benefitsName, benefitsDescription, benefitsType, requiresRequest } = req.body;
+        const {benefitsName,benefitsDescription,benefitsType,requiresRequest} = req.body;
 
-        if (!benefitsName || !benefitsDescription || !benefitsType) {
-            return res.status(400).json({ status: false, message: "All fields required!" });
+        if(!benefitsName || !benefitsDescription || !benefitsType){
+            return res.status(400).json({status:false,message:"All fields required!"});
         }
-        if (!mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ status: false, message: "Invalid benefit ID format." });
+        if(!mongoose.isValidObjectId(id)){
+            return res.status(400).json({status:false,message:"Invalid benefit ID format."});
         }
         
         const benefit = await Benefit.findById(id);
-        if (!benefit) {
-            return res.status(404).json({ status: false, message: "Benefit not found!" });
+        if(!benefit){
+            return res.status(404).json({status:false,message:"Benefit not found!"});
         }
 
         const isUpdated = benefit.benefitsName !== benefitsName || 
@@ -60,19 +60,19 @@ export const updateBenefit = async (req, res) => {
                           benefit.benefitsType !== benefitsType || 
                           benefit.requiresRequest !== requiresRequest;
 
-        if (isUpdated) {
+        if(isUpdated){
             benefit.benefitsName = benefitsName;
             benefit.benefitsDescription = benefitsDescription;
             benefit.benefitsType = benefitsType;
             benefit.requiresRequest = requiresRequest;
             await benefit.save();
-            return res.status(200).json({ status: true, message: "Benefits updated successfully!", updatedBenefit: benefit });
+            return res.status(200).json({status:true,message:"Benefits updated successfully!",updatedBenefit:benefit});
         } else {
-            return res.status(200).json({ status: true, message: "No changes detected, benefit remains unchanged.", updatedBenefit: benefit });
+            return res.status(200).json({status:true,message:"No changes detected, benefit remains unchanged.",updatedBenefit:benefit});
         }
     } catch (error) {
         console.error("Error updating benefit:", error);
-        return res.status(500).json({ status: false, message: "Server error" });
+        return res.status(500).json({status:false,message:"Server error"});
     }
 };
 
@@ -81,19 +81,19 @@ export const deleteBenefit = async (req, res) => {
     try {
         const {id} = req.params;
 
-        if(!mongoose.isValidObjectId(id)) {
+        if(!mongoose.isValidObjectId(id)){
             return res.status(400).json({status:false,message:"Invalid benefit ID format."});
         }
         const benefit = await Benefit.findByIdAndDelete(id);
-        if (!benefit) {
-            return res.status(404).json({status: false,message:"Benefit not found!"});
+        if(!benefit){
+            return res.status(404).json({status:false,message:"Benefit not found!"});
         }
 
         res.status(200).json({status:true,message:"Benefit deleted successfully!"});
         
     } catch (error) {
         console.error("Error deleting benefit:",error);
-        res.status(500).json({success:false, message:"Server error"});
+        res.status(500).json({success:false,message:"Server error"});
     }
 };
 

@@ -40,19 +40,6 @@ const CompensationOverview = () => {
           </div>
         </div>
 
-        {/* Total Rewards Overview Card */}
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Total Rewards Overview</h2>
-            <p>
-              View the complete rewards package including base salary, bonuses, benefits, and more.
-            </p>
-            <Link to="/total-rewards" className="btn btn-primary">
-              <button>View Total Rewards</button>
-            </Link>
-          </div>
-        </div>
-
         {/* Market Analysis Card */}
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">

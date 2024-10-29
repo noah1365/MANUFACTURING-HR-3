@@ -19,26 +19,29 @@ const BenefitsAdministration = () => {
     fetchBenefit();
   }, [fetchBenefit]);
 
-  const handleCreateBenefits = async (e) => {
-    e.preventDefault();
-    try {
-      if(!benefitsName || !benefitsDescription || !benefitsType){
-        toast.error("All fields required!");
-        return;
-      }
-      const result = await createBenefit({ benefitsName, benefitsDescription, benefitsType, requiresRequest });
-      if(!result){
-        toast.error("Benefits already exist!");
-        return;
-      }
-      toast.success("Benefits created successfully!")
-      console.log("Benefits created successfully!", true);
-      await fetchBenefit();
-      resetForm();
-    } catch (error) {
-      console.log(error);
+const handleCreateBenefits = async (e) => {
+  e.preventDefault();
+  try {
+    const result = await createBenefit({benefitsName,benefitsDescription,benefitsType,requiresRequest});
+
+    if(result.status === false){
+      toast.error(result.message);
+      return;
     }
-  };
+
+    toast.success("Benefits created successfully!");
+    console.log("Benefits created successfully!", true);
+    await fetchBenefit();
+    resetForm();
+  } catch (error) {
+    console.log(error);
+    if(error.response && error.response.data){
+      toast.error(error.response.data.message || "An error occurred");
+    } else {
+      toast.error("An unexpected error occurred");
+    }
+  }
+};
 
   const handleDeleteBenefit = async (id) => {
     console.log("Attempting to delete benefit with ID:", id);
@@ -196,20 +199,10 @@ const BenefitsAdministration = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title">Enrollment Submission</h2>
-            <p>Submit and manage your benefits enrollment requests here.</p>
-            <Link to="/enrollment-submission" className="btn btn-primary">
+            <h2 className="card-title">Benefit Enrollment requests</h2>
+            <p>Manage benefits enrollment requests here.</p>
+            <Link to="/benefits-requested" className="btn btn-primary">
               <button>View Enrollment Requests</button>
-            </Link>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Leave Request</h2>
-            <p>Manage leave requests through this portal.</p>
-            <Link to="/leave-requests" className="btn btn-primary">
-              <button>Leave Request</button>
             </Link>
           </div>
         </div>
