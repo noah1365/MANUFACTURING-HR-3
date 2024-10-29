@@ -10,7 +10,7 @@ import { useEmployeeStore } from "../../store/employeeStore";
 import defaultimage from '../../assets/defaultimage.png';
 
 const Profile = () => {
-  const { fetchData, user, changePassword } = useEmployeeStore();
+  const { fetchData, user, changePassword, changeUserRole } = useEmployeeStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -141,11 +141,60 @@ const Profile = () => {
       setIsLoading(false);
     }
   };
+  const [newRole, setNewRole] = useState('');
+
+  const handleChangeRole = async () => {
+    
+    if(!user || !user._id){
+        toast.error('User data is not available. Please refresh and try again.');
+        return;
+    }
+
+    if(!newRole){
+        toast.error('Please select a role before changing.');
+        return;
+    }
+    try {
+        await changeUserRole(user._id, newRole);
+        toast.success('User role changed successfully!');
+    } catch (error) {
+        console.error("Error changing user role:", error);
+
+        if(error.response && error.response.data){
+            const { message } = error.response.data;
+
+            if(message){
+                toast.error(message);
+            }else{
+                toast.error('Failed to change user role. Please try again.');
+            }
+        }else{
+            toast.error('Failed to change user role. Please try again.');
+        }
+    }
+};
 
   return (
     <div className="container mx-auto mt-10 p-8 max-w-4xl bg-white shadow-lg border-2 rounded-lg">
       <ToastContainer />
       <div className="flex flex-col items-center mb-6">
+        <div>
+      <select
+          value={newRole}
+          onChange={(e) => setNewRole(e.target.value)}
+          className="border border-gray-300 rounded-lg p-2 w-full"
+      >
+          <option value="">Select Role</option>
+          <option value="Employee">Employee</option>
+          <option value="Manager">Manager</option>
+      </select>
+      <button
+          onClick={handleChangeRole}
+          className="mt-4 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700"
+      >
+          Change Role
+      </button>
+        </div>
         <button className="relative group">
           <img
             src={user?.profilePic || defaultimage}

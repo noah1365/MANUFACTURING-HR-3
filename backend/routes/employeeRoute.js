@@ -18,6 +18,6 @@ employeeRoute.post('/forgot-password',forgotPasswordValidation,validate,forgotPa
 employeeRoute.post('/reset-password-otp',resetPasswordOtpValidation,validate,resetPasswordWithOTP);
 
 
-employeeRoute.put('/change-role/:id',changeRole);
+employeeRoute.put('/change-role/:id',verifyToken,changeRole);
 
 export default employeeRoute;
