@@ -24,6 +24,9 @@ const EmployeeList = () => {
 
     fetchUserData();
     fetchCompensationPositions();
+    const intervalId = setInterval(fetchUserData, 5000);
+    return () => clearInterval(intervalId);
+    
   }, [fetchUsers, fetchCompensationPositions]);
 
 

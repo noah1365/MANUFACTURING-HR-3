@@ -1,4 +1,4 @@
-import {body,validationResult} from 'express-validator';
+import {body,param,validationResult} from 'express-validator';
 
 export const loginValidation = [
     body("email").isEmail().withMessage("Invalid email address!"),
@@ -66,7 +66,14 @@ export const registerValidation = [
             return true;
         }),
 ];
-
+export const changeRoleValidation = [
+    param('id')
+        .exists().withMessage("ID parameter is required")
+        .isMongoId().withMessage("Invalid ID format"),
+    body('newRole')
+        .exists().withMessage("New role is required")
+        .isIn(["Employee", "Manager"]).withMessage("Invalid role")
+];
 export const changePasswordValidation = [
     body("currentPassword")
         .notEmpty()
