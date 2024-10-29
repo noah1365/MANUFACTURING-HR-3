@@ -3,6 +3,7 @@ import { CompensationPlanning } from "../model/compensation/compensationPlanning
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import mongoose from "mongoose";
 
 export const fetchMyData = async (req,res) => {
     try {
@@ -96,7 +97,7 @@ export const registerUser = async (req, res) => {
         if(role === "Employee" && position === "Manager"){
             return res.status(400).json({status:false,message:"Conflicting role and position!"});
         }
-
+        const uniqueRole = role === "Manager" ? "manager" : "employee";
         const user = new User({
             position,
             lastName:formattedLastName,
@@ -115,6 +116,7 @@ export const registerUser = async (req, res) => {
             gender,
             bDate,
             role,
+            uniqueRole
         });
         await user.save();
 
@@ -498,3 +500,36 @@ export const resetPasswordWithOTP = async (req, res) => {
         return res.status(500).json({message:"Server error!"});
     }
 };
+
+export const changeRole = async (req,res) => {
+    try {
+        const {id} = req.params;
+        const {newRole} = req.body;
+        
+        if(!mongoose.isValidObjectId(id)){
+            return res.status(400).json({status:false,message:"Invalid benefit ID format."});
+        }
+        if(!["Employee", "Manager"].includes(newRole)){
+            return res.status(400).json({success:false,message:"Invalid role"});
+        }
+
+        const user = await User.findById(id)
+        if(!user){
+            return res.status(404).json({success:false,message:"User not found"});
+        }
+
+        if(user.uniqueRole === "employee"){
+            return res.status(403).json({success:false,message:"You cannot change your role."});
+        }
+
+        if(user.uniqueRole === "manager"){
+        user.role = newRole;
+        await user.save();
+        return res.status(200).json({success:true,message:"User role updated successfully",user});
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({success:false,message:"Internal server error"});
+    }
+}

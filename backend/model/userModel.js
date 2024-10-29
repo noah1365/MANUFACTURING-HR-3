@@ -80,6 +80,10 @@ const userSchema = new mongoose.Schema({
         default:"Employee",
         required:true
     },
+    uniqueRole: {
+        type: String,
+        unique: true,
+    },
     profilePic: {
         type: String,
         default: "https://www.pngkey.com/png/full/121-1219231_user-default-profile.png"
