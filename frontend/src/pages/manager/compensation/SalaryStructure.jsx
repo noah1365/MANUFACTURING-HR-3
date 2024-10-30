@@ -103,9 +103,9 @@ const SalaryStructure = () => {
                 </form>
             )}
 
-            <div className="mb-4">
+            <div className="mb-4 flex flex-col items-center">
                 <h2 className="text-lg mb-1">Filter by Date</h2>
-                <div className="flex flex-col md:flex-row gap-1">
+                <div className="md:flex-row items-center justify-center gap-2">
                     <input 
                         type="date" 
                         value={startDate} 

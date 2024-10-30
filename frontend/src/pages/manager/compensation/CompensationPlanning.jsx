@@ -155,6 +155,8 @@ const CompensationPlanning = () => {
   };
 
   const handleDelete = async (id) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this compensation plan?");
+  if(isConfirmed){
     const result = await deleteCompensationPlan(id);
     if(result.success) {
       toast.success("Compensation plan deleted successfully!");
@@ -162,6 +164,9 @@ const CompensationPlanning = () => {
     } else {
       toast.error(result.message);
     }
+  }else{
+    toast.info("Delete action was canceled!");
+  }
   };
 
   const handleEdit = (plan) => {
@@ -371,7 +376,7 @@ const CompensationPlanning = () => {
 
       <h1 className="text-3xl font-bold mb-4">Compensation Planning</h1>
       <div className="overflow-x-auto">
-        <table className="table w-full text-left">
+        <table className="table w-full text-left hidden md:table">
           <thead>
             <tr className="bg-primary text-white">
               <th className="border px-4 py-2">Position</th>
@@ -430,6 +435,41 @@ const CompensationPlanning = () => {
               )}
           </tbody>
         </table>
+        <div className="md:hidden">
+          {Array.isArray(compensationPlans) && compensationPlans.length > 0 ? (
+            compensationPlans
+              .filter(plan => plan && plan._id)
+              .map((plan) => (
+                <div key={plan._id} className="border mb-4 p-4 rounded-lg shadow">
+                  <p><strong>Position:</strong> {plan.position || 'N/A'}</p>
+                  <p><strong>Hourly Rate:</strong> {plan.hourlyRate || 'N/A'}</p>
+                  <p><strong>OT Rate:</strong> {plan.overTimeRate || 'N/A'}</p>
+                  <p><strong>Holiday Rate:</strong> {plan.holidayRate || 'N/A'}</p>
+                  <p><strong>Benefits:</strong> {plan.benefits && plan.benefits.length > 0 
+                    ? plan.benefits.map(ben => `${ben.name} (${ben.deduction})`).join(', ') 
+                    : 'N/A'}
+                  </p>
+                  <p><strong>Metrics:</strong> {plan.performanceMetrics && plan.performanceMetrics.length > 0 
+                    ? plan.performanceMetrics.map(met => `${met.name} (${met.metrics})`).join(', ') 
+                    : 'N/A'}
+                  </p>
+                  <p><strong>Guidelines:</strong> {plan.salaryAdjustmentGuidelines || 'N/A'}</p>
+                  <p><strong>Effective Date:</strong> {plan.effectiveDate ? formatDate(plan.effectiveDate) : 'N/A'}</p>
+                  <p><strong>Comments:</strong> {plan.comments || 'N/A'}</p>
+                  <div className="mt-2">
+                    <button onClick={() => handleEdit(plan)} className="bg-primary text-white px-2 py-1 rounded mr-2">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(plan._id)} className="bg-error text-white px-2 py-1 rounded">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <p className="text-center">No compensation plans found!</p>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -39,6 +39,8 @@ const IncentivesManagements = () => {
 
     const handleDeleteIncentive = async (id) => {
         console.log("Attempting to delete incentive with ID:", id);
+        const isConfirmed = window.confirm("Are you sure you want to delete this compensation plan?");
+        if(isConfirmed){
         const result = await deleteIncentive(id);
         if (!result) {
             toast.error("Failed to delete incentive");
@@ -47,6 +49,9 @@ const IncentivesManagements = () => {
             toast.success("Incentive deleted successfully!");
             console.log("Incentive deleted successfully!", result);
         }
+    }else{
+        toast.info("Delete action was canceled!");
+    }
     };
 
     const handleEditIncentive = (incentive) => {
@@ -143,7 +148,7 @@ const IncentivesManagements = () => {
                         </form>
                     )}
                 </div>
-
+                 <div className='hidden md:block'>
                 <table className="table w-full">
                     <thead>
                         <tr className='bg-primary text-white'>
@@ -176,7 +181,28 @@ const IncentivesManagements = () => {
                     </tbody>
                 </table>
             </div>
-
+            <div className="md:hidden flex flex-col">
+                {Array.isArray(incentives) && incentives.length > 0 ? (
+                incentives.map((incentive) => (
+                    <div key={`${incentive._id}-${incentive.incentivesName}`} className="border mb-4 p-4 rounded-lg shadow">
+                    <h3 className="font-bold text-lg">{incentive.incentivesName || 'N/A'}</h3>
+                    <p><strong>Description:</strong> {incentive.incentivesDescription || 'N/A'}</p>
+                    <p><strong>Incentives Type:</strong> {incentive.incentivesType || 'N/A'}</p>
+                    <div className="mt-2">
+                        <button onClick={() => handleEditIncentive(incentive)} className="btn btn-edit bg-primary text-white px-2 py-1 rounded mr-2">
+                        Edit
+                        </button>
+                        <button onClick={() => handleDeleteIncentive(incentive._id)} className="btn btn-error text-white px-2 py-1 rounded">
+                        Delete
+                        </button>
+                    </div>
+                    </div>
+                ))
+                ) : (
+                <div className="text-center">No incentive found!</div>
+                )}
+            </div>
+         </div>   
             {/* Management Buttons Section */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
                 {/* Incentive Request Card */}

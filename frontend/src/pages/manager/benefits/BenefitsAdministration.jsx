@@ -45,6 +45,8 @@ const handleCreateBenefits = async (e) => {
 
   const handleDeleteBenefit = async (id) => {
     console.log("Attempting to delete benefit with ID:", id);
+    const isConfirmed = window.confirm("Are you sure you want to delete this benefits?");
+    if(isConfirmed){
     const result = await deleteBenefit(id);
     if(!result){
       toast.error("Failed to delete benefit");
@@ -53,6 +55,9 @@ const handleCreateBenefits = async (e) => {
       toast.success("Benefit  delete successfully!")
       console.log("Benefit deleted successfully!", result);
     }
+  }else{
+    toast.info("Delete action was canceled!");
+  }
   };
 
   const handleEditBenefit = (benefit) => {
@@ -157,7 +162,7 @@ const handleCreateBenefits = async (e) => {
             </form>
           )}
         </div>
-
+        <div className="hidden md:block">
         <table className="table w-full mb-4">
           <thead>
             <tr className="bg-primary text-white">
@@ -194,7 +199,29 @@ const handleCreateBenefits = async (e) => {
           </tbody>
         </table>
       </div>
-
+      <div className="md:hidden flex flex-col">
+          {Array.isArray(benefits) && benefits.length > 0 ? (
+          benefits.map((benefit) => (
+              <div key={`${benefit._id}-${benefit.benefitsName}`} className="border mb-4 p-4 rounded-lg shadow">
+              <h3 className="font-bold text-lg">{benefit.benefitsName || 'N/A'}</h3>
+              <p><strong>Description:</strong> {benefit.benefitsDescription || 'N/A'}</p>
+              <p><strong>benefits Type:</strong> {benefit.benefitsType || 'N/A'}</p>
+              <p><strong>benefits Type:</strong> {benefit.requiresRequest ? 'Yes' : 'No'}</p>
+              <div className="mt-2">
+                  <button onClick={() => handleEditBenefit(benefit)} className="btn btn-edit bg-primary text-white px-2 py-1 rounded mr-2">
+                  Edit
+                  </button>
+                  <button onClick={() => handleDeleteBenefit(benefit._id)} className="btn btn-error text-white px-2 py-1 rounded">
+                  Delete
+                  </button>
+              </div>
+              </div>
+          ))
+          ) : (
+          <div className="text-center">No incentive found!</div>
+          )}
+      </div>
+    </div>
       {/* Other sections */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="card bg-base-100 shadow-xl">
