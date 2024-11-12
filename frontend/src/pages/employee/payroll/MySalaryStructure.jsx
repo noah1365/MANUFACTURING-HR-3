@@ -11,6 +11,7 @@ const employeeData = {
     deductions: 1630,
     startDate: "2024-11-01",
     endDate: new Date(),
+    overtimeHours: 10,
 };
 
 const MySalaryStructure = () => {
@@ -19,21 +20,20 @@ const MySalaryStructure = () => {
     const calculateDaysWorked = (startDate, endDate) => {
         const start = new Date(startDate);
         const end = new Date(endDate);
-        
         const timeDifference = end - start;
-        
         const daysWorked = Math.ceil(timeDifference / (1000 * 3600 * 24));
-        
         return daysWorked;
     };
 
     const totalDaysWorked = calculateDaysWorked(salaryInfo.startDate, salaryInfo.endDate);
 
     const dailyRate = salaryInfo.hourlyRate * salaryInfo.workingHoursPerDay;
-
     const earnedSalary = dailyRate * totalDaysWorked;
 
-    const netSalary = earnedSalary + salaryInfo.bonuses - salaryInfo.deductions;
+    const overtimeRate = salaryInfo.hourlyRate * 1.5; // 1.5x hourly rate for overtime
+    const overtimePay = salaryInfo.overtimeHours * overtimeRate;
+
+    const netSalary = earnedSalary + salaryInfo.bonuses + overtimePay - salaryInfo.deductions;
 
     useEffect(() => {
         document.title = `Salary Details for ${salaryInfo.name}`;
@@ -75,6 +75,14 @@ const MySalaryStructure = () => {
                     <div className="flex justify-between">
                         <span className="font-medium text-gray-600">Base Salary (Earned):</span>
                         <span className="text-gray-800">₱{earnedSalary.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">Overtime Hours:</span>
+                        <span className="text-gray-800">{salaryInfo.overtimeHours} hours</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="font-medium text-gray-600">Overtime Pay:</span>
+                        <span className="text-gray-800">₱{overtimePay.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium text-gray-600">Bonuses:</span>
