@@ -6,6 +6,7 @@ const MyPaySlip = () => {
             month: "September 2024",
             payPeriod: "September 1 - September 30, 2024",
             grossSalary: 24000,
+            bonus: 5000,
             deductions: {
                 sss: 950,
                 philhealth: 480,
@@ -16,6 +17,7 @@ const MyPaySlip = () => {
             month: "October 2024",
             payPeriod: "October 1 - October 31, 2024",
             grossSalary: 25000,
+            bonus: 0,
             deductions: {
                 sss: 1000,
                 philhealth: 500,
@@ -26,6 +28,7 @@ const MyPaySlip = () => {
             month: "November 2024",
             payPeriod: "November 1 - November 30, 2024",
             grossSalary: 24000,
+            bonus: 5000,
             deductions: {
                 sss: 950,
                 philhealth: 480,
@@ -36,6 +39,7 @@ const MyPaySlip = () => {
             month: "December 2024",
             payPeriod: "December 1 - December 31, 2024",
             grossSalary: 26000,
+            bonus: 0,
             deductions: {
                 sss: 1000,
                 philhealth: 500,
@@ -57,7 +61,7 @@ const MyPaySlip = () => {
     useEffect(() => {
         document.title = "My Payslip";
     }, []);
-    
+
     return (
         <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
             <h1 className="text-2xl font-semibold mb-6 text-center text-gray-800">Payroll Slips</h1>
@@ -97,6 +101,9 @@ const MyPaySlip = () => {
                         <div className="mt-4">
                             <h3 className="font-semibold text-gray-700">Earnings</h3>
                             <p className="text-gray-600"><strong>Gross Salary:</strong> ₱{expandedData.grossSalary.toLocaleString()}</p>
+                            {expandedData.bonus > 0 && (
+                                <p className="text-gray-600"><strong>Bonus:</strong> ₱{expandedData.bonus.toLocaleString()}</p>
+                            )}
                         </div>
 
                         <div className="mt-4">
@@ -114,7 +121,11 @@ const MyPaySlip = () => {
                         <div className="mt-4">
                             <h3 className="font-semibold text-gray-700">Net Salary</h3>
                             <p className="text-2xl font-bold text-green-600">
-                                ₱{(expandedData.grossSalary - Object.values(expandedData.deductions).reduce((acc, val) => acc + val, 0)).toLocaleString()}
+                                ₱{
+                                    (expandedData.grossSalary + expandedData.bonus - 
+                                    Object.values(expandedData.deductions).reduce((acc, val) => acc + val, 0))
+                                    .toLocaleString()
+                                }
                             </p>
                         </div>
 

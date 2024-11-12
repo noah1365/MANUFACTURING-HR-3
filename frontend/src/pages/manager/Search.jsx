@@ -63,6 +63,7 @@ const Search = ({ onToggleSidebar }) => {
       { path: '/my-deductions', name: 'My Deductions' },
       { path: '/incentives-overview', name: 'Incentives Overview' },
       { path: '/my-commissions', name: 'My Commissions' },
+      { path: '/my-salary-structure', name: 'My Salary Structure' },
       { path: '/incentive-request', name: 'Incentive Request' },
       { path: '/incentive-history', name: 'Incentive History' },
       { path: '/my-salary-info', name: 'My Salary Information' },

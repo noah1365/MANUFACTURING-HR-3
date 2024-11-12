@@ -12,6 +12,16 @@ const MySalaryInfo = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="card bg-base-100 shadow-lg rounded-lg transition-transform transform hover:scale-105">
                     <div className="card-body">
+                        <h2 className="card-title text-lg sm:text-xl font-semibold">Salary Structure</h2>
+                        <p className="text-sm sm:text-base text-gray-600">View the Salary Structure</p>
+                        <Link to="/my-salary-structure" className="btn btn-primary mt-4">
+                            View Structure
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="card bg-base-100 shadow-lg rounded-lg transition-transform transform hover:scale-105">
+                    <div className="card-body">
                         <h2 className="card-title text-lg sm:text-xl font-semibold">Salary Distribution Request</h2>
                         <p className="text-sm sm:text-base text-gray-600">Choose your preferred method for salary distribution, either as Cash or through GCash, and submit your details for processing.</p>
                         <Link to="/salary-request" className="btn btn-primary mt-4">

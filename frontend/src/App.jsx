@@ -68,6 +68,7 @@ import IncentiveRequest from './pages/employee/incentives/IncentiveRequest';
 import IncentiveHistory from './pages/employee/incentives/IncentiveHistory';
 
 import MySalaryInfo from './pages/employee/payroll/MySalaryInfo';
+import MySalaryStructure from './pages/employee/payroll/MySalaryStructure';
 import SalaryRequest from './pages/employee/payroll/SalaryRequest';
 import MyPaySlip from './pages/employee/payroll/MyPaySlip';
 import MyOvertimeBonuses from './pages/employee/payroll/MyOvertimeBonuses';
@@ -206,6 +207,7 @@ const App = () => {
                       <Route path='/my-deductions' element={<ProtectedRoute><MyDeductions/></ProtectedRoute>}/>
 
                       <Route path='/my-salary-info' element={<ProtectedRoute><MySalaryInfo/></ProtectedRoute>}/>
+                      <Route path='/my-salary-structure' element={<ProtectedRoute><MySalaryStructure/></ProtectedRoute>}/>
                       <Route path='/salary-request' element={<ProtectedRoute><SalaryRequest/></ProtectedRoute>}/>
                       <Route path='/my-pay-slip' element={<ProtectedRoute><MyPaySlip/></ProtectedRoute>}/>
                       <Route path='/my-overtime-bonuses' element={<ProtectedRoute><MyOvertimeBonuses/></ProtectedRoute>}/>
