@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MdDashboard } from 'react-icons/md';
+import { MdDashboard,MdFeedback } from 'react-icons/md';
 import { FaMoneyBillWave, FaStar } from 'react-icons/fa';
 import { GiHealthNormal } from 'react-icons/gi';
 
@@ -36,6 +36,7 @@ const EmployeeSidebar = () => {
         <DashboardLink icon={<GiHealthNormal />} text="My Benefits" to="/benefits-overview" isActive={activeLink === 'benefits'} onClick={() => handleLinkClick('benefits')} />
         <DashboardLink icon={<FaStar />} text="My Incentives" to="/incentives-overview" isActive={activeLink === 'incentives'} onClick={() => handleLinkClick('incentives')} />
         <DashboardLink icon={<FaMoneyBillWave />} text="My Salary" to="/my-salary-info" isActive={activeLink === 'salary'} onClick={() => handleLinkClick('salary')} />
+        <DashboardLink icon={<MdFeedback />} text="My Feedback" to="/submit-feedbacks" isActive={activeLink === 'feedbacks'} onClick={() => handleLinkClick('feedbacks')} /> {/* New Feedback link */}
       </div>
     </div>
   );

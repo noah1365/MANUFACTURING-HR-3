@@ -45,103 +45,60 @@ const MarketAnalysis = () => {
     { location: 'Davao City', incentive: 'Remote work options' },
   ];
 
-  const turnoverData = [
-    { position: 'CEO', turnoverRate: 8 },
-    { position: 'Secretary', turnoverRate: 12 },
-    { position: 'Production Head', turnoverRate: 6 },
-    { position: 'Resellers Sales Head', turnoverRate: 9 },
-    { position: 'Reseller', turnoverRate: 10 },
-    { position: 'Manager', turnoverRate: 7 },
-  ];
+  const [feedback, setFeedback] = useState('');
+  const [feedbacks, setFeedbacks] = useState([]);
 
-  const WORKING_DAYS_PER_MONTH = 24;
-  const WORKING_DAYS_PER_YEAR = WORKING_DAYS_PER_MONTH * 12;
-  const WORKING_HOURS_PER_DAY = 8;
-
-  const calculateMonthlySalary = (dailyWage) => dailyWage * WORKING_DAYS_PER_MONTH;
-  const calculateWeeklySalary = (dailyWage) => (dailyWage * WORKING_DAYS_PER_MONTH) / 4;
-  const calculateAnnualSalary = (dailyWage) => dailyWage * WORKING_DAYS_PER_YEAR;
-  const calculateHourlySalary = (dailyWage) => dailyWage / WORKING_HOURS_PER_DAY;
-
-  const averageIndustryWage = industryData.reduce((acc, curr) => acc + curr.dailyWage, 0) / industryData.length;
-  const averageGeographicWage = geographicData.reduce((acc, curr) => acc + curr.dailyWage, 0) / geographicData.length;
-  const averageTurnoverRate = turnoverData.reduce((acc, curr) => acc + curr.turnoverRate, 0) / turnoverData.length;
-
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
-  const handleStartDateChange = (event) => {
-    setStartDate(event.target.value);
+  const handleFeedbackChange = (event) => {
+    setFeedback(event.target.value);
   };
 
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
+  const handleFeedbackSubmit = () => {
+    if (feedback) {
+      setFeedbacks([...feedbacks, feedback]);
+      setFeedback('');  // Clear the feedback input field
+    }
   };
-
-  const filteredIndustryData = industryData;
-  const filteredGeographicData = geographicData;
 
   useEffect(() => {
     document.title = 'Market Analysis';
   }, []);
 
-  const downloadCSV = () => {
-    const csvRows = [];
-
-    // Header
-    csvRows.push(['Job position', 'Daily Wage (PHP)', 'Hourly Wage (PHP)', 'Monthly Salary (PHP)', 'Weekly Salary (PHP)', 'Annual Salary (PHP)'].join(','));
-
-    // Data
-    filteredIndustryData.forEach(data => {
-      csvRows.push([
-        data.position,
-        data.dailyWage.toLocaleString(),
-        calculateHourlySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 }),
-        calculateMonthlySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 }),
-        calculateWeeklySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 }),
-        calculateAnnualSalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 }),
-      ].join(','));
-    });
-
-    const csvString = csvRows.join('\n');
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'market_analysis.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
       <h2 className="text-3xl font-bold text-center mb-10 text-primary">Market Analysis</h2>
 
+      {/* Feedback Section */}
       <div className="mb-8">
-        <label className="mr-4">Start Date:</label>
-        <input
-          type="date"
-          value={startDate}
-          onChange={handleStartDateChange}
-          className="input input-bordered"
+        <h3 className="text-2xl font-semibold mb-6 text-neutral">User Feedback</h3>
+        <textarea
+          value={feedback}
+          onChange={handleFeedbackChange}
+          className="textarea textarea-bordered w-full mb-4"
+          rows="4"
+          placeholder="Share your feedback based on the market analysis"
         />
-        <label className="ml-4 mr-4">End Date:</label>
-        <input
-          type="date"
-          value={endDate}
-          onChange={handleEndDateChange}
-          className="input input-bordered"
-        />
+        <button onClick={handleFeedbackSubmit} className="btn btn-primary mb-6">
+          Submit Feedback
+        </button>
+
+        <div>
+          <h4 className="text-xl font-semibold text-neutral mb-4">Feedback from Users</h4>
+          <ul className="list-disc pl-6">
+            {feedbacks.map((item, index) => (
+              <li key={index} className="my-2">{item}</li>
+            ))}
+          </ul>
+        </div>
       </div>
 
+      {/* Market Data Tables */}
+      {/* Salary Benchmarking (Based on Daily Wage) */}
       <div className="mb-12">
         <h3 className="text-2xl font-semibold mb-6 text-neutral">Salary Benchmarking (Based on Daily Wage)</h3>
         <div className="overflow-x-auto">
           <table className="table w-full">
             <thead>
-              <tr className='bg-primary text-white'>
+              <tr className="bg-primary text-white">
                 <th className="border px-4 py-2">Job position</th>
                 <th className="border px-4 py-2">Daily Wage (PHP)</th>
                 <th className="border px-4 py-2">Hourly Wage (PHP)</th>
@@ -151,35 +108,32 @@ const MarketAnalysis = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredIndustryData.map((data, index) => (
+              {industryData.map((data, index) => (
                 <tr key={index} className="hover:bg-neutral hover:text-white">
                   <td className="border px-4 py-2">{data.position}</td>
                   <td className="border px-4 py-2">{data.dailyWage.toLocaleString()}</td>
-                  <td className="border px-4 py-2">{calculateHourlySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                  <td className="border px-4 py-2">{calculateMonthlySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                  <td className="border px-4 py-2">{calculateWeeklySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                  <td className="border px-4 py-2">{calculateAnnualSalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage / 8).toFixed(2)}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage * 24).toLocaleString()}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage * 24 / 4).toLocaleString()}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage * 24 * 12).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="mt-4">
-          <p className="font-bold">Average Daily Wage in Industry: ₱{averageIndustryWage.toFixed(2).toLocaleString()}</p>
-        </div>
-        <button onClick={downloadCSV} className="btn btn-primary mt-4">Download</button>
       </div>
 
       <div className="my-4">
         <hr className="border-t-2 border-gray-300 w-full" />
       </div>
 
+      {/* Geographic Analysis */}
       <div className="mb-12">
         <h3 className="text-2xl font-semibold mb-6 text-neutral">Geographic Analysis (Based on Daily Wage)</h3>
         <div className="overflow-x-auto">
           <table className="table w-full">
             <thead>
-              <tr className='bg-primary text-white'>
+              <tr className="bg-primary text-white">
                 <th className="border px-4 py-2">Location</th>
                 <th className="border px-4 py-2">Daily Wage (PHP)</th>
                 <th className="border px-4 py-2">Hourly Wage (PHP)</th>
@@ -189,93 +143,18 @@ const MarketAnalysis = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredGeographicData.map((data, index) => (
+              {geographicData.map((data, index) => (
                 <tr key={index} className="hover:bg-neutral hover:text-white">
                   <td className="border px-4 py-2">{data.location}</td>
                   <td className="border px-4 py-2">{data.dailyWage.toLocaleString()}</td>
-                  <td className="border px-4 py-2">{calculateHourlySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                  <td className="border px-4 py-2">{calculateMonthlySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                  <td className="border px-4 py-2">{calculateWeeklySalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                  <td className="border px-4 py-2">{calculateAnnualSalary(data.dailyWage).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage / 8).toFixed(2)}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage * 24).toLocaleString()}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage * 24 / 4).toLocaleString()}</td>
+                  <td className="border px-4 py-2">{(data.dailyWage * 24 * 12).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-        <div className="mt-4">
-          <p className="font-bold">Average Daily Wage by Location: ₱{averageGeographicWage.toFixed(2).toLocaleString()}</p>
-        </div>
-        <button onClick={downloadCSV} className="btn btn-primary mt-4">Download</button>
-
-      </div>
-
-      <div className="my-4">
-        <hr className="border-t-2 border-gray-300 w-full" />
-      </div>
-
-      <div className="mb-12">
-        <h3 className="text-2xl font-semibold mb-6 text-neutral">Incentives Comparison</h3>
-        <div className="overflow-x-auto">
-          <table className="table w-full">
-            <thead>
-              <tr className='bg-primary text-white'>
-                <th className="border px-4 py-2">Incentive Type</th>
-                <th className="border px-4 py-2">Your Company</th>
-                <th className="border px-4 py-2">Competitor</th>
-              </tr>
-            </thead>
-            <tbody>
-              {incentivesData.map((data, index) => (
-                <tr key={index} className="hover:bg-neutral hover:text-white">
-                  <td className="border px-4 py-2">{data.type}</td>
-                  <td className="border px-4 py-2">{data.yourCompany}</td>
-                  <td className="border px-4 py-2">{data.competitor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="my-4">
-        <hr className="border-t-2 border-gray-300 w-full" />
-      </div>
-
-      <div className="mb-12">
-        <h3 className="text-2xl font-semibold mb-6 text-neutral">Geographic Incentives</h3>
-        <ul className="list-disc pl-6">
-          {geographicIncentivesData.map((data, index) => (
-            <li key={index} className="my-2">{data.location}: {data.incentive}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="my-4">
-        <hr className="border-t-2 border-gray-300 w-full" />
-      </div>
-
-      <div className="mb-12">
-        <h3 className="text-2xl font-semibold mb-6 text-neutral">Turnover Rate by Job position</h3>
-        <div className="overflow-x-auto">
-          <table className="table w-full">
-            <thead>
-              <tr className='bg-primary text-white'>
-                <th className="border px-4 py-2">Job position</th>
-                <th className="border px-4 py-2">Turnover Rate (%)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {turnoverData.map((data, index) => (
-                <tr key={index} className="hover:bg-neutral hover:text-white">
-                  <td className="border px-4 py-2">{data.position}</td>
-                  <td className="border px-4 py-2">{data.turnoverRate}%</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="mt-4">
-          <p className="font-bold">Average Turnover Rate: {averageTurnoverRate.toFixed(2)}%</p>
         </div>
       </div>
     </div>

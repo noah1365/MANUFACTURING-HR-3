@@ -73,6 +73,8 @@ import SalaryRequest from './pages/employee/payroll/SalaryRequest';
 import MyPaySlip from './pages/employee/payroll/MyPaySlip';
 import MyOvertimeBonuses from './pages/employee/payroll/MyOvertimeBonuses';
 
+import SubmitFeedbacks from './pages/employee/SubmitFeedbacks';
+
 import VerifyAccount from './components/VerifyAccount';
 import ResendVerification from './components/ResendVerification';
 import SettingsPage from './components/SettingsPage';
@@ -197,6 +199,7 @@ const App = () => {
                   {user?.role === 'Employee' && (
                     <>
                       <Route path="/dashboard" element={<ProtectedRoute><EmployeeDashboard /></ProtectedRoute>} />                    
+                      <Route path="/submit-feedbacks" element={<ProtectedRoute><SubmitFeedbacks /></ProtectedRoute>} />                    
 
                       <Route path="/settings" element={<ProtectedRoute><SettingsPage/></ProtectedRoute>} />  
                       <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />  

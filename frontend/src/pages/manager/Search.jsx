@@ -58,6 +58,7 @@ const Search = ({ onToggleSidebar }) => {
     
     const employeeRoutes = [
       { path: '/dashboard', name: 'Dashboard' },
+      { path: '/submit-feedbacks', name: 'Create Feedbacks' },
       { path: '/benefits-overview', name: 'Benefits Overview' },
       { path: '/benefits-enrollment', name: 'Benefits Enrollment' },
       { path: '/my-deductions', name: 'My Deductions' },
