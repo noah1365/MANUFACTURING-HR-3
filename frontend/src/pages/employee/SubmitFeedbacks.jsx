@@ -7,17 +7,22 @@ const SubmitFeedbacks = () => {
   const [place, setPlace] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
   const [position, setPosition] = useState("");
+  const [benefitName, setBenefitName] = useState("");
   const [feedback, setFeedback] = useState("");
   const [feedbackList, setFeedbackList] = useState([]);
 
   const handleFeedbackSubmit = (e) => {
     e.preventDefault();
 
-    if(place.trim() === "" || feedback.trim() === "" ||(feedbackType === "Salary Feedback" && (hourlyRate.trim() === "" || position.trim() === ""))){
+    if (
+      place.trim() === "" ||
+      feedback.trim() === "" ||
+      (feedbackType === "Salary Feedback" && (hourlyRate.trim() === "" || position.trim() === "")) ||
+      (feedbackType === "Benefits Feedback" && benefitName.trim() === "")
+    ) {
       toast.error("Please fill in all fields!");
       return;
     }
-    
 
     const newFeedback = {
       id: Date.now(),
@@ -25,7 +30,7 @@ const SubmitFeedbacks = () => {
       place,
       feedback,
       ...(feedbackType === "Salary Feedback" && { hourlyRate, position }),
-      ...(feedbackType === "Incentives Feedback"),
+      ...(feedbackType === "Benefits Feedback" && { benefitName }),
     };
 
     setFeedbackList((prevList) => [...prevList, newFeedback]);
@@ -33,6 +38,7 @@ const SubmitFeedbacks = () => {
     setPlace("");
     setHourlyRate("");
     setPosition("");
+    setBenefitName("");
     setFeedback("");
     toast.success("Feedback submitted successfully!");
   };
@@ -51,6 +57,7 @@ const SubmitFeedbacks = () => {
           >
             <option value="Salary Feedback">Salary Feedback</option>
             <option value="Incentives Feedback">Incentives Feedback</option>
+            <option value="Benefits Feedback">Benefits Feedback</option>
           </select>
         </div>
 
@@ -97,6 +104,15 @@ const SubmitFeedbacks = () => {
             </>
           )}
 
+          {feedbackType === "Benefits Feedback" && (
+            <input
+              type="text"
+              value={benefitName}
+              onChange={(e) => setBenefitName(e.target.value)}
+              placeholder="Enter the benefit name"
+              className="input input-bordered w-full mb-4"
+            />
+          )}
 
           <button type="submit" className="btn btn-primary w-full">
             Submit Feedback
@@ -123,7 +139,9 @@ const SubmitFeedbacks = () => {
                   {feedbackItem.position && (
                     <p><strong>Position:</strong> {feedbackItem.position}</p>
                   )}
-
+                  {feedbackItem.benefitName && (
+                    <p><strong>Benefit Type:</strong> {feedbackItem.benefitName}</p>
+                  )}
                 </li>
               ))}
             </ul>
