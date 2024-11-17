@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 
 import { useEffect, useState } from "react";
 
@@ -107,18 +106,6 @@ const Profile = () => {
     try {
       if(!user || !user.password){
         toast.error('User data is not available. Please refresh and try again.');
-        return;
-      }
-
-      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
-      if(!isCurrentPasswordValid){
-        toast.error('Current password is incorrect. Please try again.');
-        return;
-      }
-
-      const isOldPassword = await bcrypt.compare(newPassword, user.password);
-      if(isOldPassword){
-        toast.error('New password cannot be the same as the current password!');
         return;
       }
 

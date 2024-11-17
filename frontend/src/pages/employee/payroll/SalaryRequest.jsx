@@ -47,22 +47,23 @@ const SalaryRequest = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if(!validateForm()){
-      return;
-    }
-
+    if (!validateForm()) return;
+  
     try {
       await requestSalary();
-      if(message){
+      const { message } = usePayrollStore.getState();
+      
+      if (message) {
         toast.success(message);
-      }else{
-        toast.error('An error occurred. Please try again.');
+      } else {
+        toast.error('An error occurred. Please try again.1');
       }
     } catch (error) {
+      console.error(error);
       toast.error('An error occurred. Please try again.');
     }
   };
-
+  
   useEffect(() => {
     document.title = "Salary Request";
   }, []);
