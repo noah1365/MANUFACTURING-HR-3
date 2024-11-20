@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCompensationStore } from '../store/compensationStore';
+import NewUsers from './public/NewUsers';
 
 const EmployeeList = () => {
   const { registerUser } = useEmployeeStore();
@@ -218,7 +219,9 @@ const generatePassword = () => {
   return (
     <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
       <ToastContainer />
+      <NewUsers/>
       <h2 className='text-3xl mb-5 text-center'>Employee List</h2>
+
             <div className="flex justify-center gap-6">
             <select
                 className="select select-bordered w-1/2"

@@ -21,7 +21,7 @@ const {fetchUsers,users} = useAuthStore();
 
   const attendanceData = [
     {
-      employeeName: 'John Lloyd',
+      employeeName: 'Borlagdatan John Lloyd',
       totalRegularHours: 176,
       totalAbsent: 2,
       totalPresent: 18,
@@ -33,7 +33,7 @@ const {fetchUsers,users} = useAuthStore();
       attendancePercentage: ((18 / 22) * 100).toFixed(2) + '%',
     },
     {
-      employeeName: 'Abby',
+      employeeName: 'Canja Abeguel',
       totalRegularHours: 176,
       totalAbsent: 0,
       totalPresent: 20,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const employeeData = {
-    name: 'John Lloyd', // Example logged-in employee
+    name: 'Borlagdatan John lloyd', 
     benefits: [
         {
             planName: 'PhilHealth',

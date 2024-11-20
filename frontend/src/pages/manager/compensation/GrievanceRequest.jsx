@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 const GrievanceRequest = () => {
   const [grievances, setGrievances] = useState([
-    { employeeName: 'John Lloyd', grievanceDescription: 'I have an issue with my salary.', status: 'Pending', adminResponse: '', compensationFile: null },
-    { employeeName: 'Oliver', grievanceDescription: 'Work conditions are not satisfactory.', status: 'Pending', adminResponse: '', compensationFile: null },
-    { employeeName: 'Abby', grievanceDescription: 'Work conditions are not satisfactory.', status: 'Pending', adminResponse: '', compensationFile: null },
+    { employeeName: 'Borlagdatan Johnlloyd', grievanceDescription: 'I have an issue with my salary.', status: 'Pending', adminResponse: '', compensationFile: null },
+    { employeeName: 'Padit Oliver', grievanceDescription: 'Work conditions are not satisfactory.', status: 'Pending', adminResponse: '', compensationFile: null },
+    { employeeName: 'Canja Abeguel', grievanceDescription: 'Work conditions are not satisfactory.', status: 'Pending', adminResponse: '', compensationFile: null },
   ]);
   
   const [selectedGrievanceIndex, setSelectedGrievanceIndex] = useState(null);

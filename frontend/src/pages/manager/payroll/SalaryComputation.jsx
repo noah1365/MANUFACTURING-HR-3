@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const SalaryComputation = () => {
-  const dailyMinimumWage = 610;
+  const dailyMinimumWage = 630;
   const [sssDeduction, setSssDeduction] = useState(300);
   const [philhealthDeduction, setPhilhealthDeduction] = useState(500);
   const [pagibigDeduction, setPagibigDeduction] = useState(0);
@@ -12,9 +12,9 @@ const SalaryComputation = () => {
   const [complianceData, setComplianceData] = useState([]);
 
   const employees = [
-    { name: 'John Lloyd', hoursWorked: 160, overtimeHours: 10, daysWorked: 20, holidaysWorked: 2, date: '2024-09-01' },
-    { name: 'Oliver', hoursWorked: 150, overtimeHours: 5, daysWorked: 18, holidaysWorked: 1, date: '2024-09-05' },
-    { name: 'Abby', hoursWorked: 170, overtimeHours: 15, daysWorked: 22, holidaysWorked: 0, date: '2024-09-10' },
+    { name: 'Borlagdatan John Lloyd', hoursWorked: 160, overtimeHours: 10, daysWorked: 20, holidaysWorked: 2, date: '2024-09-01' },
+    { name: 'Padit Oliver', hoursWorked: 150, overtimeHours: 5, daysWorked: 18, holidaysWorked: 1, date: '2024-09-05' },
+    { name: 'Canja Abueguel', hoursWorked: 170, overtimeHours: 15, daysWorked: 22, holidaysWorked: 0, date: '2024-09-10' },
   ];
 
   const calculateTotalSalary = (baseSalary, overtimeHours, holidaysWorked) => {

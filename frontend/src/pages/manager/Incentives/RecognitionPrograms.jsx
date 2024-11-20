@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 const initialPrograms = [
-  { name: 'John Lloyd', description: 'Award for the most outstanding employee of the month', reward: '₱5000' },
-  { name: 'Padit', description: 'Award for the team with the best performance', reward: '₱10000' },
-  { name: 'Abby', description: 'Award for the employee with the best innovation', reward: '₱3000' },
+  { name: 'Borlagdatan John Lloyd', description: 'Award for the most outstanding employee of the month', reward: '₱5000' },
+  { name: 'Padit Oliver', description: 'Award for the team with the best performance', reward: '₱10000' },
+  { name: 'Canja Abeguel', description: 'Award for the employee with the best innovation', reward: '₱3000' },
 ];
 
 const RecognitionPrograms = () => {

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 const MarketAnalysis = () => {
   const industryData = [
-    { position: 'CEO', dailyWage: 1500 },
-    { position: 'Secretary', dailyWage: 500 },
-    { position: 'Production Head', dailyWage: 750 },
-    { position: 'Resellers Sales Head', dailyWage: 800 },
-    { position: 'Reseller', dailyWage: 450 },
-    { position: 'Manager', dailyWage: 650 },
+    { position: 'CEO', dailyWage: 640 },
+    { position: 'Secretary', dailyWage: 640 },
+    { position: 'Production Head', dailyWage: 640 },
+    { position: 'Resellers Sales Head', dailyWage: 630 },
+    { position: 'Reseller', dailyWage: 610 },
+    { position: 'Manager', dailyWage: 630 },
   ];
 
   const geographicData = [

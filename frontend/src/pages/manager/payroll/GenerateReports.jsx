@@ -20,9 +20,9 @@ const GenerateReports = () => {
     setTimeout(() => {
       // Sample report data for different report types
       const sampleReportData = [
-        { employeeName: 'John Lloyd', salary: 30000, paymentMethod: 'Cash', status: 'Approved', date: new Date().toLocaleDateString() },
-        { employeeName: 'Oliver', salary: 32000, paymentMethod: 'GCash', status: 'Approved', date: new Date().toLocaleDateString() },
-        { employeeName: 'Abby', salary: 32000, paymentMethod: 'GCash', status: 'Approved', date: new Date().toLocaleDateString() },
+        { employeeName: 'Borlagdatan John Lloyd', salary: 30000, paymentMethod: 'Cash', status: 'Approved', date: new Date().toLocaleDateString() },
+        { employeeName: 'Padit Oliver', salary: 32000, paymentMethod: 'GCash', status: 'Approved', date: new Date().toLocaleDateString() },
+        { employeeName: 'Canja Abeguel', salary: 32000, paymentMethod: 'GCash', status: 'Approved', date: new Date().toLocaleDateString() },
       ];
 
       // Filter for custom date range

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,Legend,ResponsiveContainer,BarChart,Bar,} from 'recharts';
 
 const PredictiveAnalytics = () => {
@@ -153,8 +153,109 @@ const handlePrint = () => {
 useEffect(() => {
   document.title = 'Predictive Analytics';
 }, []); 
+
+const [holidayData, setHolidayData] = useState({
+  date: '',
+  description: '',
+});
+
+const [holidays, setHolidays] = useState([]); // State to store the list of added holidays
+
+const handleHolidayChange = (e) => {
+  const { name, value } = e.target;
+  setHolidayData({
+    ...holidayData,
+    [name]: value,
+  });
+};
+
+const addHoliday = () => {
+  const { date, description } = holidayData;
+  if (date && description) {
+    // Add the new holiday to the holidays state
+    setHolidays([...holidays, { date, description }]);
+    setHolidayData({ date: '', description: '' }); // Clear the input fields
+    alert('Holiday added successfully!');
+  } else {
+    alert('Please enter holiday details');
+  }
+};
+
+
   return (
     <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
+  <div className="p-4 bg-white rounded-lg shadow-md mb-6">
+        <h3 className="text-2xl font-semibold mb-4 text-neutral">Add Holiday</h3>
+        <div className="flex flex-col space-y-4">
+          {/* Date Input with Minimum Date as Today */}
+          <input
+            type="date"
+            name="date"
+            value={holidayData.date}
+            onChange={handleHolidayChange}
+            className="input input-bordered w-full"
+            placeholder="Holiday Date"
+            min={new Date().toISOString().split("T")[0]}  // Ensures today's date is the minimum
+          />
+
+          {/* Description Input */}
+          <input
+            type="text"
+            name="description"
+            value={holidayData.description}
+            onChange={handleHolidayChange}
+            className="input input-bordered w-full"
+            placeholder="Holiday Description"
+          />
+          
+          <button className="btn btn-primary mt-4" onClick={addHoliday}>
+            Add Holiday
+          </button>
+        </div>
+      </div>
+
+      {/* Display Holidays Section */}
+      <div className="p-4 bg-white rounded-lg shadow-md mb-6">
+        <h3 className="text-2xl font-semibold mb-4 text-neutral">Added Holidays</h3>
+        <table className="table w-full">
+          <thead>
+            <tr className="bg-primary text-white">
+              <th className="border px-4 py-2">Holiday Date</th>
+              <th className="border px-4 py-2">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {holidays.map((holiday, index) => (
+              <tr key={index} className="hover:bg-neutral hover:text-white">
+                <td className="border px-4 py-2">{holiday.date}</td>
+                <td className="border px-4 py-2">{holiday.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Display Holidays */}
+      <div className="p-4 bg-white rounded-lg shadow-md mb-6">
+        <h3 className="text-2xl font-semibold mb-4 text-neutral">Added Holidays</h3>
+        <table className="table w-full">
+          <thead>
+            <tr className="bg-primary text-white">
+              <th className="border px-4 py-2">Holiday Date</th>
+              <th className="border px-4 py-2">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {holidays.map((holiday, index) => (
+              <tr key={index} className="hover:bg-neutral hover:text-white">
+                <td className="border px-4 py-2">{holiday.date}</td>
+                <td className="border px-4 py-2">{holiday.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
 <div className="flex flex-col md:flex-row justify-between gap-4">
   <div className="rounded-lg bg-white p-3 flex-1">
     <h3 className="font-semibold text-lg">Predicted Salary Growth</h3>

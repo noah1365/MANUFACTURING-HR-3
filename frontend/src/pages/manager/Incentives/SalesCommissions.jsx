@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 const SalesCommissions = () => {
   const [commissions, setCommissions] = useState([
-    { employeeName: 'John Lloyd', salesAmount: 10000, commissionRate: 0.05, commissionEarned: 500, date: '2024-09-01' },
-    { employeeName: 'Oliver', salesAmount: 15000, commissionRate: 0.04, commissionEarned: 600, date: '2024-09-05' },
-    { employeeName: 'Abby', salesAmount: 20000, commissionRate: 0.03, commissionEarned: 600, date: '2024-09-10' },
+    { employeeName: 'Borlagdatan John Lloyd', salesAmount: 10000, commissionRate: 0.05, commissionEarned: 500, date: '2024-09-01' },
+    { employeeName: 'Padit Oliver', salesAmount: 15000, commissionRate: 0.04, commissionEarned: 600, date: '2024-09-05' },
+    { employeeName: 'Canja Abeguel', salesAmount: 20000, commissionRate: 0.03, commissionEarned: 600, date: '2024-09-10' },
   ]);
 
   const [newCommission, setNewCommission] = useState({

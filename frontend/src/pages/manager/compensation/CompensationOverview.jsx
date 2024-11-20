@@ -14,6 +14,19 @@ const CompensationOverview = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         
+                {/* Market Analysis Card */}
+                <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title">Market Analysis</h2>
+            <p>
+              Compare salaries against market benchmarks to ensure competitive compensation packages.
+            </p>
+            <Link to="/market-analysis" className="btn btn-primary">
+              <button>Perform Market Analysis</button>
+            </Link>
+          </div>
+        </div>
+        
         {/* Salary Planning Card */}
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
@@ -36,19 +49,6 @@ const CompensationOverview = () => {
             </p>
             <Link to="/salary-structure" className="btn btn-primary">
               <button>View Salary Structure</button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Market Analysis Card */}
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Market Analysis</h2>
-            <p>
-              Compare salaries against market benchmarks to ensure competitive compensation packages.
-            </p>
-            <Link to="/market-analysis" className="btn btn-primary">
-              <button>Perform Market Analysis</button>
             </Link>
           </div>
         </div>

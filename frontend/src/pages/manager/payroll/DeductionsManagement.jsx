@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 const employees = [
-  { id: 1, firstName: 'John Lloyd', lastName: 'Borla' },
-  { id: 2, firstName: 'Oliver', lastName: 'Padit' },
-  { id: 3, firstName: 'Abby', lastName: 'Lumod' },
+  { id: 1, firstName: 'Borlagdatan John Lloyd', lastName: 'Borla' },
+  { id: 2, firstName: 'Padit Oliver', lastName: 'Padit' },
+  { id: 3, firstName: 'Canja Abeguel', lastName: 'Lumod' },
 ];
 
 const deductionTypes = ['SSS', 'PhilHealth', 'Pag-IBIG'];
