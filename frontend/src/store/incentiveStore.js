@@ -92,5 +92,23 @@ export const useIncentiveStore = create((set) => ({
         }
     },
     
-    
+    requestIncentive: async (newRequest) => {
+        try {
+            const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+            const csrfToken = csrfResponse.data.csrfToken;
+
+            const response = await axios.post(`${API_URL}/request-incentive`, newRequest,
+                { headers:{ 'X-CSRF-Token': csrfToken}});
+            set({
+                incentive: response.data.incentive || null,
+                error: null,
+            });
+            return true;
+        } catch (error) {
+            set({
+                error: error.response?.data.message || "Error in creating incentive"
+            });
+            return false;
+        }
+    },
 }));

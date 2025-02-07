@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 import { Incentive } from "../model/incentives/incentiveModel.js";
+import { RequestIncentive } from "../model/incentives/requestIncentiveModel.js";
 
 /* incentives overview crud */
 export const createIncentive = async (req,res) => {
@@ -91,5 +92,34 @@ export const deleteIncentive = async (req, res) => {
     } catch (error) {
         console.error("Error deleting incentive:",error);
         res.status(500).json({success:false, message:"Server error"});
+    }
+};
+
+
+export const requestIncentive = async (req, res) => {
+    try {
+        const { incentiveType, comments } = req.body;
+
+        if (!incentiveType || !comments) {
+            return res.status(400).json({ success: false, message: "Select type and provide comments" });
+        }
+
+        const isRequestIncentiveExist = await RequestIncentive.findOne({ incentiveType });
+
+        if (isRequestIncentiveExist) {
+            return res.status(400).json({ success: false, message: "Incentive request already exists" });
+        }
+
+        const newRequest = await RequestIncentive.create({ incentiveType, comments });
+
+        return res.status(201).json({
+            success: true,
+            message: "Incentive request submitted successfully",
+            data: newRequest,
+        });
+
+    } catch (error) {
+        console.error("Error in requestIncentive:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
