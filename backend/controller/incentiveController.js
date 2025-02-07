@@ -99,6 +99,9 @@ export const deleteIncentive = async (req, res) => {
 export const requestIncentive = async (req, res) => {
     try {
         const { incentiveType, comments } = req.body;
+        if(!req.user || !req.user._id){
+            return res.status(401).json({message:'User not authenticated.'});
+        }
 
         if (!incentiveType || !comments) {
             return res.status(400).json({ success: false, message: "Select type and provide comments" });
@@ -110,7 +113,11 @@ export const requestIncentive = async (req, res) => {
             return res.status(400).json({ success: false, message: "Incentive request already exists" });
         }
 
-        const newRequest = await RequestIncentive.create({ incentiveType, comments });
+        const newRequest = await RequestIncentive.create({ 
+            employeeId: req.user._id,
+            incentiveType,
+             comments
+             });
 
         return res.status(201).json({
             success: true,

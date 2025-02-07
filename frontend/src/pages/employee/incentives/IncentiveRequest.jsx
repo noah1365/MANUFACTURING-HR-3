@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useIncentiveStore } from '../../../store/incentiveStore';
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer
+import 'react-toastify/dist/ReactToastify.css';
 
 const IncentiveRequest = () => {
     const [incentiveType, setIncentiveType] = useState('');
@@ -23,17 +25,20 @@ const IncentiveRequest = () => {
         const success = await requestIncentive({ incentiveType, comments });
 
         if (success) {
-            setStatus('Incentive request submitted successfully!');
+            /* setStatus('Incentive request submitted successfully!'); */
+            toast.success('Incentive request submitted successfully!');
             setIncentiveType('');
             setComments('');
         } else {
-            setStatus(error || 'Failed to submit incentive request.');
+            toast.error("Failed to submit incentive request!")
+            /* setStatus(error || 'Failed to submit incentive request.'); */
         }
     };
 
     return (
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Request Incentive</h2>
+              <ToastContainer />
+            <h2 className="text-xl font-bold mt-10 mb-4">Request Incentive</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="incentiveType" className="block text-sm font-medium text-gray-700">
