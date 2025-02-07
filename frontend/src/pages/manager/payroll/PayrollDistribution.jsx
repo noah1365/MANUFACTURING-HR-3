@@ -33,6 +33,7 @@ const socket = io(socketURL, { withCredentials: true });
     };
   }, []); // add socket for real-time
 
+    
   const handleReviewRequest = (requestId, action) => {
     reviewRequest(requestId, action);
     if (action === 'approve') {
@@ -52,6 +53,12 @@ const socket = io(socketURL, { withCredentials: true });
   const approvedRequests = salaryRequests.filter(request => request.status === 'Approved');
   const deniedRequests = salaryRequests.filter(request => request.status === 'Rejected');
 
+  useEffect(() => {
+    console.log("Salary Requests:", salaryRequests);
+  }, [salaryRequests]);
+  console.log("Approved Requests:", approvedRequests);
+  console.log("Denied Requests:", deniedRequests);
+
   const renderRequests = (requests) => (
     <table className="table w-full border border-base-300 mb-4">
       <thead>
@@ -67,7 +74,9 @@ const socket = io(socketURL, { withCredentials: true });
         {requests.length > 0 ? (
           requests.map((request) => (
             <tr key={request._id} className="hover:bg-neutral hover:text-white">
-              <td className="border px-4 py-2">{`${request.employeeId.firstName} ${request.employeeId.lastName}`}</td>
+<td className="border px-4 py-2">
+  {request.employeeId ? `${request.employeeId.firstName} ${request.employeeId.lastName}` : 'Unknown Employee'}
+</td>
               <td className="border px-4 py-2">
                 ₱{typeof request.requestedAmount === 'number' ? request.requestedAmount.toFixed(2) : 'N/A'}
               </td>

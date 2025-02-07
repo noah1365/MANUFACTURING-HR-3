@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const benefitEnrollmentSchema = new mongoose.Schema({
+const benefitsApprovedSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -17,4 +17,4 @@ const benefitEnrollmentSchema = new mongoose.Schema({
     },
 });
 
-export const BenefitEnrollmentApproved = mongoose.model("ApprovedBenefitEnrollment", benefitEnrollmentSchema);
+export const AppliedBenefitsApproved = mongoose.model("AppliedBenefitsApprooved", benefitsApprovedSchema);

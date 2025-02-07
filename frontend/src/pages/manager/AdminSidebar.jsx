@@ -9,7 +9,7 @@ import { GiHealthNormal } from 'react-icons/gi';
 import jjmLogo from '../../assets/jjmlogo.jpg';
 import { useAuthStore } from '../../store/authStore';
 
-const ManagerSidebar = () => {
+const AdminSidebar = () => {
   const [activeLink, setActiveLink] = useState(null);
   const { isAuthenticated } = useAuthStore();
 
@@ -35,8 +35,8 @@ const ManagerSidebar = () => {
         </div>
 
         <DashboardLink icon={<MdDashboard />} text="Dashboard" to="/" isActive={activeLink === 'dashboard'} onClick={() => handleLinkClick('dashboard')} />
-        <DashboardLink icon={<MdPersonAdd />} text="Employee List" to="/employee-list" isActive={activeLink === 'employee'} onClick={() => handleLinkClick('employee')} />
-        <DashboardLink icon={<GiHealthNormal />} text="Benefits Administration" to="/benefits-administration" isActive={activeLink === 'benefits'} onClick={() => handleLinkClick('benefits')} />
+{/*         <DashboardLink icon={<MdPersonAdd />} text="Employee List" to="/employee-list" isActive={activeLink === 'employee'} onClick={() => handleLinkClick('employee')} />
+ */}        <DashboardLink icon={<GiHealthNormal />} text="Benefits Management" to="/benefits-management" isActive={activeLink === 'benefits'} onClick={() => handleLinkClick('benefits')} />
         <DashboardLink icon={<FaStar />} text="Incentives Management" to="/incentives-management" isActive={activeLink === 'incentives'} onClick={() => handleLinkClick('incentives')} />
         <DashboardLink icon={<FaMoneyBillWave />} text="Compensation Planning" to="/compensation-overview" isActive={activeLink === 'compensation'} onClick={() => handleLinkClick('compensation')} />
         <DashboardLink icon={<TbCurrencyPeso />} text="Payroll Processing" to="/payroll-management" isActive={activeLink === 'payroll'} onClick={() => handleLinkClick('payroll')} />
@@ -57,4 +57,4 @@ const DashboardLink = ({ icon, text, to, isActive, onClick }) => (
   </Link>
 );
 
-export default ManagerSidebar;
+export default AdminSidebar;

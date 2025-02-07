@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const BenefitsEnrollment = () => {
+const ApplyBenefits = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     lastName: '',
@@ -84,154 +84,10 @@ const BenefitsEnrollment = () => {
 
   return (
     <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
-      <h1 className="text-3xl text-center font-bold mb-4">Benefits Enrollment</h1>
+      <h1 className="text-3xl text-center font-bold mb-4">Apply a Benefits</h1>
 
       <form onSubmit={handleSubmit}>
-        <h2 className="text-1xl font-bold mb-4 mt-6">Employee Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-          <div className="form-control">
-            <label className="label" htmlFor="last-name">Last Name</label>
-            <input 
-              type="text" 
-              id="last-name" 
-              name="lastName" 
-              value={formData.lastName} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-          <div className="form-control">
-            <label className="label" htmlFor="first-name">First Name</label>
-            <input 
-              type="text" 
-              id="first-name" 
-              name="firstName" 
-              value={formData.firstName} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-          <div className="form-control">
-            <label className="label" htmlFor="middle-name">Middle Name</label>
-            <input 
-              type="text" 
-              id="middle-name" 
-              name="middleName" 
-              value={formData.middleName} 
-              onChange={handleChange}
-              className="input input-bordered" 
-            />
-          </div>
-        </div>
-
-        <div className='flex gap-6'>
-          <div className="form-control w-1/2">
-            <label className="label" htmlFor="date-of-birth">Date of Birth</label>
-            <input 
-              type="date" 
-              id="date-of-birth" 
-              name="dateOfBirth" 
-              value={formData.dateOfBirth} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-          <div className="form-control w-1/2">
-            <label className="label">Gender</label>
-            <select 
-              name="gender" 
-              className="select select-bordered w-full" 
-              required 
-              value={formData.gender}
-              onChange={handleChange}
-            >
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-        </div>
-
-        <h2 className="text-1xl font-bold mb-4 mt-6">Address</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="form-control">
-            <label className="label" htmlFor="street">Street</label>
-            <input 
-              type="text" 
-              id="street" 
-              name="address.street" 
-              value={formData.address.street} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-          <div className="form-control">
-            <label className="label" htmlFor="municipality">Municipality</label>
-            <input 
-              type="text" 
-              id="municipality" 
-              name="address.municipality" 
-              value={formData.address.municipality} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-          <div className="form-control">
-            <label className="label" htmlFor="province">Province</label>
-            <input 
-              type="text" 
-              id="province" 
-              name="address.province" 
-              value={formData.address.province} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-          <div className="form-control">
-            <label className="label" htmlFor="postal-code">Postal Code</label>
-            <input 
-              type="text" 
-              id="postal-code" 
-              name="address.postalCode" 
-              value={formData.address.postalCode} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="form-control">
-            <label className="label" htmlFor="phone-number">Phone Number</label>
-            <input 
-              type="tel" 
-              id="phone-number" 
-              name="phoneNumber" 
-              value={formData.phoneNumber} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
-          <div className="form-control">
-            <label className="label" htmlFor="email">Email Address</label>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              value={formData.email} 
-              onChange={handleChange}
-              className="input input-bordered" 
-              required 
-            />
-          </div>
         </div>
 
         <h2 className="text-1xl font-bold mb-4 mt-6">Benefits</h2>
@@ -249,22 +105,6 @@ const BenefitsEnrollment = () => {
               <option value="">Select a benefit</option>
               {benefitOptions.map((benefit) => (
                 <option key={benefit.id} value={benefit.id}>{benefit.label}</option>
-              ))}
-            </select>
-          </div>
-          <div className="form-control">
-            <label className="label" htmlFor="coverage-type">Select Beneficiary</label>
-            <select 
-              id="coverage-type" 
-              name="coverageType" 
-              value={formData.coverageType} 
-              onChange={handleChange}
-              className="select select-bordered w-full" 
-              required
-            >
-              <option value="">Select an option</option>
-              {coverageOptions.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
               ))}
             </select>
           </div>
@@ -374,4 +214,4 @@ const BenefitsEnrollment = () => {
   );
 };
 
-export default BenefitsEnrollment;
+export default ApplyBenefits;

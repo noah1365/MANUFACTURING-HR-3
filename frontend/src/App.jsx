@@ -15,9 +15,8 @@ import RedirectAuthenticatedUser from './components/RedirectAuthenticatedUser';
 
 /* manager */
 
-import ManagerDashboard from './pages/manager/ManagerDashboard';
 import EmployeeDashboard from './pages/employee/EmployeeDashboard';
-import ManagerSidebar from './pages/manager/ManagerSidebar';
+import AdminSidebar from './pages/manager/AdminSidebar';
 import EmployeeSidebar from './pages/employee/EmployeeSidebar';
 import Search from './pages/manager/Search';
 
@@ -38,7 +37,7 @@ import MarketAnalysis from './pages/manager/compensation/MarketAnalysis';
 import GrievanceRequest from './pages/manager/compensation/GrievanceRequest';
 
 /* benefits administration */
-import BenefitsAdministration from './pages/manager/benefits/BenefitsAdministration';
+import BenefitsManagement from './pages/manager/benefits/BenefitsManagement';
 import BenefitsRequested from './pages/manager/benefits/BenefitsRequested';
 import Deductions from './pages/manager/benefits/Deductions';
 
@@ -49,17 +48,13 @@ import SalesCommissions from './pages/manager/incentives/SalesCommissions';
 import PerformanceMetrics from './pages/manager/incentives/PerformanceMetrics';
 import RecognitionPrograms from './pages/manager/incentives/RecognitionPrograms';
 
-/* predictive analysis */
-import PredictiveAnalytics from './pages/manager/predictive/PredictiveAnalytics';
-import BehavioralAnalytics from './pages/manager/predictive/BehaviouralAnalytics';
-
 /* employee */
 import EmployeeList from './pages/EmployeeList';
 
 import Profile from './pages/employee/Profile';
 
 import EBenefitsOverview from './pages/employee/benefits/EBenefitsOverview';
-import BenefitsEnrollment from "./pages/employee/benefitsManagement/BenefitsEnrollment";
+import ApplyBenefits from "./pages/employee/benefitsManagement/ApplyBenefits";
 import MyDeductions from './pages/employee/benefitsManagement/MyDeductions';
 
 import EIncentivesOverview from './pages/employee/incentives/EIncentivesOverview';
@@ -80,6 +75,9 @@ import ResendVerification from './components/ResendVerification';
 import SettingsPage from './components/SettingsPage';
 import Security from './components/Security';
 import ForgotPassword from './components/ForgotPassword';
+import AdminDashboard from './pages/manager/AdminDashboard';
+import BehaviouralAnalytics from './pages/manager/analytics/BehaviouralAnalytics';
+import PredictiveAnalytics from './pages/manager/analytics/PredictiveAnalytics';
 
 const App = () => {
   const { checkAuth, isAuthenticated, user } = useAuthStore();
@@ -143,7 +141,7 @@ const App = () => {
         {isAuthenticated ? (
           <>
             {/* Responsive Sidebar */}
-            {isSidebarVisible && (user?.role === 'Manager' ? <ManagerSidebar /> : <EmployeeSidebar />)}            
+            {isSidebarVisible && (user?.role === 'Manager' ? <AdminSidebar /> : <EmployeeSidebar />)}            
             <main className="flex-1 p-4 flex flex-col">
             <Search onToggleSidebar={handleToggleSidebar} />
               <div className="flex-1 max-h-screen md:max-h-auto overflow-y-auto">
@@ -154,13 +152,13 @@ const App = () => {
                   {user?.role === 'Manager' && (
                     <>
                     
-                      <Route path="/dashboard" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />
+{/*                   <Route path="/dashboard" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />*/}                      <Route path="/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
                       <Route path="/settings" element={<ProtectedRoute><SettingsPage/></ProtectedRoute>} />  
                       <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />  
                       <Route path="/security" element={<ProtectedRoute><Security/></ProtectedRoute>} />  
                       
-                      <Route path="/employee-list" element={<ProtectedRoute><EmployeeList /></ProtectedRoute>} />                    
-
+  {/*                       <Route path="/employee-list" element={<ProtectedRoute><EmployeeList /></ProtectedRoute>} />                    
+ */}
                       {/* Payroll Processing */}
                       <Route path="/payroll-management" element={<ProtectedRoute><PayrollProcessing /></ProtectedRoute>} />
                       <Route path="/salary-computation" element={<ProtectedRoute><SalaryComputation /></ProtectedRoute>} />
@@ -179,7 +177,7 @@ const App = () => {
                       
 
                       {/* Benefits Administration */}
-                      <Route path="/benefits-administration" element={<ProtectedRoute><BenefitsAdministration/></ProtectedRoute>} />
+                      <Route path="/benefits-management" element={<ProtectedRoute><BenefitsManagement/></ProtectedRoute>} />
                       <Route path="/benefits-requested" element={<ProtectedRoute><BenefitsRequested /></ProtectedRoute>} />
                       <Route path="/deductions" element={<ProtectedRoute><Deductions /></ProtectedRoute>} />
                       
@@ -191,8 +189,8 @@ const App = () => {
                       <Route path="/recognition-programs" element={<ProtectedRoute><RecognitionPrograms /></ProtectedRoute>} />
 
                       {/* Analytics */}
+                      <Route path="/behavioral-analytics" element={<ProtectedRoute>< BehaviouralAnalytics/></ProtectedRoute>} />
                       <Route path="/predictive-analytics" element={<ProtectedRoute><PredictiveAnalytics /></ProtectedRoute>} />
-                      <Route path="/behavioral-analytics" element={<ProtectedRoute><BehavioralAnalytics /></ProtectedRoute>} />
                     </>
                   )}
                   
@@ -206,7 +204,7 @@ const App = () => {
                       <Route path="/security" element={<ProtectedRoute><Security/></ProtectedRoute>} />  
                       
                       <Route path="/benefits-overview" element={<ProtectedRoute><EBenefitsOverview /></ProtectedRoute>} />                    
-                      <Route path='/benefits-enrollment' element={<ProtectedRoute><BenefitsEnrollment/></ProtectedRoute>}/>
+                      <Route path='/apply-benefits' element={<ProtectedRoute><ApplyBenefits/></ProtectedRoute>}/>
                       <Route path='/my-deductions' element={<ProtectedRoute><MyDeductions/></ProtectedRoute>}/>
 
                       <Route path='/my-salary-info' element={<ProtectedRoute><MySalaryInfo/></ProtectedRoute>}/>

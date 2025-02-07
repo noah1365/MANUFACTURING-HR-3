@@ -214,23 +214,23 @@ const Profile = () => {
             <p className="text-sm text-gray-500">Email</p>
             <p className="text-lg text-gray-700 font-medium">{user?.email || "N/A"}</p>
           </div>
-          <div>
+         {/*  <div>
             <p className="text-sm text-gray-500">Phone Number</p>
             <p className="text-lg text-gray-700 font-medium">{user?.phoneNumber || "N/A"}</p>
-          </div>
-          <div>
+          </div> */}
+       {/*    <div>
             <p className="text-sm text-gray-500">Gender</p>
             <p className="text-lg text-gray-700 font-medium">{user?.gender || "N/A"}</p>
-          </div>
-          <div>
+          </div> */}
+         {/*  <div>
             <p className="text-sm text-gray-500">Birthday</p>
             <p className="text-lg text-gray-700 font-medium">{formatDate(user?.bDate) || "N/A"}</p>
-          </div>
+          </div> */}
         </div>
       </div>
       <hr className="border-t border-gray-300 my-6 w-full mx-auto" />
 
-      <div className="mt-8">
+{/*       <div className="mt-8">
         <h3 className="text-xl font-medium text-gray-700 mb-4">Address</h3>
         <div className="grid grid-cols-2 gap-6">
           <div>
@@ -250,7 +250,7 @@ const Profile = () => {
             <p className="text-lg text-gray-700 font-medium">{user?.address?.street || "N/A"}</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <hr className="border-t border-gray-300 my-6 w-full mx-auto" />
       <h3 className="text-lg font-semibold mb-4">Security</h3>

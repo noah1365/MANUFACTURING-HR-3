@@ -5,7 +5,7 @@ import { useBenefitStore } from '../../../store/benefitStore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const BenefitsAdministration = () => {
+const BenefitsManagement = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [benefitsName, setBenefitsName] = useState("");
   const [benefitsDescription, setBenefitsDescription] = useState("");
@@ -226,10 +226,10 @@ const handleCreateBenefits = async (e) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title">Benefit Enrollment requests</h2>
-            <p>Manage benefits enrollment requests here.</p>
+            <h2 className="card-title">Benefit Applied requests</h2>
+            <p>Manage benefits Applied requests here.</p>
             <Link to="/benefits-requested" className="btn btn-primary">
-              <button>View Enrollment Requests</button>
+              <button>View Applied Requests</button>
             </Link>
           </div>
         </div>
@@ -248,4 +248,4 @@ const handleCreateBenefits = async (e) => {
   );
 };
 
-export default BenefitsAdministration;
+export default BenefitsManagement;

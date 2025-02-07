@@ -60,7 +60,7 @@ const Search = ({ onToggleSidebar }) => {
       { path: '/dashboard', name: 'Dashboard' },
       { path: '/submit-feedbacks', name: 'Create Feedbacks' },
       { path: '/benefits-overview', name: 'Benefits Overview' },
-      { path: '/benefits-enrollment', name: 'Benefits Enrollment' },
+      { path: '/apply-benefits', name: 'Apply Benefits ' },
       { path: '/my-deductions', name: 'My Deductions' },
       { path: '/incentives-overview', name: 'Incentives Overview' },
       { path: '/my-commissions', name: 'My Commissions' },

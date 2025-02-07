@@ -1,5 +1,4 @@
 import { Benefit } from "../model/benefit/benefitModel.js";
-import { BenefitEnrollmentRequest } from "../model/benefit/benefitEnrollmentRequestModel.js";
 
 import mongoose from "mongoose";
 
@@ -97,81 +96,4 @@ export const deleteBenefit = async (req, res) => {
     }
 };
 
-/* benefit enrollment */
-export const enrollBenefit = async (req,res) => {
-    
-    const {benefitNames} = req.body; 
-    const userId = req.user._id;
 
-    try {
-        if(!Array.isArray(benefitNames) ||benefitNames.length === 0){
-            return res.status(400).json({status:false,message:"At least one Benefit name is required."});
-        }
-
-        const benefits = await Benefit.find({benefitsName:{$in:benefitNames}});
-
-        if(benefits.length === 0){
-            return res.status(404).json({status:false,message:"No valid benefits found."});
-        }
-
-        const benefitIds = benefits.map(benefit => benefit._id);
-
-        const existingRequest = await BenefitEnrollmentRequest.findOne({userId,benefitIds:{$in:benefitIds}});
-        if(existingRequest){
-            return res.status(400).json({status:false,message:"User has already requested these benefits."});
-        }
-
-        const newRequest = new BenefitEnrollmentRequest({
-            userId,
-            benefitIds,
-            userDetails: {
-                lastName: user.lastName,
-                firstName: user.firstName,
-                middleName: user.middleName,
-                email: user.email,
-                phoneNumber: user.phoneNumber,
-                address: user.address,
-                gender: user.gender,
-                bDate: user.bDate
-            }
-        });
-        await newRequest.save();
-
-        return res.status(201).json({status:true,message:"Benefits request submitted successfully!",request:newRequest});
-    } catch (error){
-        console.error("Error enrolling in benefits:",error);
-        return res.status(500).json({status: false, message:"Server error"});
-    }
-};
-
-
-export const getBenefitsEnrolled = async(req,res) => {
-    const userId = req.user._id; 
-
-    try {
-        const enrollment = await BenefitEnrollmentRequest.findOne({userId})
-            .populate('benefitIds','benefitsName benefitsDescription') 
-            .exec();
-
-        if(!enrollment){
-            return res.status(404).json({status:false,message:"No enrolled benefits found for this user."});
-        }
-
-        const response = {
-            status:true,
-            message:"Enrolled benefits retrieved successfully.",
-            enrollment: {
-                _id:enrollment._id,
-                userId:enrollment.userId,
-                benefits:enrollment.benefitIds,
-                status:enrollment.status,
-                enrollmentDate:enrollment.enrollmentDate,
-            },
-        };
-
-        return res.status(200).json(response);
-    } catch (error) {
-        console.error("Error retrieving enrolled benefits:",error);
-        return res.status(500).json({status:false,message:"Server error"});
-    }
-};

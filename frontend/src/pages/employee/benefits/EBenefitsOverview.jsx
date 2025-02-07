@@ -46,10 +46,10 @@ const EBenefitsOverview = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title">Enroll Benefit</h2>
+            <h2 className="card-title">Apply Benefit</h2>
             <p>Submit and manage your benefits enrollment requests</p>
-            <Link to="/benefits-enrollment" className="btn btn-primary">
-              <button>Enroll benefit</button>
+            <Link to="/apply-benefits" className="btn btn-primary">
+              <button>Apply benefit</button>
             </Link>
           </div>
         </div>

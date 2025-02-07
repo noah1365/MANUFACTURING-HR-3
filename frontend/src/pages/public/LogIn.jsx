@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Lock, User } from "lucide-react";
+import InputComponents from "../../components/InputComponents";
 import jjmLogo from '../../assets/jjmlogo.jpg';
 
 const LogIn = () => {
@@ -66,10 +67,14 @@ const LogIn = () => {
         </div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <form className="card-body" onSubmit={handleLogin}>
+          <h1 className="text-2xl text-center font-extrabold text-gray-900">
+                LOGIN
+              </h1>
             <div className="form-control">
               <label className="label">
               </label>
-              <input
+              <InputComponents
+                icon={User}
                 type="email"
                 placeholder="Enter your email"
                 className="input input-bordered w-full"
@@ -79,7 +84,8 @@ const LogIn = () => {
               />
             </div>
             <div className="relative">
-                <input
+                <InputComponents
+                icon={Lock}
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   className="input input-bordered w-full"
