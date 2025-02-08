@@ -143,3 +143,14 @@ export const getMyRequestIncentives = async (req,res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 }
+
+export const getAllRequestIncentives= async (req,res) => {
+    try {
+        const allRequestIncentive = await RequestIncentive.find({})
+        .populate('employeeId','firstName lastName');
+        res.status(200).json({status:true,requestIncentive:allRequestIncentive})
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({success:false,message:"Server error"});
+    }
+};

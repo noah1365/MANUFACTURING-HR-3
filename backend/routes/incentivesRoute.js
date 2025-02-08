@@ -4,7 +4,7 @@ import express from "express";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { checkRole } from "../middleware/roleMiddleware.js";
 
-import { createIncentive, deleteIncentive, getIncentive, getMyRequestIncentives, requestIncentive, updateIncentive } from "../controller/incentiveController.js";
+import { createIncentive, deleteIncentive, getAllRequestIncentives, getIncentive, getMyRequestIncentives, requestIncentive, updateIncentive } from "../controller/incentiveController.js";
 
 const incentiveRoute = express.Router();
 
@@ -22,6 +22,7 @@ incentiveRoute.delete("/delete-incentives/:id",verifyToken,checkRole('Manager'),
 
 incentiveRoute.post("/request-incentive",verifyToken,requestIncentive);
 incentiveRoute.get("/my-request-incentives",verifyToken,getMyRequestIncentives);
+incentiveRoute.get("/get-all-request-incentives",verifyToken,getAllRequestIncentives);
 
 export default incentiveRoute;
 

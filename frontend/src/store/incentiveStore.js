@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true;
 export const useIncentiveStore = create((set) => ({
     incentive: null,
     error: null,
+    incentives:[],
 
     createIncentive: async (incentive) => {
         try {
@@ -126,4 +127,21 @@ export const useIncentiveStore = create((set) => ({
             });
         }
     },
+
+    fetchAllRequestIncentives: async () => {
+        try {
+          const response = await axios.get(`${API_URL}/get-all-request-incentives`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, // If authentication is needed
+          });
+          set({
+            incentives: response.data.requestIncentive || [], // ✅ Fallback to empty array
+            error: null,
+          });
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Error fetching incentives",
+            incentives: [], // ✅ Always set incentives as an empty array to avoid undefined errors
+          });
+        }
+      },
 }));
