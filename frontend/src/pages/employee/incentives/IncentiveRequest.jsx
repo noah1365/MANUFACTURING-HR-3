@@ -6,9 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 const IncentiveRequest = () => {
     const [incentiveType, setIncentiveType] = useState('');
     const [comments, setComments] = useState('');
-    const { requestIncentive, fetchMyRequestIncentives, incentive, error } = useIncentiveStore();
+    const { requestIncentive, fetchMyRequestIncentives, incentive } = useIncentiveStore();
     const [requests, setRequests] = useState([]);
     const [expandedCommentIndex, setExpandedCommentIndex] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const incentiveOptions = [
         'Performance Bonus', 'Referral Bonus', 'Sales Commission', 
@@ -22,6 +23,7 @@ const IncentiveRequest = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         const success = await requestIncentive({ incentiveType, comments });
 
@@ -29,38 +31,63 @@ const IncentiveRequest = () => {
             toast.success('Incentive request submitted successfully!');
             setIncentiveType('');
             setComments('');
-            fetchMyRequestIncentives();
+            fetchRequests(); 
         } else {
             toast.error("Failed to submit incentive request!");
+        }
+
+        setLoading(false);
+    };
+
+    const fetchRequests = async () => {
+        try {
+            setLoading(true);
+            const fetchedData = await fetchMyRequestIncentives(); 
+            if (fetchedData) {
+                setRequests(fetchedData);
+            }
+        } catch (err) {
+            toast.error("Error fetching incentive requests!");
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchMyRequestIncentives();
-    }, [fetchMyRequestIncentives]);
+        fetchRequests();
+    }, []);
 
     useEffect(() => {
-        if (incentive && incentive.length > 0) {
-            setRequests(incentive);
+        if (incentive) {
+            setRequests(incentive); 
         }
     }, [incentive]);
 
     const truncateComment = (comment) => {
         const words = comment.split(' ');
-        if (words.length > 20) {
-            return words.slice(0, 20).join(' ') + '...';
-        }
-        return comment;
+        return words.length > 20 ? words.slice(0, 20).join(' ') + '...' : comment;
     };
 
     const handleSeeMoreClick = (index) => {
         setExpandedCommentIndex(expandedCommentIndex === index ? null : index);
     };
 
+    const getStatusBadge = (status) => {
+        switch (status?.toLowerCase()) {
+            case 'approved':
+                return <span className="bg-green-500 text-white px-2 py-1 rounded text-sm">Approved</span>;
+            case 'denied':
+                return <span className="bg-red-500 text-white px-2 py-1 rounded text-sm">Denied</span>;
+            default:
+                return <span className="bg-gray-500 text-white px-2 py-1 rounded text-sm">Pending</span>;
+        }
+    };
+
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
             <ToastContainer />
             <h2 className="text-2xl font-bold mt-10 mb-4 text-center">Request Incentive</h2>
+
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="mb-4">
                     <label htmlFor="incentiveType" className="block text-sm font-medium text-gray-700">
@@ -96,19 +123,25 @@ const IncentiveRequest = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    disabled={loading}
+                    className={`w-full text-white font-bold py-2 px-4 rounded-md ${
+                        loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    }`}
                 >
-                    Submit Request
+                    {loading ? "Submitting..." : "Submit Request"}
                 </button>
             </form>
 
             <div className="mt-6">
                 <h3 className="text-lg font-semibold mb-2 text-center">My Incentive Requests</h3>
-                {requests.length > 0 ? (
+
+                {loading ? (
+                    <p className="text-center text-gray-500">Loading requests...</p>
+                ) : requests.length > 0 ? (
                     <div className="overflow-x-auto">
-                        <table className="min-w-full table-auto">
+                        <table className="min-w-full table-auto border border-gray-200">
                             <thead>
-                                <tr className="bg-gray-100">
+                                <tr className="bg-gray-100 border-b">
                                     <th className="px-4 py-2 text-left">Incentive Type</th>
                                     <th className="px-4 py-2 text-left">Comments</th>
                                     <th className="px-4 py-2 text-left">Status</th>
@@ -116,7 +149,7 @@ const IncentiveRequest = () => {
                             </thead>
                             <tbody>
                                 {requests.map((request, index) => (
-                                    <tr key={index} className="border-b">
+                                    <tr key={index} className="border-b hover:bg-gray-50">
                                         <td className="px-4 py-2">{request.incentiveType}</td>
                                         <td className="px-4 py-2">
                                             <div>
@@ -135,14 +168,14 @@ const IncentiveRequest = () => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-2">{request.status || 'Pending'}</td>
+                                        <td className="px-4 py-2">{getStatusBadge(request.status)}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 ) : (
-                    <p className="text-center">No requests found.</p>
+                    <p className="text-center text-gray-500">No incentive requests found.</p>
                 )}
             </div>
         </div>

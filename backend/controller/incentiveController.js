@@ -154,3 +154,30 @@ export const getAllRequestIncentives= async (req,res) => {
         res.status(500).json({success:false,message:"Server error"});
     }
 };
+
+export const updateRequestIncentiveStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;  // Ensure frontend sends status in request body
+
+        if (!["approved", "denied"].includes(status.toLowerCase())) {
+            return res.status(400).json({ success: false, message: "Invalid status" });
+        }
+
+        const updatedRequest = await RequestIncentive.findByIdAndUpdate(
+            id,
+            { status },
+            { new: true }
+        );
+
+        if (!updatedRequest) {
+            return res.status(404).json({ success: false, message: "Request not found" });
+        }
+
+        res.status(200).json({ success: true, message: `Request ${status}`, data: updatedRequest });
+
+    } catch (error) {
+        console.error("Error updating incentive request:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
