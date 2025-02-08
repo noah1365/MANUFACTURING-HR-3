@@ -21,11 +21,8 @@ const ApplyBenefits = () => {
   });
 
   useEffect(() => {
-    console.log("Fetching benefits...");
     fetchBenefit();
-    fetchMyRequestBenefits().then(() => {
-      console.log("My Request Benefits Updated:", myRequestBenefits);
-    });
+    fetchMyRequestBenefits();
   }, []);
 
   const handleChange = (e) => {
@@ -33,23 +30,55 @@ const ApplyBenefits = () => {
   };
 
   const handleFileChange = (e, fieldName) => {
-    setFormData({ ...formData, [fieldName]: e.target.files[0] });
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Invalid file type. Only JPG and PNG are allowed.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("File size exceeds 2MB limit.");
+      return;
+    }
+
+    setFormData({ ...formData, [fieldName]: file });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
+    // Check if the user has already requested or been approved for the selected benefit
+    const existingRequest = myRequestBenefits.find(
+      (benefit) => benefit.benefitsName.benefitsName === formData.benefitType
+    );
+  
+    if (existingRequest) {
+      if (existingRequest.status === "Pending") {
+        toast.warning("You have already requested this benefit. Please wait for confirmation.");
+        setLoading(false);
+        return;
+      } else if (existingRequest.status === "Approved") {
+        toast.error("You have already been approved for this benefit.");
+        setLoading(false);
+        return;
+      }
+    }
+  
     const formDataToSend = new FormData();
     formDataToSend.append("benefitsName", formData.benefitType);
     formDataToSend.append("frontId", formData.frontIdFile);
     formDataToSend.append("backId", formData.backIdFile);
-
+  
     try {
       console.log("Submitting request...");
       const success = await requestBenefit(formDataToSend);
       console.log("Request response:", success);
-
+  
       if (success) {
         toast.success("Benefit request submitted successfully!");
         setFormData({ benefitType: "", frontIdFile: null, backIdFile: null });
@@ -65,13 +94,12 @@ const ApplyBenefits = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
       <ToastContainer />
-      <h1 className="text-2xl font-bold text-center mb-4">
-        Apply for Benefits
-      </h1>
+      <h1 className="text-2xl font-bold text-center mb-4">Apply for Benefits</h1>
 
       <form onSubmit={handleSubmit} key={formKey}>
         <div className="mb-4">
@@ -93,23 +121,23 @@ const ApplyBenefits = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block font-semibold">Upload Front ID</label>
+          <label className="block font-semibold">Upload Front ID (JPG/PNG, Max: 2MB)</label>
           <input
             type="file"
             onChange={(e) => handleFileChange(e, "frontIdFile")}
             className="file-input file-input-bordered w-full"
-            accept="image/*"
+            accept="image/jpeg, image/png"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label className="block font-semibold">Upload Back ID</label>
+          <label className="block font-semibold">Upload Back ID (JPG/PNG, Max: 2MB)</label>
           <input
             type="file"
             onChange={(e) => handleFileChange(e, "backIdFile")}
             className="file-input file-input-bordered w-full"
-            accept="image/*"
+            accept="image/jpeg, image/png"
             required
           />
         </div>
@@ -137,8 +165,7 @@ const ApplyBenefits = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(myRequestBenefits) &&
-            myRequestBenefits.length > 0 ? (
+            {Array.isArray(myRequestBenefits) && myRequestBenefits.length > 0 ? (
               myRequestBenefits.map((benefit, index) => (
                 <tr key={benefit._id} className="text-center">
                   <td className="p-2">{index + 1}</td>

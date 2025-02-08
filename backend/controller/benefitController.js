@@ -101,7 +101,6 @@ import cloudinary from "../config/cloudinaryConfig.js";
 import upload from "../config/multerConfig.js"; 
 import { RequestBenefit } from "../model/benefit/requestBenefitModel.js";
 
-
 export const requestBenefit = async (req, res) => {
     try {
         console.log("Authenticated User ID:", req.user._id);
@@ -123,6 +122,20 @@ export const requestBenefit = async (req, res) => {
 
         console.log("Benefit found:", benefit);
 
+        const existingRequest = await RequestBenefit.findOne({
+            employeeId: req.user._id,
+            benefitsName: benefit._id,
+            status: { $in: ["Pending", "Approved"] }
+        });
+
+        if (existingRequest) {
+            return res.status(400).json({
+                message: existingRequest.status === "Approved"
+                    ? "You have already been approved for this benefit."
+                    : "You already have a pending request for this benefit."
+            });
+        }
+
         if (!req.files || !req.files.frontId || !req.files.backId) {
             return res.status(400).json({ message: "Both front and back ID images are required." });
         }
@@ -134,8 +147,8 @@ export const requestBenefit = async (req, res) => {
                 frontId: req.files.frontId[0].path,
                 backId: req.files.backId[0].path,
             },
+            status: "Pending"
         });
-        
 
         await newRequest.save();
         res.status(201).json({ message: "Benefit request created successfully", newRequest });
