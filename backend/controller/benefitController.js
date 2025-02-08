@@ -190,3 +190,33 @@ export const getAllRequestBenefits = async (req, res) => {
     }
 };
 
+export const updateRequestBenefitStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        console.log("Received ID:", id);
+        console.log("Received Status:", status);
+        
+        if (!["Approved", "Denied"].includes(status)) {
+            return res.status(400).json({ success: false, message: "Invalid status" });
+        }
+
+        const updatedRequest = await RequestBenefit.findByIdAndUpdate(
+            id,
+            { status },
+            { new: true }
+        );
+
+        if (!updatedRequest) {
+            return res.status(404).json({ success: false, message: "Request not found" });
+        }
+
+        res.status(200).json({ success: true, message: `Request ${status}`, data: updatedRequest });
+
+    } catch (error) {
+        console.error("Error updating incentive request:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+

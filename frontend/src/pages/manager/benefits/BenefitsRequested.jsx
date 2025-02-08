@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useBenefitStore } from '../../../store/benefitStore';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BenefitsRequested = () => {
-  const { benefits, fetchAllRequestBenefits } = useBenefitStore();
+  const { benefits, fetchAllRequestBenefits, updateRequestBenefitStatus } = useBenefitStore();
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [loading, setLoading] = useState(true);
+  const processedRequests = benefits.filter(request => request.status === 'Approved' || request.status === 'Denied');
 
   useEffect(() => {
     document.title = 'Benefit Enrollment Requested';
@@ -27,21 +30,36 @@ const BenefitsRequested = () => {
     window.open(imageUrl, '_blank');
   };
 
+  const handleStatusUpdate = async (status) => {
+    if (!selectedRequest) return;
+
+    try {
+      await updateRequestBenefitStatus(selectedRequest._id, status);
+      await fetchAllRequestBenefits(); // Reload updated list
+      toast.success(`Request ${status} successfully!`, { autoClose: 2000 });
+      closeModal();
+    } catch (error) {
+      toast.error('Failed to update status.');
+      console.error('Failed to update status:', error);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
+      <ToastContainer/>
       <h1 className="text-2xl text-center font-bold mb-4 text-blue-600">Benefits Requests</h1>
       {benefits.length === 0 ? (
         <p>No enrollment requests available.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {benefits.map((request) => (
-            <div 
-              key={request._id} 
-              className="border border-blue-200 bg-white p-4 rounded-lg shadow-md cursor-pointer transition-shadow duration-200 hover:shadow-lg" 
+          {benefits.filter(request => request.status !== 'Approved' && request.status !== 'Denied').map((request) => (
+            <div
+              key={request._id}
+              className="border border-blue-200 bg-white p-4 rounded-lg shadow-md cursor-pointer transition-shadow duration-200 hover:shadow-lg"
               onClick={() => handleSelectRequest(request)}
             >
               <h2 className="text-lg font-semibold mb-1 text-blue-700">
@@ -90,12 +108,63 @@ const BenefitsRequested = () => {
               </div>
             </div>
             <div className="mt-4 flex justify-end space-x-4">
-              <button className="bg-green-500 text-white px-4 py-2 rounded">Approve</button>
-              <button className="bg-red-500 text-white px-4 py-2 rounded">Deny</button>
+              <button onClick={() => handleStatusUpdate('Approved')} className="bg-green-500 text-white px-4 py-2 rounded">Approve</button>
+              <button onClick={() => handleStatusUpdate('Denied')} className="bg-red-500 text-white px-4 py-2 rounded">Deny</button>
             </div>
           </div>
         </div>
       )}
+
+<h2 className="text-xl font-bold mt-6 text-center">Processed Requests</h2>
+<table className="w-full mt-4 border border-collapse">
+  <thead>
+    <tr className="bg-blue-100">
+      <th className="border p-2">Employee Name</th>
+      <th className="border p-2">Benefit Name</th>
+      <th className="border p-2">Uploaded IDs</th>
+      <th className="border p-2">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {processedRequests.map((request) => (
+      <tr key={request._id} className="text-center">
+        <td className="border p-2">{`${request.employeeId.firstName} ${request.employeeId.lastName}`}</td>
+        <td className="border p-2">{request.benefitsName?.benefitsName || "N/A"}</td>
+        <td className="border p-2 flex justify-center gap-4">
+          {request.uploadDocs?.frontId && (
+            <div className="relative group">
+              <img
+                src={request.uploadDocs.frontId}
+                alt="Front ID"
+                className="w-16 h-10 object-cover border rounded cursor-pointer"
+                onClick={() => openImageInNewTab(request.uploadDocs.frontId)}
+              />
+              <span className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                Front ID
+              </span>
+            </div>
+          )}
+          {request.uploadDocs?.backId && (
+            <div className="relative group">
+              <img
+                src={request.uploadDocs.backId}
+                alt="Back ID"
+                className="w-16 h-10 object-cover border rounded cursor-pointer"
+                onClick={() => openImageInNewTab(request.uploadDocs.backId)}
+              />
+              <span className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                Back ID
+              </span>
+            </div>
+          )}
+        </td>
+        <td className={`border p-2 font-bold ${request.status === 'Approved' ? 'text-green-600' : 'text-red-600'}`}>{request.status}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+
     </div>
   );
 };

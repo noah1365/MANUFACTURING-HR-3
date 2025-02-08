@@ -144,4 +144,39 @@ fetchBenefit: async () => {
           });
         }
       },
+
+      updateRequestBenefitStatus: async (id, status) => {
+        try {
+          console.log(`Updating incentive status: ID = ${id}, New Status = ${status}`);
+      
+          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+          const csrfToken = csrfResponse.data.csrfToken;
+          console.log("CSRF Token received:", csrfToken);
+      
+          const response = await axios.put(`${API_URL}/update-request-benefit-status/${id}`, 
+            { status }, 
+            { headers: { 'X-CSRF-Token': csrfToken } }
+          );
+      
+          console.log("Response from server:", response.data);
+      
+          set((state) => ({
+            benefits: state.benefits.map((req) =>
+              req._id === id ? { ...req, status: response.data.data.status } : req
+            ),
+            error: null,
+          }));
+          
+      
+          return true;
+        } catch (error) {
+          console.error("Error updating request status:", error.response?.data || error.message);
+      
+          set({
+            error: error.response?.data?.message || "Error updating request status",
+          });
+      
+          return false;
+        }
+      },
 }));
