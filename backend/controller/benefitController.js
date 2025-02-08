@@ -97,3 +97,58 @@ export const deleteBenefit = async (req, res) => {
 };
 
 
+import cloudinary from "../config/cloudinaryConfig.js";
+import upload from "../config/multerConfig.js"; 
+import { RequestBenefit } from "../model/benefit/requestBenefitModel.js";
+
+export const requestBenefit = async (req, res) => {
+    try {
+        console.log("Authenticated User ID:", req.user._id);
+        console.log("Request Body:", req.body);  
+        console.log("Uploaded Files:", req.files);
+
+        const { benefitsName } = req.body;
+
+        if (!benefitsName) {
+            return res.status(400).json({ message: "Benefit name is required." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(benefitsName)) {
+            return res.status(400).json({ message: "Invalid Benefit ID format." });
+        }
+
+        // Hanapin ang benefit sa database
+        const benefit = await Benefit.findById(benefitsName);
+        if (!benefit) {
+            console.log("Benefit not found in database:", benefitsName); // Debugging
+            return res.status(404).json({ message: "Benefit not found." });
+        }
+
+        console.log("Benefit found:", benefit);
+
+        if (!req.files || !req.files.frontId || !req.files.backId) {
+            return res.status(400).json({ message: "Both front and back ID images are required." });
+        }
+
+        
+        const newRequest = new RequestBenefit({
+            employeeId: req.user._id,
+            benefitsName,
+            uploadDocs: {
+                frontId: req.files.frontId[0].path,
+                backId: req.files.backId[0].path,
+            },
+        });
+
+        await newRequest.save();
+        res.status(201).json({ message: "Benefit request created successfully", newRequest });
+
+    } catch (error) {
+        console.error("Error in requestBenefit:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+export { upload };
