@@ -134,7 +134,7 @@ fetchBenefit: async () => {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
           });
           set({
-            benefits: response.data.requestIncentive || [], 
+            benefits: response.data.requestBenefit || [], 
             error: null,
           });
         } catch (error) {

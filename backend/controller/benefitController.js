@@ -176,13 +176,17 @@ export const getMyRequestBenefits = async (req,res) => {
     }
 }
 
-export const getAllRequestBenefits= async (req,res) => {
+export const getAllRequestBenefits = async (req, res) => {
     try {
-        const allRequesstBenefits = await RequestBenefit.find({})
-        .populate('employeeId','firstName lastName');
-        res.status(200).json({status:true,requestBenefit:allRequesstBenefits})
+        const allRequestBenefits = await RequestBenefit.find({})
+            .populate('employeeId', 'firstName lastName')
+            .populate('benefitsName','benefitsName')
+            .select("benefitsName status createdAt uploadDocs");
+    
+        res.status(200).json({ status: true, requestBenefit: allRequestBenefits });
     } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({success:false,message:"Server error"});
+        console.error("Error fetching request benefits:", error);
+        res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
