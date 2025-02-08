@@ -101,26 +101,23 @@ import cloudinary from "../config/cloudinaryConfig.js";
 import upload from "../config/multerConfig.js"; 
 import { RequestBenefit } from "../model/benefit/requestBenefitModel.js";
 
+
 export const requestBenefit = async (req, res) => {
     try {
         console.log("Authenticated User ID:", req.user._id);
         console.log("Request Body:", req.body);  
         console.log("Uploaded Files:", req.files);
 
-        const { benefitsName } = req.body;
+        let { benefitsName } = req.body;
 
         if (!benefitsName) {
             return res.status(400).json({ message: "Benefit name is required." });
         }
 
-        if (!mongoose.Types.ObjectId.isValid(benefitsName)) {
-            return res.status(400).json({ message: "Invalid Benefit ID format." });
-        }
+        const benefit = await Benefit.findOne({ benefitsName: { $regex: new RegExp(`^${benefitsName}$`, "i") } });
 
-        // Hanapin ang benefit sa database
-        const benefit = await Benefit.findById(benefitsName);
         if (!benefit) {
-            console.log("Benefit not found in database:", benefitsName); // Debugging
+            console.log("Benefit not found in database:", benefitsName); 
             return res.status(404).json({ message: "Benefit not found." });
         }
 
@@ -130,15 +127,15 @@ export const requestBenefit = async (req, res) => {
             return res.status(400).json({ message: "Both front and back ID images are required." });
         }
 
-        
         const newRequest = new RequestBenefit({
             employeeId: req.user._id,
-            benefitsName,
+            benefitsName: benefit._id,
             uploadDocs: {
                 frontId: req.files.frontId[0].path,
                 backId: req.files.backId[0].path,
             },
         });
+        
 
         await newRequest.save();
         res.status(201).json({ message: "Benefit request created successfully", newRequest });
@@ -150,5 +147,28 @@ export const requestBenefit = async (req, res) => {
 };
 
 
-
 export { upload };
+
+export const getMyRequestBenefits = async (req,res) => {
+    try {
+        if(!req.user || !req.user._id){
+        return res.status(401).json({message:'User not authenticated.'});
+        }
+        const myRequestBenefits = await RequestBenefit.find({employeeId:req.user._id});
+        res.status(200).json({status:true,myRequestBenefits})
+    } catch (error) {
+        console.error("Error in getting requesting benefit:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+}
+
+export const getAllRequestBenefits= async (req,res) => {
+    try {
+        const allRequesstBenefits = await RequestBenefit.find({})
+        .populate('employeeId','firstName lastName');
+        res.status(200).json({status:true,requestBenefit:allRequesstBenefits})
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({success:false,message:"Server error"});
+    }
+};

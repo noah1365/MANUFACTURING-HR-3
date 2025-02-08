@@ -1,6 +1,6 @@
 import express from "express";
 
-import {  createBenefit, deleteBenefit, getBenefit, requestBenefit, updateBenefit, upload } from "../controller/benefitController.js";
+import {  createBenefit, deleteBenefit, getAllRequestBenefits, getBenefit, getMyRequestBenefits, requestBenefit, updateBenefit, upload } from "../controller/benefitController.js";
 
 import { verifyToken } from "../middleware/verifyToken.js";
 import { checkRole } from "../middleware/roleMiddleware.js";
@@ -18,7 +18,8 @@ benefitRoute.delete("/delete-benefits/:id",verifyToken,checkRole('Manager'),dele
 
 
 benefitRoute.post("/request-benefit", verifyToken, upload.fields([{ name: "frontId" }, { name: "backId" }]), requestBenefit);
-
+benefitRoute.get("/my-request-benefits",verifyToken,getMyRequestBenefits);
+benefitRoute.get("/get-all-request-benefits",verifyToken,getAllRequestBenefits);
 
 export default benefitRoute;
 

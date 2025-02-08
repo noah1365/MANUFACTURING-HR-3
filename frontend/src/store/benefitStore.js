@@ -13,6 +13,7 @@ axios.defaults.withCredentials = true;
 export const useBenefitStore = create((set) => ({
     benefit: null,
     error: null,
+    benefits:[],
 
     
     createBenefit: async (benefit) => {
@@ -39,16 +40,17 @@ export const useBenefitStore = create((set) => ({
         try {
             const response = await axios.get(`${API_URL}/get-benefits`);
             set({
-                benefit: response.data.benefits || [],
+                benefits: response.data.benefits || [], // Update benefits state
                 error: null,
             });
         } catch (error) {
             set({
                 error: error.response?.data?.message || "Error fetching benefits",
-                benefit: [],
+                benefits: [],
             });
         }
     },
+    
 
     deleteBenefit: async (id) => {
         try {
@@ -93,5 +95,56 @@ export const useBenefitStore = create((set) => ({
         }
     },
     
+    requestBenefit: async (newRequest) => {
+        try {
+            const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+            const csrfToken = csrfResponse.data.csrfToken;
     
+            const response = await axios.post(`${API_URL}/request-benefit`, newRequest, {
+                headers: {
+                    'X-CSRF-Token': csrfToken,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+    
+            set({ benefit: response.data.benefit || null, error: null });
+            return true;
+        } catch (error) {
+            set({ error: error.response?.data.message || "Error in requesting benefit" });
+            return false;
+        }
+    },
+    
+
+    fetchMyRequestBenefits: async () => {
+        try {
+            const response = await axios.get(`${API_URL}/my-request-benefits`);
+            set({
+                benefit: response.data.myRequestBenefits || [],
+                error: null,
+            });
+        } catch (error) {
+            set({
+                error: error.response?.data?.message || "Error fetching benefits",
+                benefit: [],
+            });
+        }
+    },
+
+    fetchAllRequestBenefits: async () => {
+        try {
+          const response = await axios.get(`${API_URL}/get-all-request-benefits`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
+          });
+          set({
+            benefits: response.data.requestIncentive || [], 
+            error: null,
+          });
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Error fetching benefits",
+            benefits: [], 
+          });
+        }
+      },
 }));
