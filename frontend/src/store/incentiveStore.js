@@ -111,4 +111,19 @@ export const useIncentiveStore = create((set) => ({
             return false;
         }
     },
+
+    fetchMyRequestIncentives: async () => {
+        try {
+            const response = await axios.get(`${API_URL}/my-request-incentives`);
+            set({
+                incentive: response.data.myRequestIncentives || [],
+                error: null,
+            });
+        } catch (error) {
+            set({
+                error: error.response?.data?.message || "Error fetching incentives",
+                benefit: [],
+            });
+        }
+    },
 }));

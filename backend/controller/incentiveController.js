@@ -130,3 +130,16 @@ export const requestIncentive = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
+export const getMyRequestIncentives = async (req,res) => {
+    try {
+        if(!req.user || !req.user._id){
+        return res.status(401).json({message:'User not authenticated.'});
+        }
+        const myRequestIncentives = await RequestIncentive.find({employeeId:req.user._id});
+        res.status(200).json({status:true,myRequestIncentives})
+    } catch (error) {
+        console.error("Error in getting requestIncentive:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+}

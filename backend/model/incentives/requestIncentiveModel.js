@@ -12,6 +12,11 @@ const requestIncentiveSchema = new mongoose.Schema({
     },
     comments:{
         type:String
+    },
+    status:{
+        type:String,
+        enum:["Approved","Denied","Pending"],
+        default:"Pending"
     }
 },{timestamps:true});
 
