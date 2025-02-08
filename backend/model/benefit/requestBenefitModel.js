@@ -16,6 +16,11 @@ const requestBenefitSchema = new mongoose.Schema(
       frontId: { type: String, required: true },
       backId: { type: String, required: true },
     },
+    status:{
+      type:String,
+      enum:["Approved","Denied","Pending"],
+      default:"Pending"
+    }
   },
   { timestamps: true }
 );

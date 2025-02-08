@@ -10,10 +10,11 @@ const API_URL = process.env.NODE_ENV === "production"
 
 axios.defaults.withCredentials = true;
 
-export const useBenefitStore = create((set) => ({
+export const useBenefitStore = create((set) => ({       
     benefit: null,
     error: null,
     benefits:[],
+    myRequestBenefits: [], 
 
     
     createBenefit: async (benefit) => {
@@ -103,10 +104,10 @@ fetchBenefit: async () => {
                 }
             });
     
-            set({ benefit: response.data.benefit || null, error: null });
+            set({ myRequestBenefits: response.data.myRequestBenefits || null, error: null });
             return true;
         } catch (error) {
-            set({ error: error.response?.data.message || "Error in requesting benefit" });
+            set({ error: error.response?.data.message || "Error in requesting benefit",myRequestBenefits: [], });
             return false;
         }
     },
@@ -116,13 +117,13 @@ fetchBenefit: async () => {
         try {
             const response = await axios.get(`${API_URL}/my-request-benefits`);
             set({
-                benefit: response.data.myRequestBenefits || [],
+                myRequestBenefits: response.data.myRequestBenefits || [],
                 error: null,
             });
         } catch (error) {
             set({
                 error: error.response?.data?.message || "Error fetching benefits",
-                benefit: [],
+                myRequestBenefits: [],
             });
         }
     },

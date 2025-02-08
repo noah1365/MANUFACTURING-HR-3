@@ -154,7 +154,8 @@ export const getMyRequestBenefits = async (req,res) => {
         if(!req.user || !req.user._id){
         return res.status(401).json({message:'User not authenticated.'});
         }
-        const myRequestBenefits = await RequestBenefit.find({employeeId:req.user._id});
+        const myRequestBenefits = await RequestBenefit.find({employeeId:req.user._id})
+        .populate("benefitsName", "benefitsName");
         res.status(200).json({status:true,myRequestBenefits})
     } catch (error) {
         console.error("Error in getting requesting benefit:", error);

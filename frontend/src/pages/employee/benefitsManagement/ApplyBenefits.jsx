@@ -8,6 +8,8 @@ const ApplyBenefits = () => {
     requestBenefit,
     fetchBenefit,
     benefit: benefits = [],
+    fetchMyRequestBenefits,
+    myRequestBenefits = [],
   } = useBenefitStore();
   const [loading, setLoading] = useState(false);
   const [formKey, setFormKey] = useState(0);
@@ -19,7 +21,11 @@ const ApplyBenefits = () => {
   });
 
   useEffect(() => {
+    console.log("Fetching benefits...");
     fetchBenefit();
+    fetchMyRequestBenefits().then(() => {
+      console.log("My Request Benefits Updated:", myRequestBenefits);
+    });
   }, []);
 
   const handleChange = (e) => {
@@ -40,15 +46,20 @@ const ApplyBenefits = () => {
     formDataToSend.append("backId", formData.backIdFile);
 
     try {
+      console.log("Submitting request...");
       const success = await requestBenefit(formDataToSend);
+      console.log("Request response:", success);
+
       if (success) {
         toast.success("Benefit request submitted successfully!");
         setFormData({ benefitType: "", frontIdFile: null, backIdFile: null });
         setFormKey((prevKey) => prevKey + 1);
+        fetchMyRequestBenefits();
       } else {
         toast.error("Failed to submit benefit request.");
       }
     } catch (error) {
+      console.error("Error submitting request:", error);
       toast.error("Error submitting request. Please try again.");
     } finally {
       setLoading(false);
@@ -56,7 +67,7 @@ const ApplyBenefits = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
       <ToastContainer />
       <h1 className="text-2xl font-bold text-center mb-4">
         Apply for Benefits
@@ -113,6 +124,55 @@ const ApplyBenefits = () => {
           </button>
         </div>
       </form>
+
+      <h2 className="text-xl font-bold mt-10 mb-4">Your Benefit Requests</h2>
+      <div className="overflow-x-auto">
+        <table className="table table-bordered w-full">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="p-2">#</th>
+              <th className="p-2">Benefit Name</th>
+              <th className="p-2">Status</th>
+              <th className="p-2">Date Requested</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.isArray(myRequestBenefits) &&
+            myRequestBenefits.length > 0 ? (
+              myRequestBenefits.map((benefit, index) => (
+                <tr key={benefit._id} className="text-center">
+                  <td className="p-2">{index + 1}</td>
+                  <td className="p-2">
+                    {benefit.benefitsName.benefitsName || "Unknown"}
+                  </td>
+                  <td className="p-2">
+                    <span
+                      className={`badge ${
+                        benefit.status === "Approved"
+                          ? "badge-success"
+                          : benefit.status === "Pending"
+                          ? "badge-warning"
+                          : "badge-error"
+                      }`}
+                    >
+                      {benefit.status}
+                    </span>
+                  </td>
+                  <td className="p-2">
+                    {new Date(benefit.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="text-center p-4">
+                  No benefit requests found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
