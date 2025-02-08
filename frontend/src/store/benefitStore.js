@@ -36,20 +36,16 @@ export const useBenefitStore = create((set) => ({
         }
     },
 
-    fetchBenefit: async () => {
-        try {
-            const response = await axios.get(`${API_URL}/get-benefits`);
-            set({
-                benefits: response.data.benefits || [], // Update benefits state
-                error: null,
-            });
-        } catch (error) {
-            set({
-                error: error.response?.data?.message || "Error fetching benefits",
-                benefits: [],
-            });
-        }
-    },
+fetchBenefit: async () => {
+    try {
+        const response = await axios.get(`${API_URL}/get-benefits`);
+        set({ benefit: response.data.benefits || [], error: null });
+    } catch (error) {
+        console.error("Error fetching benefits:", error);
+        set({ error: error.response?.data?.message || "Error fetching benefits", benefits: [] });
+    }
+},
+
     
 
     deleteBenefit: async (id) => {

@@ -4,7 +4,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useBenefitStore } from "../../../store/benefitStore";
 
 const ApplyBenefits = () => {
-  const { requestBenefit, fetchBenefit, benefits } = useBenefitStore(); 
+  const {
+    requestBenefit,
+    fetchBenefit,
+    benefit: benefits = [],
+  } = useBenefitStore();
   const [loading, setLoading] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
@@ -39,7 +43,7 @@ const ApplyBenefits = () => {
       const success = await requestBenefit(formDataToSend);
       if (success) {
         toast.success("Benefit request submitted successfully!");
-        setFormData({ benefitType: "", frontIdFile: null, backIdFile: null }); 
+        setFormData({ benefitType: "", frontIdFile: null, backIdFile: null });
         setFormKey((prevKey) => prevKey + 1);
       } else {
         toast.error("Failed to submit benefit request.");
@@ -54,7 +58,9 @@ const ApplyBenefits = () => {
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
       <ToastContainer />
-      <h1 className="text-2xl font-bold text-center mb-4">Apply for Benefits</h1>
+      <h1 className="text-2xl font-bold text-center mb-4">
+        Apply for Benefits
+      </h1>
 
       <form onSubmit={handleSubmit} key={formKey}>
         <div className="mb-4">
@@ -67,7 +73,7 @@ const ApplyBenefits = () => {
             required
           >
             <option value="">Choose a benefit</option>
-            {benefits.map((benefit) => (
+            {benefits?.map((benefit) => (
               <option key={benefit._id} value={benefit.benefitsName}>
                 {benefit.benefitsName}
               </option>
@@ -98,13 +104,15 @@ const ApplyBenefits = () => {
         </div>
 
         <div className="flex justify-center">
-          <button type="submit" className={`btn btn-primary ${loading ? "loading" : ""}`} disabled={loading}>
+          <button
+            type="submit"
+            className={`btn btn-primary ${loading ? "loading" : ""}`}
+            disabled={loading}
+          >
             {loading ? "Submitting..." : "Submit Application"}
           </button>
         </div>
       </form>
-
-      
     </div>
   );
 };
