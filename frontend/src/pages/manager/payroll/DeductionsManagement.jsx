@@ -8,17 +8,54 @@ const DeductionsManagement = () => {
     fetchBenefitDeductions,
     history,
     fetchBenefitDeductionHistory,
+    addBenefitDeduction,
   } = useBenefitStore();
+  
   const [selectedBenefit, setSelectedBenefit] = useState(null);
+  const [employeeId, setEmployeeId] = useState("");
+  const [benefitsName, setBenefitsName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchBenefitDeductions();
-    fetchBenefitDeductionHistory(); 
+    fetchBenefitDeductionHistory();
   }, [fetchBenefitDeductions, fetchBenefitDeductionHistory]);
 
-  if (error) {
-    return <div className="text-red-500">Error: {error}</div>;
-  }
+  const handleAddDeduction = async (e) => {
+    e.preventDefault();
+    
+    // Ensure 'amount' is converted to a number and check if valid
+    const amountAsNumber = Number(amount); // Convert string to number
+    if (!employeeId || !benefitsName || !amount || amountAsNumber <= 0 || isNaN(amountAsNumber)) {
+      setErrorMessage("Please fill in all fields correctly.");
+      return;
+    }
+  
+    // Clear previous error message
+    setErrorMessage("");
+  
+    const deductionData = {
+      employeeId,
+      benefitsName,
+      amount: amountAsNumber, // Ensure amount is number here
+    };
+  
+    try {
+      const response = await addBenefitDeduction(deductionData); // Call the store's function
+      if (response.success) {
+        alert("Benefit Deduction added successfully");
+        fetchBenefitDeductions(); // Refresh the deductions list
+        fetchBenefitDeductionHistory(); // Refetch history to update the view
+      } else {
+        setErrorMessage(response.message || "Failed to add deduction.");
+      }
+    } catch (error) {
+      setErrorMessage("An error occurred while adding the deduction.");
+    }
+  };
+
+
 
   const groupedDeductions = deductions.reduce((acc, deduction) => {
     const employeeKey = `${deduction.employeeId._id}_${deduction.benefitsName._id}`;
@@ -30,16 +67,15 @@ const DeductionsManagement = () => {
         employeeId: deduction.employeeId._id,
       };
     }
-    acc[employeeKey].totalAmount += deduction.amount;
-
+    acc[employeeKey].totalAmount += deduction.amount; 
+  
     return acc;
   }, {});
+  
 
   const groupedArray = Object.values(groupedDeductions);
-
   let renderedEmployees = {};
 
-  // Filter history by benefit name
   const filteredHistory = selectedBenefit
     ? history.filter(
         (item) => item.benefitsName.benefitsName === selectedBenefit
@@ -49,6 +85,49 @@ const DeductionsManagement = () => {
   return (
     <div className="p-4">
       <h3 className="text-2xl font-semibold mb-4">Benefit Deductions</h3>
+      
+      <form onSubmit={handleAddDeduction} className="mb-6">
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-2">Employee ID</label>
+          <input
+            type="text"
+            value={employeeId}
+            onChange={(e) => setEmployeeId(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Enter Employee ID"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-2">Benefit Name</label>
+          <input
+            type="text"
+            value={benefitsName}
+            onChange={(e) => setBenefitsName(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Enter Benefit Name"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-2">Amount</label>
+          <input
+  type="number"
+  value={amount}
+  onChange={(e) => setAmount(e.target.value)}
+  className="w-full p-2 border border-gray-300 rounded"
+  placeholder="Enter Amount"
+/>
+
+        </div>
+
+        {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+
+        <button
+          type="submit"
+          className="bg-blue-500 text-white py-2 px-4 rounded"
+        >
+          Add Deduction
+        </button>
+      </form>
 
       {groupedArray.length === 0 ? (
         <p>No deductions available.</p>
@@ -95,9 +174,7 @@ const DeductionsManagement = () => {
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-gray-200 text-gray-700">
-                    <th className="px-4 py-2 border-b text-left">
-                      Employee Name
-                    </th>
+                    <th className="px-4 py-2 border-b text-left">Employee Name</th>
                     <th className="px-4 py-2 border-b text-left">Amount</th>
                     <th className="px-4 py-2 border-b text-left">Date</th>
                   </tr>
@@ -109,9 +186,7 @@ const DeductionsManagement = () => {
                         {historyItem.employeeId.firstName}{" "}
                         {historyItem.employeeId.lastName}
                       </td>
-                      <td className="px-4 py-2 border-b">
-                        {historyItem.amount}
-                      </td>
+                      <td className="px-4 py-2 border-b">{historyItem.amount}</td>
                       <td className="px-4 py-2 border-b">
                         {new Date(historyItem.createdAt).toLocaleString()}
                       </td>

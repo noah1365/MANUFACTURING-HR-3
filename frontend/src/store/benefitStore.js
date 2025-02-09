@@ -204,7 +204,34 @@ fetchBenefit: async () => {
                 history: []
             });
         }
-    }
+    },
+
+    addBenefitDeduction: async ({ employeeId, benefitsName, amount }) => {
+        try {
+          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+          const csrfToken = csrfResponse.data.csrfToken;
     
+          const response = await axios.post(
+            `${API_URL}/add-benefit-deduction`,
+            { employeeId, benefitsName, amount },
+            { headers: { 'X-CSRF-Token': csrfToken } }
+          );
+    
+          console.log("API Response:", response);
+    
+          set((state) => ({
+            deductions: [...state.deductions, response.data.deduction],
+            history: [...state.history, response.data.history],
+          }));
+    
+          return response.data;
+        } catch (err) {
+          console.error("Error adding deduction:", err);  // Log the error to understand it
+          set({
+            error: err.response ? err.response.data.message : "Error adding deduction",
+          });
+          return null;
+        }
+      },
       
 }));

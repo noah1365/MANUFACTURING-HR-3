@@ -226,7 +226,7 @@ export const updateRequestBenefitStatus = async (req, res) => {
 export const addBenefitDeduction = async (req, res) => {
     try {
         const { employeeId, benefitsName, amount } = req.body;
-
+        console.log("Received data:", req.body); 
         if (!mongoose.isValidObjectId(employeeId) || !mongoose.isValidObjectId(benefitsName)) {
             return res.status(400).json({ success: false, message: "Invalid Employee or Benefit ID" });
         }
