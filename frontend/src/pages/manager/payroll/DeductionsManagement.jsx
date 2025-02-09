@@ -1,159 +1,128 @@
-import React, { useState } from 'react';
-
-const employees = [
-  { id: 1, firstName: 'Borlagdatan John Lloyd', lastName: 'Borla' },
-  { id: 2, firstName: 'Padit Oliver', lastName: 'Padit' },
-  { id: 3, firstName: 'Canja Abeguel', lastName: 'Lumod' },
-];
-
-const deductionTypes = ['SSS', 'PhilHealth', 'Pag-IBIG'];
-
-const initialDeductions = [
-  { employeeId: 1, type: 'SSS', amount: 500, date: '2024-09-01' },
-  { employeeId: 2, type: 'Pag-IBIG', amount: 200, date: '2024-09-01' },
-  { employeeId: 2, type: 'SSS', amount: 200, date: '2024-09-01' },
-  { employeeId: 3, type: 'Pag-IBIG', amount: 200, date: '2024-10-01' },
-  { employeeId: 3, type: 'SSS', amount: 300, date: '2024-10-01' },
-];
+import React, { useState, useEffect } from "react";
+import { useBenefitStore } from "../../../store/benefitStore";
 
 const DeductionsManagement = () => {
-  const [deductions, setDeductions] = useState(initialDeductions);
-  const [deductionAmount, setDeductionAmount] = useState('');
-  const [selectedEmployee, setSelectedEmployee] = useState('');
-  const [deductionType, setDeductionType] = useState('');
-  const [selectedEmployeeDates, setSelectedEmployeeDates] = useState(null);
+  const {
+    deductions,
+    error,
+    fetchBenefitDeductions,
+    history,
+    fetchBenefitDeductionHistory,
+  } = useBenefitStore();
+  const [selectedBenefit, setSelectedBenefit] = useState(null);
 
-  const handleAddDeduction = () => {
-    if (selectedEmployee && deductionAmount && deductionType) {
-      const newDeduction = {
-        employeeId: parseInt(selectedEmployee),
-        type: deductionType,
-        amount: parseFloat(deductionAmount),
-        date: new Date().toISOString().split('T')[0],
+  useEffect(() => {
+    fetchBenefitDeductions();
+    fetchBenefitDeductionHistory(); 
+  }, [fetchBenefitDeductions, fetchBenefitDeductionHistory]);
+
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
+
+  const groupedDeductions = deductions.reduce((acc, deduction) => {
+    const employeeKey = `${deduction.employeeId._id}_${deduction.benefitsName._id}`;
+    if (!acc[employeeKey]) {
+      acc[employeeKey] = {
+        employeeName: `${deduction.employeeId.firstName} ${deduction.employeeId.lastName}`,
+        benefitsName: deduction.benefitsName.benefitsName,
+        totalAmount: 0,
+        employeeId: deduction.employeeId._id,
       };
-      setDeductions((prevDeductions) => [...prevDeductions, newDeduction]);
-      setDeductionAmount('');
-      setSelectedEmployee('');
-      setDeductionType('');
     }
-  };
+    acc[employeeKey].totalAmount += deduction.amount;
 
-  const aggregatedDeductions = employees.map((employee) => {
-    const employeeDeductions = deductions
-      .filter((deduction) => deduction.employeeId === employee.id)
-      .reduce(
-        (acc, curr) => {
-          acc.deductionsByType[curr.type] = (acc.deductionsByType[curr.type] || 0) + curr.amount;
-          acc.total += curr.amount;
-          acc.dates.push({ type: curr.type, amount: curr.amount, date: curr.date });
-          return acc;
-        },
-        { deductionsByType: {}, total: 0, dates: [] }
-      );
+    return acc;
+  }, {});
 
-    return {
-      employee,
-      deductions: employeeDeductions.deductionsByType,
-      total: employeeDeductions.total,
-      dates: employeeDeductions.dates,
-    };
-  });
+  const groupedArray = Object.values(groupedDeductions);
 
-  const handleViewDates = (dates) => {
-    setSelectedEmployeeDates(dates);
-  };
+  let renderedEmployees = {};
 
-  const closeModal = () => {
-    setSelectedEmployeeDates(null);
-  };
+  // Filter history by benefit name
+  const filteredHistory = selectedBenefit
+    ? history.filter(
+        (item) => item.benefitsName.benefitsName === selectedBenefit
+      )
+    : [];
 
   return (
-    <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
-      <h2 className="text-2xl font-semibold mb-4">Deductions Management</h2>
-      <div className="mb-4 flex flex-col md:flex-row">
-        <select
-          className="select w-full max-w-xs mb-2 md:mr-2"
-          value={selectedEmployee}
-          onChange={(e) => setSelectedEmployee(e.target.value)}
-        >
-          <option value="">Select Employee</option>
-          {employees.map((employee) => (
-            <option key={employee.id} value={employee.id}>
-              {employee.firstName} {employee.lastName}
-            </option>
-          ))}
-        </select>
-        <select
-          className="select w-full max-w-xs mb-2 md:mr-2"
-          value={deductionType}
-          onChange={(e) => setDeductionType(e.target.value)}
-        >
-          <option value="">Select Deduction Type</option>
-          {deductionTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-        <input
-          type="number"
-          value={deductionAmount}
-          onChange={(e) => setDeductionAmount(e.target.value)}
-          placeholder="Deduction Amount"
-          className="input w-full max-w-xs mb-2"
-        />
-        <button onClick={handleAddDeduction} className="btn btn-primary w-32 max-w-xs">
-          Add Deduction
-        </button>
-      </div>
+    <div className="p-4">
+      <h3 className="text-2xl font-semibold mb-4">Benefit Deductions</h3>
 
-      <h3 className="text-xl font-semibold mb-2">Deductions Summary</h3>
-      <table className="table w-full">
-        <thead>
-          <tr className="bg-primary text-white">
-          <th className="border px-4 py-2">Employee Name</th>
-            <th className="border px-4 py-2">SSS</th>
-            <th className="border px-4 py-2">PhilHealth</th>
-            <th className="border px-4 py-2">Pag-IBIG</th>
-            <th className="border px-4 py-2">Total Deductions</th>
-            <th className="border px-4 py-2">Dates</th>
-          </tr>
-        </thead>
-        <tbody>
-          {aggregatedDeductions.map(({ employee, deductions, total, dates }) => (
-            <tr key={employee.id} className="hover:bg-neutral hover:text-white">
-              <td className="border px-4 py-2">{`${employee.firstName} ${employee.lastName}`}</td>
-              <td className="border px-4 py-2">{deductions.SSS || 0}</td>
-              <td className="border px-4 py-2">{deductions.PhilHealth || 0}</td>
-              <td className="border px-4 py-2">{deductions['Pag-IBIG'] || 0}</td>
-              <td className="border px-4 py-2">{total}</td>
-              <td className="border px-4 py-2">
-                <button
-                  className="btn btn-sm btn-secondary"
-                  onClick={() => handleViewDates(dates)}
-                >
-                  View Dates
-                </button>
-              </td>
+      {groupedArray.length === 0 ? (
+        <p>No deductions available.</p>
+      ) : (
+        <table className="min-w-full table-auto border-collapse mb-6">
+          <thead>
+            <tr className="bg-gray-200 text-gray-700">
+              <th className="px-4 py-2 border-b text-left">Employee Name</th>
+              <th className="px-4 py-2 border-b text-left">Benefit Name</th>
+              <th className="px-4 py-2 border-b text-left">Total Amount</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {groupedArray.map((deduction, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-4 py-2 border-b">
+                  {renderedEmployees[deduction.employeeId]
+                    ? ""
+                    : deduction.employeeName}
+                  {(renderedEmployees[deduction.employeeId] = true)}
+                </td>
+                <td
+                  className="px-4 py-2 border-b text-blue-500 cursor-pointer"
+                  onClick={() => setSelectedBenefit(deduction.benefitsName)}
+                >
+                  {deduction.benefitsName}
+                </td>
+                <td className="px-4 py-2 border-b">{deduction.totalAmount}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
-      {selectedEmployeeDates && (
-        <div className="modal fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-          <div className="modal-box w-full max-w-lg p-5 bg-white rounded-lg shadow-lg">
-            <h4 className="text-lg font-semibold mb-4">Deduction Dates</h4>
-            <ul>
-              {selectedEmployeeDates.map((deduction, index) => (
-                <li key={index} className="mb-2">
-                  {`${deduction.type} - ${deduction.amount} - ${deduction.date}`}
-                </li>
-              ))}
-            </ul>
+      {selectedBenefit && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-96">
+            <h3 className="text-xl font-semibold mb-4">
+              Benefit Deduction History for {selectedBenefit}
+            </h3>
+            {filteredHistory.length === 0 ? (
+              <p>No history available for this benefit.</p>
+            ) : (
+              <table className="min-w-full table-auto border-collapse">
+                <thead>
+                  <tr className="bg-gray-200 text-gray-700">
+                    <th className="px-4 py-2 border-b text-left">
+                      Employee Name
+                    </th>
+                    <th className="px-4 py-2 border-b text-left">Amount</th>
+                    <th className="px-4 py-2 border-b text-left">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredHistory.map((historyItem, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 border-b">
+                        {historyItem.employeeId.firstName}{" "}
+                        {historyItem.employeeId.lastName}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {historyItem.amount}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {new Date(historyItem.createdAt).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
             <button
-              onClick={closeModal}
-              className="btn btn-secondary mt-4 w-full"
+              className="mt-4 bg-gray-500 text-white py-2 px-4 rounded"
+              onClick={() => setSelectedBenefit(null)}
             >
               Close
             </button>

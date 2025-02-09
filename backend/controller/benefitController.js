@@ -262,7 +262,7 @@ export const addBenefitDeduction = async (req, res) => {
 
         const deductionHistory = new BenefitDeductionHistory({ employeeId, benefitsName, amount });
         await deductionHistory.save();
-
+        console.log(deductionHistory);
         res.status(201).json({
             success: true,
             message: "Benefit Deduction recorded successfully",
@@ -291,13 +291,14 @@ export const getAllBenefitDeductions = async (req, res) => {
 };
 export const getBenefitDeductionHistory = async (req, res) => {
     try {
-        const deductions = await BenefitDeductionHistory.find({})
+        const history = await BenefitDeductionHistory.find({})
             .populate("employeeId", "firstName lastName")
-            .populate("benefitsName", "benefitsName");
+            .populate("benefitsName", "benefitsName createdAt");
 
-        res.status(200).json({ success: true, deductions });
+        res.status(200).json({ success: true, history });  // Fix here
     } catch (error) {
         console.error("Error fetching benefit deductions:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
