@@ -295,10 +295,27 @@ export const getBenefitDeductionHistory = async (req, res) => {
             .populate("employeeId", "firstName lastName")
             .populate("benefitsName", "benefitsName createdAt");
 
-        res.status(200).json({ success: true, history });  // Fix here
+        res.status(200).json({ success: true, history });
     } catch (error) {
         console.error("Error fetching benefit deductions:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+export const getMyBenefitDeductions = async (req, res) => {
+    try {
+        console.log("Request User:", req.user);
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ success: false, message: "Unauthorized: User not found" });
+        }
 
+        const userId = req.user.id;
+        const myHistory = await BenefitDeductionHistory.find({ userId })
+            .populate("benefitsName", "benefitsName amount")
+            .select("amount createdAt"); // Ensure createdAt is included
+
+        res.status(200).json({ success: true, myHistory });
+    } catch (error) {
+        console.error("Error fetching my benefit deductions:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};

@@ -171,7 +171,7 @@ const DeductionsManagement = () => {
 
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded"
+          className="btn btn-primary"
         >
           Add Deduction
         </button>
@@ -180,17 +180,17 @@ const DeductionsManagement = () => {
       {groupedArray.length === 0 ? (
         <p>No deductions available.</p>
       ) : (
-        <table className="min-w-full table-auto border-collapse mb-6">
+        <table className="table w-full mb-4">
           <thead>
-            <tr className="bg-gray-200 text-gray-700">
-              <th className="px-4 py-2 border-b text-left">Employee Name</th>
-              <th className="px-4 py-2 border-b text-left">Benefit Name</th>
-              <th className="px-4 py-2 border-b text-left">Total Amount</th>
+            <tr className="bg-primary text-white">
+              <th className="">Employee Name</th>
+              <th className="border px-4 py-2">Benefit Name</th>
+              <th className="border px-4 py-2">Total Amount</th>
             </tr>
           </thead>
           <tbody>
             {groupedArray.map((deduction, index) => (
-              <tr key={index} className="hover:bg-gray-50">
+              <tr key={index} className="hover:bg-neutral hover:text-white">
                 <td className="px-4 py-2 border-b">
                   {renderedEmployees[deduction.employeeId]
                     ? ""
@@ -198,7 +198,7 @@ const DeductionsManagement = () => {
                   {(renderedEmployees[deduction.employeeId] = true)}
                 </td>
                 <td
-                  className="px-4 py-2 border-b text-blue-500 cursor-pointer"
+                  className="px-4 py-2 border-b text-white-500 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedHistory(deduction.benefitsName);
@@ -225,9 +225,9 @@ const DeductionsManagement = () => {
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-gray-200 text-gray-700">
-                    <th className="px-4 py-2 border-b text-left">Employee Name</th>
-                    <th className="px-4 py-2 border-b text-left">Amount</th>
-                    <th className="px-4 py-2 border-b text-left">Date</th>
+                    <th className="border px-4 py-2">Employee Name</th>
+                    <th className="border px-4 py-2">Amount</th>
+                    <th className="border px-4 py-2">Date</th>
                   </tr>
                 </thead>
                 <tbody>

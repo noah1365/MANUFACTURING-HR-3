@@ -116,21 +116,21 @@ const BenefitsRequested = () => {
       )}
 
 <h2 className="text-xl font-bold mt-6 text-center">Processed Requests</h2>
-<table className="w-full mt-4 border border-collapse">
+<table className="table w-full mb-4">
   <thead>
-    <tr className="bg-blue-100">
-      <th className="border p-2">Employee Name</th>
-      <th className="border p-2">Benefit Name</th>
-      <th className="border p-2">Uploaded IDs</th>
-      <th className="border p-2">Status</th>
+    <tr className="bg-primary text-white">
+      <th className="border px-4 py-2">Employee Name</th>
+      <th className="border px-4 py-2">Benefit Name</th>
+      <th className="border px-4 py-2">Uploaded IDs</th>
+      <th className="border px-4 py-2">Status</th>
     </tr>
   </thead>
   <tbody>
     {processedRequests.map((request) => (
-      <tr key={request._id} className="text-center">
-        <td className="border p-2">{`${request.employeeId.firstName} ${request.employeeId.lastName}`}</td>
-        <td className="border p-2">{request.benefitsName?.benefitsName || "N/A"}</td>
-        <td className="border p-2 flex justify-center gap-4">
+      <tr key={request._id} className="hover:bg-neutral hover:text-white">
+        <td className="border px-4 py-2">{`${request.employeeId.firstName} ${request.employeeId.lastName}`}</td>
+        <td className="border px-4 py-2">{request.benefitsName?.benefitsName || "N/A"}</td>
+        <td className="border px-4 py-2 flex justify-center gap-4">
           {request.uploadDocs?.frontId && (
             <div className="relative group">
               <img
@@ -158,7 +158,7 @@ const BenefitsRequested = () => {
             </div>
           )}
         </td>
-        <td className={`border p-2 font-bold ${request.status === 'Approved' ? 'text-green-600' : 'text-red-600'}`}>{request.status}</td>
+        <td className={`border px-4 py-2 font-bold ${request.status === 'Approved' ? 'text-green-600' : 'text-red-600'}`}>{request.status}</td>
       </tr>
     ))}
   </tbody>

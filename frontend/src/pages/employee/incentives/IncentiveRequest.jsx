@@ -120,16 +120,17 @@ const IncentiveRequest = () => {
                         className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 text-sm"
                     />
                 </div>
-
+<div className='flex justify-center'>
                 <button
                     type="submit"
                     disabled={loading}
                     className={`w-full text-white font-bold py-2 px-4 rounded-md ${
-                        loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        loading ? "bg-gray-400 cursor-not-allowed" : "btn btn-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 w-24"
                     }`}
                 >
                     {loading ? "Submitting..." : "Submit Request"}
                 </button>
+                </div>
             </form>
 
             <div className="mt-6">
@@ -139,17 +140,17 @@ const IncentiveRequest = () => {
                     <p className="text-center text-gray-500">Loading requests...</p>
                 ) : requests.length > 0 ? (
                     <div className="overflow-x-auto">
-                        <table className="min-w-full table-auto border border-gray-200">
+                        <table className="table w-full mb-4">
                             <thead>
-                                <tr className="bg-gray-100 border-b">
-                                    <th className="px-4 py-2 text-left">Incentive Type</th>
-                                    <th className="px-4 py-2 text-left">Comments</th>
-                                    <th className="px-4 py-2 text-left">Status</th>
+                                <tr className="bg-primary text-white">
+                                    <th className="border px-4 py-2">Incentive Type</th>
+                                    <th className="border px-4 py-2">Comments</th>
+                                    <th className="border px-4 py-2">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {requests.map((request, index) => (
-                                    <tr key={index} className="border-b hover:bg-gray-50">
+                                    <tr key={index} className="hover:bg-neutral hover:text-white">
                                         <td className="px-4 py-2">{request.incentiveType}</td>
                                         <td className="px-4 py-2">
                                             <div>

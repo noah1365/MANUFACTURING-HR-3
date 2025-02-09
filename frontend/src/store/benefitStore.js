@@ -18,6 +18,7 @@ export const useBenefitStore = create((set) => ({
     myRequestBenefits: [], 
     deductions: [], 
     history: [], 
+    myHistory: [], 
 
     
     createBenefit: async (benefit) => {
@@ -242,4 +243,15 @@ addBenefitDeduction: async ({ employeeId, benefitsName, amount }) => {
     }
 },
 
+fetchMyBenefitDeductions: async () => {
+    try {
+        const response = await axios.get(`${API_URL}/get-my-deduction-history`); 
+        set({ myHistory: response.data.myHistory || [], error: null });
+    } catch (error) {
+        set({ 
+            error: error.response?.data?.message || "Error fetching benefit deductions", 
+            myHistory: [] 
+        });
+    }
+},
 }));
