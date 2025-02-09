@@ -10,7 +10,6 @@ const Deductions = () => {
         fetchMyBenefitDeductions();
     }, []);
 
-    // Group benefits by name and sum their total amounts
     const groupedBenefits = myHistory.reduce((acc, benefit) => {
         const benefitName = benefit.benefitsName?.benefitsName || "N/A";
 
