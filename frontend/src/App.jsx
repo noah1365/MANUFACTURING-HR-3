@@ -157,7 +157,7 @@ const App = () => {
                       <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />  
                       <Route path="/security" element={<ProtectedRoute><Security/></ProtectedRoute>} />  
                       
-  {/*                       <Route path="/employee-list" element={<ProtectedRoute><EmployeeList /></ProtectedRoute>} />                    
+                   {/*      <Route path="/employee-list" element={<ProtectedRoute><EmployeeList /></ProtectedRoute>} />                    
  */}
                       {/* Payroll Processing */}
                       <Route path="/payroll-management" element={<ProtectedRoute><PayrollProcessing /></ProtectedRoute>} />

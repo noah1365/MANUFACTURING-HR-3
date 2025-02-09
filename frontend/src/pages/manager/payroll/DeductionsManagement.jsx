@@ -1,63 +1,98 @@
 import React, { useState, useEffect } from "react";
 import { useBenefitStore } from "../../../store/benefitStore";
+import { useAuthStore } from "../../../store/authStore";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DeductionsManagement = () => {
   const {
     deductions,
     error,
+    fetchBenefit,
+    benefit: benefits,
     fetchBenefitDeductions,
     history,
+    fetchMyRequestBenefits,
+    myRequestBenefits,
     fetchBenefitDeductionHistory,
     addBenefitDeduction,
   } = useBenefitStore();
-  
-  const [selectedBenefit, setSelectedBenefit] = useState(null);
-  const [employeeId, setEmployeeId] = useState("");
+
+  const { fetchUsers, users } = useAuthStore();
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [selectedBenefit, setSelectedBenefit] = useState(null); 
+  const [selectedHistory, setSelectedHistory] = useState(null);
   const [benefitsName, setBenefitsName] = useState("");
   const [amount, setAmount] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    fetchBenefit();
+    fetchMyRequestBenefits();
     fetchBenefitDeductions();
     fetchBenefitDeductionHistory();
-  }, [fetchBenefitDeductions, fetchBenefitDeductionHistory]);
+    fetchUsers().then(() => {
+      if (users) {
+        setEmployees(users); 
+      }
+    });
+  }, [fetchBenefit, fetchBenefitDeductions,fetchMyRequestBenefits, fetchBenefitDeductionHistory, fetchUsers, users]);
 
   const handleAddDeduction = async (e) => {
     e.preventDefault();
-    
-    // Ensure 'amount' is converted to a number and check if valid
-    const amountAsNumber = Number(amount); // Convert string to number
-    if (!employeeId || !benefitsName || !amount || amountAsNumber <= 0 || isNaN(amountAsNumber)) {
-      setErrorMessage("Please fill in all fields correctly.");
-      return;
+  
+    const amountAsNumber = Number(amount);
+    if (!selectedEmployee || !selectedBenefit || !amount || amountAsNumber <= 0 || isNaN(amountAsNumber)) {
+        toast.error("Please fill in all fields correctly.");
+        return;
     }
   
-    // Clear previous error message
-    setErrorMessage("");
+    const selectedEmployeeDetails = employees.find(employee => employee._id === selectedEmployee);
+    console.log("Selected Benefit ID:", selectedBenefit);
+    console.log("My Request Benefits:", myRequestBenefits);
   
+    const selectedBenefitDetails = myRequestBenefits.find(
+        (benefit) => benefit.benefitsName?._id === selectedBenefit
+    );
+    
+    console.log("Selected Benefit Details:", selectedBenefitDetails);
+  
+    if (!selectedBenefitDetails) {
+        toast.error("The employee did not request this benefit.");
+        return;
+    }
+
+    if (selectedBenefitDetails.status !== "Approved") {
+        toast.error("The request is not approved yet.");
+        return;
+    }
+
     const deductionData = {
-      employeeId,
-      benefitsName,
-      amount: amountAsNumber, // Ensure amount is number here
+        employeeId: selectedEmployee,
+        benefitsName: selectedBenefitDetails.benefitsName._id,
+        amount: amountAsNumber,
     };
   
     try {
-      const response = await addBenefitDeduction(deductionData); // Call the store's function
-      if (response.success) {
-        alert("Benefit Deduction added successfully");
-        fetchBenefitDeductions(); // Refresh the deductions list
-        fetchBenefitDeductionHistory(); // Refetch history to update the view
-      } else {
-        setErrorMessage(response.message || "Failed to add deduction.");
-      }
+        const response = await addBenefitDeduction(deductionData);
+        console.log(response);
+        if (response && response.success) {
+            toast.success("Benefit Deduction added successfully!");
+            fetchBenefitDeductions();
+            fetchBenefitDeductionHistory();
+            setSelectedEmployee("");
+            setSelectedBenefit("");
+            setAmount("");
+        } else {
+            toast.error(response?.message || "Failed to add deduction.");
+        }
     } catch (error) {
-      setErrorMessage("An error occurred while adding the deduction.");
+        console.error("Error in handleAddDeduction:", error); 
+        toast.error(error?.response?.data?.message || "An error occurred while adding the deduction.");
     }
-  };
+};
 
-
-
-  const groupedDeductions = deductions.reduce((acc, deduction) => {
+    const groupedDeductions = deductions.reduce((acc, deduction) => {
     const employeeKey = `${deduction.employeeId._id}_${deduction.benefitsName._id}`;
     if (!acc[employeeKey]) {
       acc[employeeKey] = {
@@ -67,18 +102,16 @@ const DeductionsManagement = () => {
         employeeId: deduction.employeeId._id,
       };
     }
-    acc[employeeKey].totalAmount += deduction.amount; 
-  
+    acc[employeeKey].totalAmount += deduction.amount;
     return acc;
   }, {});
-  
 
   const groupedArray = Object.values(groupedDeductions);
   let renderedEmployees = {};
 
-  const filteredHistory = selectedBenefit
+  const filteredHistory = selectedHistory
     ? history.filter(
-        (item) => item.benefitsName.benefitsName === selectedBenefit
+        (item) => item.benefitsName.benefitsName === selectedHistory
       )
     : [];
 
@@ -88,38 +121,53 @@ const DeductionsManagement = () => {
       
       <form onSubmit={handleAddDeduction} className="mb-6">
         <div className="mb-4">
-          <label className="block text-sm font-semibold mb-2">Employee ID</label>
-          <input
-            type="text"
-            value={employeeId}
-            onChange={(e) => setEmployeeId(e.target.value)}
+          <label className="block text-sm font-semibold mb-2">Employee</label>
+          <select
+            value={selectedEmployee}
+            onChange={(e) => setSelectedEmployee(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Enter Employee ID"
-          />
+          >
+            <option value="">Select Employee</option>
+            {employees.length > 0 &&
+              employees.map((employee) => (
+                <option key={employee._id} value={employee._id}>
+                  {employee.firstName} {employee.lastName}
+                </option>
+              ))}
+          </select>
         </div>
+
         <div className="mb-4">
-          <label className="block text-sm font-semibold mb-2">Benefit Name</label>
-          <input
-            type="text"
-            value={benefitsName}
-            onChange={(e) => setBenefitsName(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Enter Benefit Name"
-          />
+          <label className="block text-sm font-semibold mb-2">Select Benefit</label>
+          <select
+  value={selectedBenefit}
+  onChange={(e) => setSelectedBenefit(e.target.value)} 
+  className="w-full p-2 border border-gray-300 rounded"
+>
+  <option value="">Select Benefit</option>
+  {myRequestBenefits && myRequestBenefits.length > 0 ? (
+    benefits.map((benefit) => (
+      <option key={benefit._id} value={benefit._id}>
+        {benefit.benefitsName}
+      </option>
+    ))
+  ) : (
+    <option value="">No benefits available</option>
+  )}
+</select>
+
         </div>
+
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-2">Amount</label>
           <input
-  type="number"
-  value={amount}
-  onChange={(e) => setAmount(e.target.value)}
-  className="w-full p-2 border border-gray-300 rounded"
-  placeholder="Enter Amount"
-/>
-
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Enter Amount"
+          />
         </div>
-
-        {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
 
         <button
           type="submit"
@@ -151,7 +199,10 @@ const DeductionsManagement = () => {
                 </td>
                 <td
                   className="px-4 py-2 border-b text-blue-500 cursor-pointer"
-                  onClick={() => setSelectedBenefit(deduction.benefitsName)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedHistory(deduction.benefitsName);
+                  }}
                 >
                   {deduction.benefitsName}
                 </td>
@@ -162,11 +213,11 @@ const DeductionsManagement = () => {
         </table>
       )}
 
-      {selectedBenefit && (
+      {selectedHistory && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-4 rounded-lg shadow-lg w-96">
             <h3 className="text-xl font-semibold mb-4">
-              Benefit Deduction History for {selectedBenefit}
+              Benefit Deduction History for {selectedHistory}
             </h3>
             {filteredHistory.length === 0 ? (
               <p>No history available for this benefit.</p>
@@ -183,8 +234,7 @@ const DeductionsManagement = () => {
                   {filteredHistory.map((historyItem, index) => (
                     <tr key={index} className="hover:bg-gray-50">
                       <td className="px-4 py-2 border-b">
-                        {historyItem.employeeId.firstName}{" "}
-                        {historyItem.employeeId.lastName}
+                        {historyItem.employeeId.firstName} {historyItem.employeeId.lastName}
                       </td>
                       <td className="px-4 py-2 border-b">{historyItem.amount}</td>
                       <td className="px-4 py-2 border-b">
@@ -197,13 +247,15 @@ const DeductionsManagement = () => {
             )}
             <button
               className="mt-4 bg-gray-500 text-white py-2 px-4 rounded"
-              onClick={() => setSelectedBenefit(null)}
+              onClick={() => setSelectedHistory(null)}
             >
               Close
             </button>
           </div>
         </div>
       )}
+
+      <ToastContainer />
     </div>
   );
 };

@@ -14,6 +14,7 @@ export const useBenefitStore = create((set) => ({
     benefit: null,
     error: null,
     benefits:[],
+    requestBenefit:[],
     myRequestBenefits: [], 
     deductions: [], 
     history: [], 
@@ -206,32 +207,39 @@ fetchBenefit: async () => {
         }
     },
 
-    addBenefitDeduction: async ({ employeeId, benefitsName, amount }) => {
-        try {
-          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
-          const csrfToken = csrfResponse.data.csrfToken;
-    
-          const response = await axios.post(
+addBenefitDeduction: async ({ employeeId, benefitsName, amount }) => {
+    try {
+        const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+        const csrfToken = csrfResponse.data.csrfToken;
+
+        const response = await axios.post(
             `${API_URL}/add-benefit-deduction`,
             { employeeId, benefitsName, amount },
             { headers: { 'X-CSRF-Token': csrfToken } }
-          );
-    
-          console.log("API Response:", response);
-    
-          set((state) => ({
+        );
+
+        console.log("API Response:", response.data);  // Log the response to check if there's an error
+
+        if (!response.data.success) {
+            console.error("API returned an error:", response.data.message);
+            throw new Error(response.data.message);  // Manually throw an error so it goes to catch block
+        }
+
+        set((state) => ({
             deductions: [...state.deductions, response.data.deduction],
             history: [...state.history, response.data.history],
-          }));
-    
-          return response.data;
-        } catch (err) {
-          console.error("Error adding deduction:", err);  // Log the error to understand it
-          set({
-            error: err.response ? err.response.data.message : "Error adding deduction",
-          });
-          return null;
-        }
-      },
-      
+        }));
+
+        return response.data;
+    } catch (err) {
+        console.error("Error adding deduction:", err?.response?.data || err.message || err);
+        
+        set({
+            error: err?.response?.data?.message || "An unexpected error occurred",
+        });
+
+        return null;
+    }
+},
+
 }));
