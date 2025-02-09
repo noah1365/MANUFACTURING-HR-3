@@ -1,4 +1,5 @@
 import { Benefit } from "../model/benefit/benefitModel.js";
+import { User } from "../model/userModel.js";
 
 import mongoose from "mongoose";
 
@@ -100,6 +101,8 @@ export const deleteBenefit = async (req, res) => {
 import cloudinary from "../config/cloudinaryConfig.js";
 import upload from "../config/multerConfig.js"; 
 import { RequestBenefit } from "../model/benefit/requestBenefitModel.js";
+import { BenefitDeduction } from "../model/benefit/benefitDeductionsModel.js";
+import { BenefitDeductionHistory } from "../model/benefit/benefitDeductionHistory.js";
 
 export const requestBenefit = async (req, res) => {
     try {
@@ -220,3 +223,81 @@ export const updateRequestBenefitStatus = async (req, res) => {
 };
 
 
+export const addBenefitDeduction = async (req, res) => {
+    try {
+        const { employeeId, benefitsName, amount } = req.body;
+
+        if (!mongoose.isValidObjectId(employeeId) || !mongoose.isValidObjectId(benefitsName)) {
+            return res.status(400).json({ success: false, message: "Invalid Employee or Benefit ID" });
+        }
+
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ success: false, message: "Deduction amount must be greater than 0" });
+        }
+
+        const employee = await User.findById(employeeId);
+        if (!employee) {
+            return res.status(404).json({ success: false, message: "Employee not found" });
+        }
+
+        const benefit = await Benefit.findById(benefitsName);
+        if (!benefit) {
+            return res.status(404).json({ success: false, message: "Benefit not found" });
+        }
+
+        const isApproved = await RequestBenefit.findOne({ employeeId, benefitsName, status: "Approved" });
+        if (!isApproved) {
+            return res.status(403).json({ success: false, message: "Employee is not approved for this benefit" });
+        }
+
+        let deduction = await BenefitDeduction.findOne({ employeeId, benefitsName });
+
+        if (deduction) {
+            deduction.amount += amount;
+            await deduction.save();
+        } else {
+            deduction = new BenefitDeduction({ employeeId, benefitsName, amount });
+            await deduction.save();
+        }
+
+        const deductionHistory = new BenefitDeductionHistory({ employeeId, benefitsName, amount });
+        await deductionHistory.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Benefit Deduction recorded successfully",
+            deduction,
+            history: deductionHistory,
+        });
+
+    } catch (error) {
+        console.error("Error processing benefit deduction:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+
+export const getAllBenefitDeductions = async (req, res) => {
+    try {
+        const deductions = await BenefitDeduction.find({})
+            .populate("employeeId", "firstName lastName")
+            .populate("benefitsName", "benefitsName");
+
+        res.status(200).json({ success: true, deductions });
+    } catch (error) {
+        console.error("Error fetching benefit deductions:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+export const getBenefitDeductionHistory = async (req, res) => {
+    try {
+        const deductions = await BenefitDeductionHistory.find({})
+            .populate("employeeId", "firstName lastName")
+            .populate("benefitsName", "benefitsName");
+
+        res.status(200).json({ success: true, deductions });
+    } catch (error) {
+        console.error("Error fetching benefit deductions:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};

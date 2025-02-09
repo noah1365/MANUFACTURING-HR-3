@@ -1,6 +1,6 @@
 import express from "express";
 
-import {  createBenefit, deleteBenefit, getAllRequestBenefits, getBenefit, getMyRequestBenefits, requestBenefit, updateBenefit, updateRequestBenefitStatus, upload } from "../controller/benefitController.js";
+import {  createBenefit, addBenefitDeduction, deleteBenefit, getAllRequestBenefits, getBenefit, getMyRequestBenefits, requestBenefit, updateBenefit, updateRequestBenefitStatus, upload, getAllBenefitDeductions, getBenefitDeductionHistory } from "../controller/benefitController.js";
 
 import { verifyToken } from "../middleware/verifyToken.js";
 import { checkRole } from "../middleware/roleMiddleware.js";
@@ -22,6 +22,9 @@ benefitRoute.get("/my-request-benefits",verifyToken,getMyRequestBenefits);
 benefitRoute.get("/get-all-request-benefits",verifyToken,getAllRequestBenefits);
 benefitRoute.put("/update-request-benefit-status/:id", verifyToken, updateRequestBenefitStatus);
 
+benefitRoute.post("/create-benefit-deduction", verifyToken, checkRole('Manager'), addBenefitDeduction);
+benefitRoute.get("/get-all-benefit-deduction", verifyToken, checkRole('Manager'), getAllBenefitDeductions);
+benefitRoute.get("/get-benefit-deduction-history", verifyToken, checkRole('Manager'), getBenefitDeductionHistory);
 
 export default benefitRoute;
 
