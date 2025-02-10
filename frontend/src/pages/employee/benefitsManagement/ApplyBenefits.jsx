@@ -155,24 +155,24 @@ const ApplyBenefits = () => {
 
       <h2 className="text-xl font-bold mt-10 mb-4">Your Benefit Requests</h2>
       <div className="overflow-x-auto">
-        <table className="table table-bordered w-full">
+        <table className="table w-full">
           <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2">#</th>
-              <th className="p-2">Benefit Name</th>
-              <th className="p-2">Status</th>
-              <th className="p-2">Date Requested</th>
+            <tr className="bg-primary text-white">
+              <th className="border px-4 py-2">#</th>
+              <th className="border px-4 py-2">Benefit Name</th>
+              <th className="border px-4 py-2">Status</th>
+              <th className="border px-4 py-2">Date Requested</th>
             </tr>
           </thead>
           <tbody>
             {Array.isArray(myRequestBenefits) && myRequestBenefits.length > 0 ? (
               myRequestBenefits.map((benefit, index) => (
                 <tr key={benefit._id} className="text-center">
-                  <td className="p-2">{index + 1}</td>
-                  <td className="p-2">
+                  <td className="border px-4 py-2">{index + 1}</td>
+                  <td className="border px-4 py-2">
                     {benefit.benefitsName.benefitsName || "Unknown"}
                   </td>
-                  <td className="p-2">
+                  <td className="border px-4 py-2">
                     <span
                       className={`badge ${
                         benefit.status === "Approved"
@@ -185,7 +185,7 @@ const ApplyBenefits = () => {
                       {benefit.status}
                     </span>
                   </td>
-                  <td className="p-2">
+                  <td className="border px-4 py-2">
                     {new Date(benefit.createdAt).toLocaleDateString()}
                   </td>
                 </tr>

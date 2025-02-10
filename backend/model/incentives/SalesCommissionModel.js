@@ -18,16 +18,6 @@ const SalesCommissionSchema = new mongoose.Schema({
         enum: ["Available", "Not Available"],
         default: "Available"
     },
-    appliedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: false
-    },
-    appliedStatus:{
-        type: String,
-        enum: ["Pending", "Approved","Denied"],
-        default: "Pending"
-    }
 }, { timestamps: true });
 
 export const SalesCommission = mongoose.model("SalesCommission", SalesCommissionSchema);

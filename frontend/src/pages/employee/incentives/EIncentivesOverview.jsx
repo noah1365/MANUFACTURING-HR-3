@@ -42,18 +42,9 @@ const EIncentivesOverview = () => {
             <div className="container mx-auto p-4">
                 <h1 className="text-3xl font-bold mb-4 text-center">Incentives Management</h1>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="card bg-base-100 shadow-xl">
-                        <div className="card-body">
-                            <h2 className="card-title">Sales Commissions</h2>
-                            <p>Manage sales commissions for employees.</p>
-                            <Link to="/my-commissions" className="btn btn-primary">
-                                <button>View Commissions</button>
-                            </Link>
-                        </div>
-                    </div>
 
-                    <div className="card bg-base-100 shadow-xl">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="card bg-base-100 shadow-xl">
                         <div className="card-body">
                             <h2 className="card-title">Incentive Requests</h2>
                             <p>Review employee incentive requests.</p>
@@ -65,13 +56,24 @@ const EIncentivesOverview = () => {
 
                     <div className="card bg-base-100 shadow-xl">
                         <div className="card-body">
+                            <h2 className="card-title">Sales Commissions</h2>
+                            <p>Manage sales commissions for employees.</p>
+                            <Link to="/my-commissions" className="btn btn-primary">
+                                <button>View Commissions</button>
+                            </Link>
+                        </div>
+                    </div>
+
+
+                {/*     <div className="card bg-base-100 shadow-xl">
+                        <div className="card-body">
                             <h2 className="card-title">Incentive History</h2>
                             <p>View historical data on incentives.</p>
                             <Link to="/incentive-history" className="btn btn-primary">
                                 <button>View History</button>
                             </Link>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

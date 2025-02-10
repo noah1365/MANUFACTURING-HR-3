@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { Incentive } from "../model/incentives/incentiveModel.js";
 import { RequestIncentive } from "../model/incentives/requestIncentiveModel.js";
 import { SalesCommission } from "../model/incentives/SalesCommissionModel.js";
+import { RecognitionProgram } from "../model/incentives/recognitionProgramModel.js";
 
 /* incentives overview crud */
 export const createIncentive = async (req,res) => {
@@ -212,7 +213,6 @@ export const getAllSalesCommission = async (req, res) => {
     try {
         // const allSalesCommissions = await SalesCommission.find({ status: "Not Available" })
         const allSalesCommissions = await SalesCommission.find({})
-        .populate("appliedBy", "firstname lastname");
         return res.status(200).json(allSalesCommissions);
     } catch (error) {
         return res.status(500).json({ message: "Server Error", error: error.message });
@@ -235,6 +235,46 @@ export const updateSalesCommission = async (req, res) => {
         }
 
         return res.status(200).json({ message: "Sales Commission updated successfully.", commission: updatedCommission });
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+/* later na */
+export const mySalesCommission = async () => {
+
+}
+
+
+export const createRecognitionPrograms = async (req, res) => {
+    try {
+      const { employeeId, awardName, description, rewardType, rewardValue } = req.body;
+  
+      if (!employeeId || !awardName || !rewardType) {
+        return res.status(400).json({ message: "Missing required fields." });
+      }
+  
+      const newRecognition = new RecognitionProgram({
+        employeeId,
+        awardName,
+        description,
+        rewardType,
+        rewardValue: rewardValue || 0,
+      });
+  
+      await newRecognition.save();
+  
+      return res.status(201).json({ message: "Recognition program created successfully.", data: newRecognition });
+    } catch (error) {
+      console.error("Error creating recognition program:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+
+  export const getAllRecognitionPrograms = async (req, res) => {
+    try {
+        const allRecognitionPrograms = await RecognitionProgram.find({})
+        return res.status(200).json(allRecognitionPrograms);
     } catch (error) {
         return res.status(500).json({ message: "Server Error", error: error.message });
     }

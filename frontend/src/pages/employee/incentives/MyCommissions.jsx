@@ -1,93 +1,53 @@
-import React, { useEffect, useState } from 'react';
-
-const employeeId = 1; 
-const initialEmployeeCommissions = [
-  {
-    id: 1,
-    employeeName: 'Elsie',
-    salesAmount: 10000,
-    commissionRate: 0.05,
-    commissionEarned: 500,
-    date: '2024-09-01', 
-  },
-  {
-    id: 2,
-    employeeName: 'Elsie',
-    salesAmount: 15000,
-    commissionRate: 0.04,
-    commissionEarned: 600,
-    date: '2024-09-05',
-  },
-];
+import React, { useEffect } from "react";
+import { useIncentiveStore } from "../../../store/incentiveStore";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MyCommissions = () => {
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [feedback, setFeedback] = useState('');
+  const { allSalesCommission, fetchAllSalesCommission, isLoading } = useIncentiveStore();
 
-  const employeeCommissions = initialEmployeeCommissions.filter(commission => commission.employeeName === 'Elsie');
-
-  const handleFeedbackToggle = () => {
-    setShowFeedback(!showFeedback);
-  };
-
-  const handleFeedbackChange = (e) => {
-    setFeedback(e.target.value);
-  };
-
-  const handleFeedbackSubmit = () => {
-    console.log(feedback);
-    setFeedback('');
-    setShowFeedback(false);
-  };
   useEffect(() => {
-    document.title = "My Commissions";
-  });
+    fetchAllSalesCommission();
+  }, [fetchAllSalesCommission]);
+
   return (
     <div className="relative max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-2xl">
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-semibold mb-6 text-center">My Sales Commissions</h1>
+      <ToastContainer/>
+      <h2 className="text-3xl mb-5 text-center">Available Sales Commissions</h2>
 
-        {employeeCommissions.length > 0 ? (
-          <table className="table w-full table-zebra">
+      <div className="card bg-base-100 shadow-xl">
+        {isLoading ? (
+          <p className="text-center p-4">Loading...</p>
+        ) : (
+          <table className="table w-full">
             <thead>
-              <tr>
-                <th>Date</th>
-                <th>Sales Amount</th>
-                <th>Commission Rate</th>
-                <th>Commission Earned</th>
+              <tr className="bg-primary text-white">
+                <th className="border px-4 py-2">Sales Commission Name</th>
+                <th className="border px-4 py-2">Target Amount (₱)</th>
+                <th className="border px-4 py-2">Commission Rate (%)</th>
+                <th className="border px-4 py-2">Date</th>
+                <th className="border px-4 py-2">Status</th>
               </tr>
             </thead>
             <tbody>
-              {employeeCommissions.map((commission) => (
-                <tr key={commission.id}>
-                  <td>{commission.date}</td>
-                  <td>₱{commission.salesAmount.toFixed(2)}</td>
-                  <td>{(commission.commissionRate * 100).toFixed(2)}%</td>
-                  <td>₱{commission.commissionEarned.toFixed(2)}</td>
+              {allSalesCommission.length > 0 ? (
+                allSalesCommission.map((commission) => (
+                  <tr key={commission._id} className="hover:bg-neutral hover:text-white">
+                    <td className="border px-4 py-2">{commission.salesCommissionName}</td>
+                    <td className="border px-4 py-2">{commission.targetAmount ? commission.targetAmount.toFixed(2) : "0.00"}</td>
+                    <td className="border px-4 py-2">{commission.commissionRate ? commission.commissionRate.toFixed(2) : "0.00"}</td>
+                    <td className="border px-4 py-2">{commission.createdAt ? new Date(commission.createdAt).toLocaleDateString() : "N/A"}</td>
+                    <td className="border px-4 py-2">{commission.status || "N/A"}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center">No sales commission data available.</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-        ) : (
-          <div className="alert alert-warning text-center">No commission data available.</div>
         )}
-
-        <div className="mt-6 text-center">
-          <button className="btn btn-secondary" onClick={handleFeedbackToggle}>
-            {showFeedback ? 'Hide Feedback' : 'Give Feedback'}
-          </button>
-          {showFeedback && (
-            <div className="mt-4">
-              <textarea 
-                className="textarea textarea-bordered w-full mb-2" 
-                placeholder="Provide feedback or request..." 
-                value={feedback} 
-                onChange={handleFeedbackChange}>
-              </textarea>
-              <button className="btn btn-primary" onClick={handleFeedbackSubmit}>Submit Feedback</button>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

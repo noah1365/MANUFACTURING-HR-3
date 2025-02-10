@@ -43,7 +43,7 @@ import Deductions from './pages/manager/benefits/Deductions';
 
 /* incentives management */
 import IncentivesManagements from './pages/manager/incentives/IncentivesManagements';
-import SalesCommissions from './pages/manager/incentives/SalesCommissions';
+import SalesCommissions from './pages/manager/Incentives/SalesCommissions';
 import IncentivesRequest from './pages/manager/Incentives/IncentivesRequest';
 import PerformanceMetrics from './pages/manager/incentives/PerformanceMetrics';
 import RecognitionPrograms from './pages/manager/incentives/RecognitionPrograms';
@@ -215,8 +215,8 @@ const App = () => {
 
                       <Route path="/incentives-overview" element={<ProtectedRoute><EIncentivesOverview /></ProtectedRoute>} />                    
                       <Route path="/incentive-request" element={<ProtectedRoute><IncentiveRequest /></ProtectedRoute>} />                    
-                      <Route path="/incentive-history" element={<ProtectedRoute><IncentiveHistory /></ProtectedRoute>} />                    
-                      <Route path="/my-commissions" element={<ProtectedRoute><MyCommissions /></ProtectedRoute>} />                    
+{/*                       <Route path="/incentive-history" element={<ProtectedRoute><IncentiveHistory /></ProtectedRoute>} />                    
+ */}                      <Route path="/my-commissions" element={<ProtectedRoute><MyCommissions /></ProtectedRoute>} />                    
                       
                     </>
                   )}

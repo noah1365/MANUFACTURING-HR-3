@@ -98,7 +98,6 @@ const SalesCommissions = () => {
                 <th>Commission Rate (%)</th>
                 <th>Date</th>
                 <th>Status</th>
-                <th>Applied By:</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -126,11 +125,6 @@ const SalesCommissions = () => {
                         : "N/A"}
                     </td>
                     <td>{commission.status ? commission.status : "N/A"}</td>
-                    <td>
-                      {commission.appliedBy
-                        ? commission.appliedBy.firstname
-                        : "N/A"}
-                    </td>
                     <td>
                       <button
                         onClick={() => {
