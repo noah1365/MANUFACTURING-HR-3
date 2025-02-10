@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import { Incentive } from "../model/incentives/incentiveModel.js";
 import { RequestIncentive } from "../model/incentives/requestIncentiveModel.js";
+import { SalesCommission } from "../model/incentives/SalesCommissionModel.js";
 
 /* incentives overview crud */
 export const createIncentive = async (req,res) => {
@@ -158,7 +159,7 @@ export const getAllRequestIncentives= async (req,res) => {
 export const updateRequestIncentiveStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { status } = req.body;  // Ensure frontend sends status in request body
+        const { status } = req.body;
 
         if (!["approved", "denied"].includes(status.toLowerCase())) {
             return res.status(400).json({ success: false, message: "Invalid status" });
@@ -179,5 +180,61 @@ export const updateRequestIncentiveStatus = async (req, res) => {
     } catch (error) {
         console.error("Error updating incentive request:", error);
         res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+
+
+export const createSalesCommission = async (req, res) => {
+    try {
+        const { salesCommissionName, targetAmount, commissionRate } = req.body;
+        
+        if (!salesCommissionName || !targetAmount || !commissionRate) {
+            return res.status(400).json({ message: "All fields are required." });
+        }
+
+        const newCommission = new SalesCommission({
+            salesCommissionName,
+            targetAmount,
+            commissionRate,
+            status: "Not Available"
+        });
+
+        await newCommission.save();
+        return res.status(201).json({ message: "Sales Commission created successfully.", commission: newCommission });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export const getAllSalesCommission = async (req, res) => {
+    try {
+        const allSalesCommissions = await SalesCommission.find({ status: "Available" })
+        .populate("appliedBy", "firstname lastname");
+        return res.status(200).json(allSalesCommissions);
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export const updateSalesCommission = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { salesCommissionName, targetAmount, commissionRate, status } = req.body;
+
+        const updatedCommission = await SalesCommission.findByIdAndUpdate(
+            id,
+            { salesCommissionName, targetAmount, commissionRate, status },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedCommission) {
+            return res.status(404).json({ message: "Sales Commission not found." });
+        }
+
+        return res.status(200).json({ message: "Sales Commission updated successfully.", commission: updatedCommission });
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
     }
 };

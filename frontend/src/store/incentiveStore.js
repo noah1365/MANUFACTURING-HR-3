@@ -14,6 +14,7 @@ export const useIncentiveStore = create((set) => ({
     incentive: null,
     error: null,
     incentives:[],
+    allSalesCommission:[],
 
     createIncentive: async (incentive) => {
         try {
@@ -131,16 +132,16 @@ export const useIncentiveStore = create((set) => ({
     fetchAllRequestIncentives: async () => {
         try {
           const response = await axios.get(`${API_URL}/get-all-request-incentives`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, // If authentication is needed
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
           });
           set({
-            incentives: response.data.requestIncentive || [], // ✅ Fallback to empty array
+            incentives: response.data.requestIncentive || [], 
             error: null,
           });
         } catch (error) {
           set({
             error: error.response?.data?.message || "Error fetching incentives",
-            incentives: [], // ✅ Always set incentives as an empty array to avoid undefined errors
+            incentives: [],
           });
         }
       },
@@ -178,5 +179,25 @@ export const useIncentiveStore = create((set) => ({
           return false;
         }
       },
+    
+      fetchAllSalesCommission: async () => {
+        try {
+          console.log("Fetching Sales Commission...");
+          const response = await axios.get(`${API_URL}/get-all-sales-commission`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
+          });
+          console.log("API Response:", response.data);
+          set({
+            allSalesCommission: response.data || [],
+          });
+          
+        } catch (error) {
+          console.error("Error fetching Sales Commission:", error.response?.data?.message || error);
+          set({
+            error: error.response?.data?.message || "Error fetching incentives",
+            allSalesCommission: [], 
+          });
+        }
+      }
       
 }));
