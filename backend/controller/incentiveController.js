@@ -210,7 +210,8 @@ export const createSalesCommission = async (req, res) => {
 
 export const getAllSalesCommission = async (req, res) => {
     try {
-        const allSalesCommissions = await SalesCommission.find({ status: "Available" })
+        // const allSalesCommissions = await SalesCommission.find({ status: "Not Available" })
+        const allSalesCommissions = await SalesCommission.find({})
         .populate("appliedBy", "firstname lastname");
         return res.status(200).json(allSalesCommissions);
     } catch (error) {

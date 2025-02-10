@@ -15,6 +15,7 @@ export const useIncentiveStore = create((set) => ({
     error: null,
     incentives:[],
     allSalesCommission:[],
+    newCommission:null,
 
     createIncentive: async (incentive) => {
         try {
@@ -198,6 +199,38 @@ export const useIncentiveStore = create((set) => ({
             allSalesCommission: [], 
           });
         }
+      },
+      createSalesCommission: async (newCommission) => {
+        try {
+          console.log("Fetching CSRF token..."); // ✅ Debug
+          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+          const csrfToken = csrfResponse.data.csrfToken;
+          
+          console.log("CSRF Token Received:", csrfToken); // ✅ Debug
+      
+          const response = await axios.post(`${API_URL}/create-sales-commission`, newCommission, {
+            headers: { "X-CSRF-Token": csrfToken },
+          });
+      
+          console.log("API Response:", response.data); // ✅ Debug
+      
+          set((state) => ({
+            newCommission: response.data.commission || null,
+            allSalesCommission: [...state.allSalesCommission, response.data.commission],
+            error: null,
+          }));
+      
+          return true;
+        } catch (error) {
+          console.error("Error Creating Commission:", error.response?.data || error.message);
+          
+          set({
+            error: error.response?.data.message || "Error in creating new Commission",
+          });
+      
+          return false;
+        }
       }
+      
       
 }));

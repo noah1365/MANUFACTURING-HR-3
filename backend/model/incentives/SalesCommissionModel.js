@@ -21,7 +21,7 @@ const SalesCommissionSchema = new mongoose.Schema({
     appliedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: false
     },
     appliedStatus:{
         type: String,
