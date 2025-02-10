@@ -55,6 +55,9 @@ const SalaryRequest = () => {
       
       if (message) {
         toast.success(message);
+        setRequestedAmount('');
+      setPaymentMethod('');
+      setGCashNumber('');
       } else {
         toast.error('An error occurred. Please try again.1');
       }

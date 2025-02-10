@@ -201,12 +201,6 @@ const CompensationPlanning = () => {
         <button className="bg-primary text-white px-4 py-2 rounded mr-10" onClick={() => setIsModalOpen(true)}>
           Add New Plan
         </button>
-        <button className="bg-primary text-white px-4 py-2 rounded mr-10">
-          Submit to admin
-        </button>
-        <button className="bg-primary text-white px-4 py-2 rounded">
-          Download
-        </button>
       </div>
 
       {isModalOpen && (

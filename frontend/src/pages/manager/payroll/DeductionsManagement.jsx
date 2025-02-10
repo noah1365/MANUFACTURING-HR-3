@@ -191,14 +191,14 @@ const DeductionsManagement = () => {
           <tbody>
             {groupedArray.map((deduction, index) => (
               <tr key={index} className="hover:bg-neutral hover:text-white">
-                <td className="px-4 py-2 border-b">
+                <td className="border px-4 py-2">
                   {renderedEmployees[deduction.employeeId]
                     ? ""
                     : deduction.employeeName}
                   {(renderedEmployees[deduction.employeeId] = true)}
                 </td>
                 <td
-                  className="px-4 py-2 border-b text-white-500 cursor-pointer"
+                  className="border px-4 py-2 text-white-500 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedHistory(deduction.benefitsName);
@@ -206,7 +206,7 @@ const DeductionsManagement = () => {
                 >
                   {deduction.benefitsName}
                 </td>
-                <td className="px-4 py-2 border-b">{deduction.totalAmount}</td>
+                <td className="border px-4 py-2">{deduction.totalAmount}</td>
               </tr>
             ))}
           </tbody>
@@ -222,9 +222,9 @@ const DeductionsManagement = () => {
             {filteredHistory.length === 0 ? (
               <p>No history available for this benefit.</p>
             ) : (
-              <table className="min-w-full table-auto border-collapse">
+              <table className="table w-full mb-4">
                 <thead>
-                  <tr className="bg-gray-200 text-gray-700">
+                  <tr className="bg-primary text-white">
                     <th className="border px-4 py-2">Employee Name</th>
                     <th className="border px-4 py-2">Amount</th>
                     <th className="border px-4 py-2">Date</th>
@@ -232,12 +232,12 @@ const DeductionsManagement = () => {
                 </thead>
                 <tbody>
                   {filteredHistory.map((historyItem, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 border-b">
+                    <tr key={index} className="hover:bg-neutral hover:text-white">
+                      <td className="border px-4 py-2">
                         {historyItem.employeeId.firstName} {historyItem.employeeId.lastName}
                       </td>
-                      <td className="px-4 py-2 border-b">{historyItem.amount}</td>
-                      <td className="px-4 py-2 border-b">
+                      <td className="border px-4 py-2">{historyItem.amount}</td>
+                      <td className="border px-4 py-2">
                         {new Date(historyItem.createdAt).toLocaleString()}
                       </td>
                     </tr>
@@ -246,7 +246,7 @@ const DeductionsManagement = () => {
               </table>
             )}
             <button
-              className="mt-4 bg-gray-500 text-white py-2 px-4 rounded"
+              className="mt-4 btn btn-neutral text-white py-2 px-4 rounded"
               onClick={() => setSelectedHistory(null)}
             >
               Close
