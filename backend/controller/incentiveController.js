@@ -5,6 +5,7 @@ import { RequestIncentive } from "../model/incentives/requestIncentiveModel.js";
 import { SalesCommission } from "../model/incentives/SalesCommissionModel.js";
 import { RecognitionProgram } from "../model/incentives/recognitionProgramModel.js";
 import { User } from "../model/userModel.js";
+import { EmployeeSalesCommission } from "../model/incentives/employeeSalesCommission.js";
 /* incentives overview crud */
 export const createIncentive = async (req,res) => {
     try {
@@ -241,9 +242,114 @@ export const updateSalesCommission = async (req, res) => {
 };
 
 /* later na */
-export const mySalesCommission = async () => {
 
-}
+export const assignSalesCommission = async (req, res) => {
+    try {
+        const { salesCommissionId } = req.body;
+        const employeeId = req.user._id;
+
+        if (!employeeId) {
+            return res.status(401).json({ message: "Unauthorized. Please log in." });
+        }
+
+        if (!salesCommissionId) {
+            return res.status(400).json({ message: "Sales commission ID is required." });
+        }
+
+        const existingEmployee = await User.findById(employeeId);
+        if (!existingEmployee) {
+            return res.status(404).json({ message: "Employee not found." });
+        }
+
+        const existingCommission = await SalesCommission.findById(salesCommissionId);
+        if (!existingCommission) {
+            return res.status(404).json({ message: "Sales commission not found." });
+        }
+
+        if (existingCommission.status === "Not Available") {
+            return res.status(400).json({ message: "This sales commission is not available for assignment." });
+        }
+
+        const existingRecord = await EmployeeSalesCommission.findOne({ employeeId, salesCommissionId });
+
+        if (existingRecord) {
+            return res.status(400).json({ message: "You already have this sales commission assigned." });
+        }
+
+        const newAssignment = new EmployeeSalesCommission({
+            employeeId,
+            salesCommissionId,
+            totalSales: 0,
+            targetAmount: existingCommission.targetAmount,
+            commissionRate: existingCommission.commissionRate,
+            earnedCommission: 0,
+            status: "In Progress"
+        });
+
+        await newAssignment.save();
+
+        return res.status(201).json({ message: "Sales commission assigned successfully.", assignment: newAssignment });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+export const addMySalesCommission = async (req, res) => {
+    try {
+        const { salesCommissionId, salesAmount } = req.body;
+        const employeeId = req.user._id;
+
+        if (!employeeId) {
+            return res.status(401).json({ message: "Unauthorized. Please log in." });
+        }
+
+        console.log("🟢 Debug - Employee ID:", employeeId);
+        console.log("🟢 Debug - Sales Commission ID:", salesCommissionId);
+
+        const myCommission = await EmployeeSalesCommission.findOne({
+            employeeId: new mongoose.Types.ObjectId(employeeId),
+            salesCommissionId: new mongoose.Types.ObjectId(salesCommissionId)
+        }).populate("salesCommissionId");
+
+        if (!myCommission) {
+            return res.status(404).json({ message: "No assigned sales commission found for this employee." });
+        }
+
+        if (!myCommission.salesCommissionId || !myCommission.salesCommissionId.targetAmount) {
+            return res.status(500).json({ message: "Sales commission target amount not found." });
+        }
+
+        myCommission.totalSales += Number(salesAmount);
+
+        console.log(`🟢 Total Sales Updated: ${myCommission.totalSales} / Target: ${myCommission.salesCommissionId.targetAmount}`);
+
+        if (myCommission.totalSales >= myCommission.salesCommissionId.targetAmount) {
+            myCommission.status = "Completed";
+        } else {
+            myCommission.status = "In Progress"; 
+        }
+
+        await myCommission.save();
+
+        return res.status(200).json({
+            message: "Sales added successfully.",
+            updatedCommission: myCommission
+        });
+
+    } catch (error) {
+        console.error("🔴 Server Error:", error);
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+
+
+
+export const mySalesCommission = async (req, res) => {
+};
+
 
 export const createRecognitionPrograms = async (req, res) => {
     try {
