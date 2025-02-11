@@ -4,7 +4,7 @@ import { Incentive } from "../model/incentives/incentiveModel.js";
 import { RequestIncentive } from "../model/incentives/requestIncentiveModel.js";
 import { SalesCommission } from "../model/incentives/SalesCommissionModel.js";
 import { RecognitionProgram } from "../model/incentives/recognitionProgramModel.js";
-
+import { User } from "../model/userModel.js";
 /* incentives overview crud */
 export const createIncentive = async (req,res) => {
     try {
@@ -245,35 +245,52 @@ export const mySalesCommission = async () => {
 
 }
 
-
 export const createRecognitionPrograms = async (req, res) => {
     try {
-      const { employeeId, awardName, description, rewardType, rewardValue } = req.body;
-  
-      if (!employeeId || !awardName || !rewardType) {
-        return res.status(400).json({ message: "Missing required fields." });
-      }
-  
-      const newRecognition = new RecognitionProgram({
-        employeeId,
-        awardName,
-        description,
-        rewardType,
-        rewardValue: rewardValue || 0,
-      });
-  
-      await newRecognition.save();
-  
-      return res.status(201).json({ message: "Recognition program created successfully.", data: newRecognition });
+        const { employeeId, awardName, description, rewardType, rewardValue } = req.body;
+
+        if (!employeeId || !awardName || !rewardType) {
+            return res.status(400).json({ message: "Missing required fields." });
+        }
+
+        const employeeExists = await User.findById(employeeId);
+        if (!employeeExists) {
+            return res.status(404).json({ message: "Employee not found." });
+        }
+
+        let finalRewardValue = null; 
+
+        if (rewardType === "Bonus" || rewardType === "Cash") {
+            if (!rewardValue || isNaN(rewardValue) || rewardValue <= 0) {
+                return res.status(400).json({ message: "Reward value is required and must be a positive number for Bonus or Cash." });
+            }
+            finalRewardValue = rewardValue;
+        } else {
+            finalRewardValue = null;
+        }
+
+        const newRecognition = new RecognitionProgram({
+            employeeId,
+            awardName,
+            description,
+            rewardType,
+            rewardValue: finalRewardValue,
+        });
+
+        await newRecognition.save();
+
+        return res.status(201).json({ message: "Recognition program created successfully.", data: newRecognition });
     } catch (error) {
-      console.error("Error creating recognition program:", error);
-      return res.status(500).json({ message: "Internal Server Error" });
+        console.error("Error creating recognition program:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
-  };
+};
+
 
   export const getAllRecognitionPrograms = async (req, res) => {
     try {
         const allRecognitionPrograms = await RecognitionProgram.find({})
+        .populate('employeeId','firstName lastName')
         return res.status(200).json(allRecognitionPrograms);
     } catch (error) {
         return res.status(500).json({ message: "Server Error", error: error.message });

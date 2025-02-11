@@ -15,9 +15,9 @@ const recognitionProgramSchema = new mongoose.Schema({
   },
   rewardType: {
     type: String,
-    enum: ["Cash Bonus", "Gift Card", "Extra Day Off", "Certificate", "Other"],
-    required: true,
-  },
+    enum: ['Bonus', 'Gift', 'Promotion', 'Cash'],
+    required: true
+},
   rewardValue: {
     type: Number,
     default: 0,

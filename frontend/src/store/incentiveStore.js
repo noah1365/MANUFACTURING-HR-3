@@ -16,6 +16,9 @@ export const useIncentiveStore = create((set) => ({
     incentives:[],
     allSalesCommission:[],
     newCommission:null,
+    allRecognitionPrograms:[],
+    newRecognition:[],
+
 
     createIncentive: async (incentive) => {
         try {
@@ -202,17 +205,17 @@ export const useIncentiveStore = create((set) => ({
       },
       createSalesCommission: async (newCommission) => {
         try {
-          console.log("Fetching CSRF token..."); // ✅ Debug
+          console.log("Fetching CSRF token..."); 
           const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
           const csrfToken = csrfResponse.data.csrfToken;
           
-          console.log("CSRF Token Received:", csrfToken); // ✅ Debug
+          console.log("CSRF Token Received:", csrfToken); 
       
           const response = await axios.post(`${API_URL}/create-sales-commission`, newCommission, {
             headers: { "X-CSRF-Token": csrfToken },
           });
       
-          console.log("API Response:", response.data); // ✅ Debug
+          console.log("API Response:", response.data); 
       
           set((state) => ({
             newCommission: response.data.commission || null,
@@ -265,6 +268,55 @@ export const useIncentiveStore = create((set) => ({
           return false;
         }
       },
+      fetchAllRecognitionPrograms: async () => {
+        try {
+          const response = await axios.get(`${API_URL}/get-all-recognition-programs`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
+          });
+          set({
+            allRecognitionPrograms: response.data || [], 
+            error: null,
+          });
+        } catch (error) {
+          set({
+            error: error.response?.data?.message || "Error fetching incentives",
+            allRecognitionPrograms: [],
+          });
+        } 
+      },
       
+      newRecognition:[],
+
+      createRecognitionPrograms: async (newRecognition) => {
+        try {
+          console.log("Fetching CSRF token...");
+          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+          const csrfToken = csrfResponse.data.csrfToken;
+          
+          console.log("CSRF Token Received:", csrfToken);
       
+          const response = await axios.post(`${API_URL}/create-recognition-program`, newRecognition, {
+            headers: { "X-CSRF-Token": csrfToken },
+          });
+      
+          console.log("API Response:", response.data);
+      
+          set((state) => ({
+            newRecognition: response.data.recognition || null,
+            allRecognitionPrograms: [...state.allRecognitionPrograms, response.data.recognition],
+            error: null,
+          }));
+      
+          return true;
+        } catch (error) {
+          console.error("Error Recogniton programs:", error.response?.data || error.message);
+          
+          set({
+            error: error.response?.data.message || "Error in creating new Recognition",
+          });
+      
+          return false;
+        }
+      },
+
 }));

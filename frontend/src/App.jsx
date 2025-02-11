@@ -42,11 +42,11 @@ import BenefitsRequested from './pages/manager/benefits/BenefitsRequested';
 import Deductions from './pages/manager/benefits/Deductions';
 
 /* incentives management */
-import IncentivesManagements from './pages/manager/incentives/IncentivesManagements';
+import IncentivesManagements from './pages/manager/Incentives/IncentivesManagements';
 import SalesCommissions from './pages/manager/Incentives/SalesCommissions';
 import IncentivesRequest from './pages/manager/Incentives/IncentivesRequest';
-import PerformanceMetrics from './pages/manager/incentives/PerformanceMetrics';
-import RecognitionPrograms from './pages/manager/incentives/RecognitionPrograms';
+import PerformanceMetrics from './pages/manager/Incentives/PerformanceMetrics';
+import RecognitionPrograms from './pages/manager/Incentives/RecognitionPrograms';
 
 /* employee */
 import EmployeeList from './pages/EmployeeList';
