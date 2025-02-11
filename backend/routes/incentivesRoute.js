@@ -31,7 +31,7 @@ incentiveRoute.post("/create-sales-commission",verifyToken,createSalesCommission
 incentiveRoute.get("/get-all-sales-commission",verifyToken,getAllSalesCommission);
 incentiveRoute.put("/update-sales-commission/:id",verifyToken,updateSalesCommission);
 incentiveRoute.post("/assign-sales-commission",verifyToken,assignSalesCommission);
-incentiveRoute.put("/add-my-sales-commission", verifyToken, addMySalesCommission);
+incentiveRoute.put("/add-my-sales-commission", verifyToken, upload.single("salesProof"), addMySalesCommission);
 
 incentiveRoute.post("/create-recognition-program",verifyToken,createRecognitionPrograms);
 incentiveRoute.get("/get-all-recognition-programs",verifyToken,getAllRecognitionPrograms);

@@ -6,6 +6,9 @@ import { SalesCommission } from "../model/incentives/SalesCommissionModel.js";
 import { RecognitionProgram } from "../model/incentives/recognitionProgramModel.js";
 import { User } from "../model/userModel.js";
 import { EmployeeSalesCommission } from "../model/incentives/employeeSalesCommission.js";
+import cloudinary from "../config/cloudinaryConfig.js";
+import upload from "../config/multerConfig.js";
+
 /* incentives overview crud */
 export const createIncentive = async (req,res) => {
     try {
@@ -241,7 +244,6 @@ export const updateSalesCommission = async (req, res) => {
     }
 };
 
-/* later na */
 
 export const assignSalesCommission = async (req, res) => {
     try {
@@ -330,7 +332,24 @@ export const addMySalesCommission = async (req, res) => {
             myCommission.status = "In Progress"; 
         }
 
+        if (req.file) {
+            console.log("🟢 Uploading file to Cloudinary...");
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "sales_proof"
+            });
+
+            myCommission.salesProof.push({
+                url: result.secure_url,
+                uploadedAt: new Date()
+            });
+
+            console.log("🟢 File Uploaded:", result.secure_url);
+        }
+
+        console.log("🟢 Before Save:", myCommission.salesProof);
         await myCommission.save();
+        console.log("🟢 After Save:", myCommission.salesProof);
+        
 
         return res.status(200).json({
             message: "Sales added successfully.",
@@ -343,8 +362,7 @@ export const addMySalesCommission = async (req, res) => {
     }
 };
 
-
-
+export { upload };
 
 
 export const mySalesCommission = async (req, res) => {
