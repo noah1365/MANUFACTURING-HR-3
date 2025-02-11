@@ -272,6 +272,10 @@ export const assignSalesCommission = async (req, res) => {
             return res.status(400).json({ message: "This sales commission is not available for assignment." });
         }
 
+        if (existingCommission.assignStatus === "Assigned") {
+            return res.status(400).json({ message: "This sales commission is already assigned." });
+        }
+
         const existingRecord = await EmployeeSalesCommission.findOne({ employeeId, salesCommissionId });
 
         if (existingRecord) {
@@ -290,12 +294,16 @@ export const assignSalesCommission = async (req, res) => {
 
         await newAssignment.save();
 
+        existingCommission.assignStatus = "Assigned";
+        await existingCommission.save();
+
         return res.status(201).json({ message: "Sales commission assigned successfully.", assignment: newAssignment });
 
     } catch (error) {
         return res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
+
 
 export const addMySalesCommission = async (req, res) => {
     try {

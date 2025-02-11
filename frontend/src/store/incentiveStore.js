@@ -319,4 +319,35 @@ export const useIncentiveStore = create((set) => ({
         }
       },
 
+      assignedSalesCommission: async (newAssignment) => {
+        try {
+            console.log("Fetching CSRF token...");
+            const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+            const csrfToken = csrfResponse.data.csrfToken;
+    
+            console.log("CSRF Token Received:", csrfToken);
+    
+            const response = await axios.post(`${API_URL}/assign-sales-commission`, newAssignment, {
+                headers: { "X-CSRF-Token": csrfToken },
+            });
+    
+            console.log("API Response:", response.data);
+    
+            set((state) => ({
+                allSalesCommission: [...state.allSalesCommission, response.data.assignment],
+                error: null,
+            }));
+    
+            return response.data;
+        } catch (error) {
+            console.error("Error assigning commission:", error.response?.data || error.message);
+    
+            set({
+                error: error.response?.data.message || "Error in assigning new commission",
+            });
+    
+            throw error;
+        }
+    }
+    
 }));

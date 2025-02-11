@@ -218,7 +218,7 @@ const App = () => {
                       <Route path="/incentive-request" element={<ProtectedRoute><IncentiveRequest /></ProtectedRoute>} />                    
 {/*                       <Route path="/incentive-history" element={<ProtectedRoute><IncentiveHistory /></ProtectedRoute>} />                    
  */}                      <Route path="/my-commissions" element={<ProtectedRoute><MyCommissions /></ProtectedRoute>} />                    
- */}                      <Route path="/recognition-lists" element={<ProtectedRoute><RecognitionLists /></ProtectedRoute>} />                    
+                  <Route path="/recognition-lists" element={<ProtectedRoute><RecognitionLists /></ProtectedRoute>} />                    
                       
                     </>
                   )}
