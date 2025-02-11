@@ -15,6 +15,14 @@ const EmployeeSalesCommissionSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    pendingSales: [{ 
+        amount: Number, 
+        addedAt: { type: Date, default: Date.now } 
+    }],
+    approvedSalesHistory: [{ 
+        amount: Number, 
+        approvedAt: { type: Date, default: Date.now }
+    }],
     status: {
         type: String,
         enum: ["In Progress", "Completed"],

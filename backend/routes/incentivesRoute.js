@@ -4,7 +4,7 @@ import express from "express";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { checkRole } from "../middleware/roleMiddleware.js";
 
-import { addMySalesCommission, assignSalesCommission, createIncentive, createRecognitionPrograms, createSalesCommission, deleteIncentive, getAllRecognitionPrograms, getAllRequestIncentives, getAllSalesCommission, getIncentive, getMyRequestIncentives, requestIncentive, updateIncentive, updateRequestIncentiveStatus, updateSalesCommission } from "../controller/incentiveController.js";
+import { addMySalesCommission, assignSalesCommission, createIncentive, createRecognitionPrograms, createSalesCommission, deleteIncentive, getAllAssignedSalesCommissions, getAllRecognitionPrograms, getAllRequestIncentives, getAllSalesCommission, getIncentive, getMyRequestIncentives, getMySalesCommissions, requestIncentive, updateIncentive, updateRequestIncentiveStatus, updateSalesCommission, updateSalesStatus } from "../controller/incentiveController.js";
 import upload from "../config/multerConfig.js";
 
 const incentiveRoute = express.Router();
@@ -32,6 +32,9 @@ incentiveRoute.get("/get-all-sales-commission",verifyToken,getAllSalesCommission
 incentiveRoute.put("/update-sales-commission/:id",verifyToken,updateSalesCommission);
 incentiveRoute.post("/assign-sales-commission",verifyToken,assignSalesCommission);
 incentiveRoute.put("/add-my-sales-commission", verifyToken, upload.single("salesProof"), addMySalesCommission);
+incentiveRoute.put("/update-sales-status", verifyToken, updateSalesStatus);
+incentiveRoute.get("/get-all-assigned-sales-commission", verifyToken,getAllAssignedSalesCommissions );
+incentiveRoute.get("/my-sales-commission", verifyToken, getMySalesCommissions);
 
 incentiveRoute.post("/create-recognition-program",verifyToken,createRecognitionPrograms);
 incentiveRoute.get("/get-all-recognition-programs",verifyToken,getAllRecognitionPrograms);

@@ -322,15 +322,9 @@ export const addMySalesCommission = async (req, res) => {
             return res.status(500).json({ message: "Sales commission target amount not found." });
         }
 
-        myCommission.totalSales += Number(salesAmount);
+        myCommission.pendingSales.push({ amount: Number(salesAmount), addedAt: new Date() });
 
-        console.log(`🟢 Total Sales Updated: ${myCommission.totalSales} / Target: ${myCommission.salesCommissionId.targetAmount}`);
-
-        if (myCommission.totalSales >= myCommission.salesCommissionId.targetAmount) {
-            myCommission.status = "Completed";
-        } else {
-            myCommission.status = "In Progress"; 
-        }
+        console.log(`🟢 Sales Amount Added to Pending: ${salesAmount}`);
 
         if (req.file) {
             console.log("🟢 Uploading file to Cloudinary...");
@@ -349,10 +343,9 @@ export const addMySalesCommission = async (req, res) => {
         console.log("🟢 Before Save:", myCommission.salesProof);
         await myCommission.save();
         console.log("🟢 After Save:", myCommission.salesProof);
-        
 
         return res.status(200).json({
-            message: "Sales added successfully.",
+            message: "Sales added successfully but awaiting approval.",
             updatedCommission: myCommission
         });
 
@@ -362,11 +355,117 @@ export const addMySalesCommission = async (req, res) => {
     }
 };
 
+
 export { upload };
 
 
-export const mySalesCommission = async (req, res) => {
+export const getAllAssignedSalesCommissions = async (req, res) => {
+    try {
+        const assignedCommissions = await EmployeeSalesCommission.find()
+            .populate("employeeId", "firstname lastname email")
+            .populate("salesCommissionId", "targetAmount commissionRate")
+            .select("totalSales pendingSales approvedSalesHistory salesStatus status")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            message: "All assigned sales commissions retrieved successfully.",
+            assignedCommissions,
+        });
+    } catch (error) {
+        console.error("🔴 Server Error:", error);
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
 };
+
+export const getMySalesCommissions = async (req, res) => {
+    try {
+        const employeeId = req.user._id;
+
+        if (!employeeId) {
+            return res.status(401).json({ message: "Unauthorized. Please log in." });
+        }
+
+        const myCommissions = await EmployeeSalesCommission.find({ employeeId })
+            .populate("salesCommissionId", "targetAmount commissionRate")
+            .select("totalSales pendingSales approvedSalesHistory salesStatus status")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            message: "Your sales commissions retrieved successfully.",
+            myCommissions,
+        });
+    } catch (error) {
+        console.error("🔴 Server Error:", error);
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
+export const updateSalesStatus = async (req, res) => {
+    try {
+        const { employeeId, salesCommissionId, salesStatus } = req.body;
+
+        console.log("🟢 Debug - Employee ID:", employeeId);
+        console.log("🟢 Debug - Sales Commission ID:", salesCommissionId);
+        console.log("🟢 Debug - Sales Status:", salesStatus); 
+
+        const myCommission = await EmployeeSalesCommission.findOne({
+            employeeId: new mongoose.Types.ObjectId(employeeId),
+            salesCommissionId: new mongoose.Types.ObjectId(salesCommissionId)
+        }).populate("salesCommissionId");
+
+        if (!myCommission) {
+            return res.status(404).json({ message: "No assigned sales commission found for this employee." });
+        }
+
+        if (!myCommission.salesCommissionId || !myCommission.salesCommissionId.targetAmount) {
+            return res.status(500).json({ message: "Sales commission target amount not found." });
+        }
+
+        if (!["Pending", "Approved", "Denied"].includes(salesStatus)) {
+            return res.status(400).json({ message: "Invalid salesStatus. Use 'Pending', 'Approved', or 'Denied'." });
+        }
+
+        if (salesStatus === "Approved") {
+            if (!myCommission.pendingSales || myCommission.pendingSales.length === 0) {
+                return res.status(400).json({ message: "No pending sales to approve." });
+            }
+
+            const approvedSales = myCommission.pendingSales.reduce((acc, sale) => acc + sale.amount, 0);
+            myCommission.totalSales += approvedSales;
+
+            console.log(`🟢 Approved Sales: ${approvedSales}`);
+            console.log(`🟢 Updated Total Sales: ${myCommission.totalSales} / Target: ${myCommission.salesCommissionId.targetAmount}`);
+
+            myCommission.approvedSalesHistory.push(
+                ...myCommission.pendingSales.map(sale => ({
+                    amount: sale.amount,
+                    approvedAt: new Date()
+                }))
+            );
+
+            myCommission.salesStatus = "Approved";
+            myCommission.pendingSales = [];
+
+        } else if (salesStatus === "Denied") {
+            console.log("🔴 Sales commission request denied.");
+            myCommission.salesStatus = "Denied";
+        }
+
+        await myCommission.save();
+
+        return res.status(200).json({
+            message: `Sales status updated successfully as '${salesStatus}'.`,
+            updatedCommission: myCommission
+        });
+
+    } catch (error) {
+        console.error("🔴 Server Error:", error);
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+
 
 
 export const createRecognitionPrograms = async (req, res) => {
