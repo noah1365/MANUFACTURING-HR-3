@@ -64,6 +64,17 @@ const EIncentivesOverview = () => {
                         </div>
                     </div>
 
+                    <div className="card bg-base-100 shadow-xl">
+                    <div className="card-body">
+                        <h2 className="card-title">Employee Recognitions</h2>
+                        <p>See employees recognized for their achievements.</p>
+                        <Link to="/recognition-lists" className="btn btn-primary">
+                            View Recognitions
+                        </Link>
+                    </div>
+                </div>
+
+
 
                 {/*     <div className="card bg-base-100 shadow-xl">
                         <div className="card-body">

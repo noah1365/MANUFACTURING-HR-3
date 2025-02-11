@@ -60,6 +60,7 @@ import MyDeductions from './pages/employee/benefitsManagement/MyDeductions';
 import EIncentivesOverview from './pages/employee/incentives/EIncentivesOverview';
 import MyCommissions from './pages/employee/incentives/MyCommissions';
 import IncentiveRequest from './pages/employee/incentives/IncentiveRequest';
+import RecognitionLists from './pages/employee/incentives/RecognitionLists';
 import IncentiveHistory from './pages/employee/incentives/IncentiveHistory';
 
 import MySalaryInfo from './pages/employee/payroll/MySalaryInfo';
@@ -217,6 +218,7 @@ const App = () => {
                       <Route path="/incentive-request" element={<ProtectedRoute><IncentiveRequest /></ProtectedRoute>} />                    
 {/*                       <Route path="/incentive-history" element={<ProtectedRoute><IncentiveHistory /></ProtectedRoute>} />                    
  */}                      <Route path="/my-commissions" element={<ProtectedRoute><MyCommissions /></ProtectedRoute>} />                    
+ */}                      <Route path="/recognition-lists" element={<ProtectedRoute><RecognitionLists /></ProtectedRoute>} />                    
                       
                     </>
                   )}
