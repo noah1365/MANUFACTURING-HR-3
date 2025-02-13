@@ -26,10 +26,10 @@ export const login = async (req, res) => {
             return res.status(400).json({success:false,message:"Username or password is incorrect"});
         }
 
-        if(!user.verified){
+/*         if(!user.verified){
             console.log("User account not verified");
             return res.status(403).json({success:false,message:"Your account is not verified. Please verify your account before logging in."});
-        }
+        } */
 
         generateTokenAndSetCookie(res, user._id, user.role);
         console.log(`User ${user.email} logged in successfully`);

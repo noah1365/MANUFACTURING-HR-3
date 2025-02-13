@@ -13,15 +13,26 @@ mongoose.connect(process.env.MONGODB_URI)
 const seedUsers = async () => {
     try {
         const newUsers = [
-            {
-                lastname: "employee2",
-                firstname: "employee2",
-                email: "employee2@example.com",
-                password: await bcryptjs.hash('employeepassword123', 10),
-                role: "employee"
-            }
-        ];
-
+                {
+                    lastName: "Employee2",  
+                    firstName: "Employee2",
+                    middleName: "Middle",
+                    email: "employee2@example.com",
+                    password: await bcryptjs.hash("employeepassword123", 10),
+                    role: "Employee",
+                    position: "Sales Representative",
+                    bDate: new Date("1995-06-15"),
+                    gender: "Male",
+                    phoneNumber: "09123456789",
+                    address: {
+                        country: "Philippines",
+                        province: "Metro Manila",
+                        municipality: "Quezon City",
+                        street: "123 Example Street",
+                        postalCode: "1100",
+                    },
+                },
+            ];
         const emails = newUsers.map(user => user.email);
 
         const existingUsers = await User.find({ email: { $in: emails } });

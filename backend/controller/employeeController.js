@@ -244,7 +244,7 @@ export const verifyAccount = async (req, res) => {
 
         user.passwordReset = true;
         user.password = hashedPassword;
-        user.verified = true
+/*         user.verified = true */
         await user.save();
 
         const transporter = nodemailer.createTransport({

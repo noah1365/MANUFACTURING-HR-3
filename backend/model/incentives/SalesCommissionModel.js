@@ -13,11 +13,14 @@ const SalesCommissionSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    assignStatus:{
-        type: String,
-        enum: ["Pending", "Assigned"],
-        default: "Pending"
-    },
+    assignedTo: [{ 
+        employeeId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        assignStatus: { 
+            type: String, 
+            enum: ["Pending", "Assigned"], 
+            default: "Pending" 
+        }
+    }],
     status: {
         type: String,
         enum: ["Available", "Not Available"],

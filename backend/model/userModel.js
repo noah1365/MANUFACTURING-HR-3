@@ -88,10 +88,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "https://www.pngkey.com/png/full/121-1219231_user-default-profile.png"
     },
-    verified:{
+/*     verified:{
         type:Boolean,
         default:false,
-    },
+    }, */
     lastVerificationRequest:{
         type: Date,
         default: null

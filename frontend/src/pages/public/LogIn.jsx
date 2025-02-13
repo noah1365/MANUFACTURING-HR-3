@@ -13,7 +13,7 @@ import jjmLogo from '../../assets/jjmlogo.jpg';
 const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [verified,setVerified] = useState(false);
+  /* const [verified,setVerified] = useState(false); */
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated ,error, csrfToken} = useAuthStore();
@@ -21,7 +21,8 @@ const LogIn = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-        const result = await login(email,password,verified, csrfToken);
+        /* const result = await login(email,password,verified, csrfToken); */
+        const result = await login(email,password, csrfToken);
         if(!result){
             if(error){
                 console.log("Error message:", error);

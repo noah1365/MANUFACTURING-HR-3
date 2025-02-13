@@ -80,7 +80,8 @@ import AdminDashboard from './pages/manager/AdminDashboard';
 import BehaviouralAnalytics from './pages/manager/analytics/BehaviouralAnalytics';
 import PredictiveAnalytics from './pages/manager/analytics/PredictiveAnalytics';
 import MySalesCommission from './pages/employee/incentives/MySalesCommission';
-import SalesCommissionRequests from './pages/manager/Incentives/SalesCommissionRequests';
+import AssignedCommissions from './pages/manager/Incentives/AssignedCommissions';
+import AddedCommissions from './pages/manager/Incentives/AddedCommissions';
 
 const App = () => {
   const { checkAuth, isAuthenticated, user } = useAuthStore();
@@ -188,7 +189,8 @@ const App = () => {
                       <Route path="/incentives-management" element={<ProtectedRoute><IncentivesManagements /></ProtectedRoute>} />
                       <Route path="/incentives-request" element={<ProtectedRoute><IncentivesRequest /></ProtectedRoute>} />
                       <Route path="/sales-commissions" element={<ProtectedRoute><SalesCommissions /></ProtectedRoute>} />
-                      <Route path="/sales-commission-requests" element={<ProtectedRoute><SalesCommissionRequests /></ProtectedRoute>} />
+                      <Route path="/assigned-commissions" element={<ProtectedRoute><AssignedCommissions /></ProtectedRoute>} />
+                      <Route path="/added-commissions" element={<ProtectedRoute><AddedCommissions /></ProtectedRoute>} />
                       <Route path="/performance-metrics" element={<ProtectedRoute><PerformanceMetrics /></ProtectedRoute>} />
                       <Route path="/recognition-programs" element={<ProtectedRoute><RecognitionPrograms /></ProtectedRoute>} />
 

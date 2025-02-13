@@ -203,6 +203,7 @@ export const createSalesCommission = async (req, res) => {
             salesCommissionName,
             targetAmount,
             commissionRate,
+            assignedTo: [{ assignStatus: "Pending" }],
             status: "Not Available"
         });
 
@@ -216,8 +217,24 @@ export const createSalesCommission = async (req, res) => {
 
 export const getAllSalesCommission = async (req, res) => {
     try {
-        // const allSalesCommissions = await SalesCommission.find({ status: "Not Available" })
-        const allSalesCommissions = await SalesCommission.find({})
+        const employeeId = req.user._id;
+
+        const allSalesCommissions = await SalesCommission.find({
+            $or: [
+                { "assignedTo": { $size: 0 } },
+                { 
+                    "assignedTo": {
+                        $not: {
+                            $elemMatch: { 
+                                employeeId: employeeId, 
+                                assignStatus: { $in: ["Assigned", "Pending"] }
+                            }
+                        }
+                    }
+                }
+            ]
+        }).populate("assignedTo.employeeId", "name");
+
         return res.status(200).json(allSalesCommissions);
     } catch (error) {
         return res.status(500).json({ message: "Server Error", error: error.message });
@@ -273,10 +290,6 @@ export const assignSalesCommission = async (req, res) => {
             return res.status(400).json({ message: "This sales commission is not available for assignment." });
         }
 
-        if (existingCommission.assignStatus === "Assigned") {
-            return res.status(400).json({ message: "This sales commission is already assigned." });
-        }
-
         const existingRecord = await EmployeeSalesCommission.findOne({ employeeId, salesCommissionId });
 
         if (existingRecord) {
@@ -287,18 +300,22 @@ export const assignSalesCommission = async (req, res) => {
             employeeId,
             salesCommissionId,
             totalSales: 0,
-            targetAmount: existingCommission.targetAmount,
-            commissionRate: existingCommission.commissionRate,
-            earnedCommission: 0,
-            status: "In Progress"
+            salesStatus: "In Progress"
         });
 
         await newAssignment.save();
 
-        existingCommission.assignStatus = "Assigned";
+        existingCommission.assignedTo.push({
+            employeeId: employeeId,
+            assignStatus: "Assigned"
+        });
+
         await existingCommission.save();
 
-        return res.status(201).json({ message: "Sales commission assigned successfully.", assignment: newAssignment });
+        return res.status(201).json({ 
+            message: "Sales commission assigned successfully.", 
+            assignment: newAssignment 
+        });
 
     } catch (error) {
         return res.status(500).json({ message: "Server Error", error: error.message });
@@ -364,10 +381,10 @@ export { upload };
 export const getAllAssignedSalesCommissions = async (req, res) => {
     try {
         const assignedCommissions = await EmployeeSalesCommission.find()
-            .populate("employeeId", "firstname lastname email")
+            .populate("employeeId", "firstName lastName")
             .populate({
                 path: "salesCommissionId",
-                select: "targetAmount commissionRate assignStatus",
+                select: "salesCommissionName targetAmount commissionRate assignStatus",
                 match: { assignStatus: "Assigned" }
             })
             .select("totalSales salesStatus")
@@ -380,7 +397,7 @@ export const getAllAssignedSalesCommissions = async (req, res) => {
             assignedCommissions: filteredCommissions,
         });
     } catch (error) {
-        console.error("🚨 Server Error:", error);
+        console.error("Server Error:", error);
         return res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
@@ -388,7 +405,7 @@ export const getAllAssignedSalesCommissions = async (req, res) => {
 export const getAllAddedSalesCommissions = async (req, res) => {
     try {
         const addedSales = await SalesHistory.find()
-            .populate("employeeId", "firstname lastname email")
+            .populate("employeeId", "firstName lastName")
             .populate("salesCommissionId", "salesCommissionName targetAmount commissionRate")
             .select("salesAmount salesProof confirmationStatus createdAt")
             .sort({ createdAt: -1 });
@@ -398,7 +415,7 @@ export const getAllAddedSalesCommissions = async (req, res) => {
             addedSales,
         });
     } catch (error) {
-        console.error("🚨 Server Error:", error);
+        console.error("Server Error:", error);
         return res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
@@ -421,7 +438,7 @@ export const getMyAddedSalesCommissions = async (req, res) => {
             myAddedSales,
         });
     } catch (error) {
-        console.error("🚨 Server Error:", error);
+        console.error("Server Error:", error);
         return res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
@@ -431,24 +448,17 @@ export const getMyAssignedSalesCommissions = async (req, res) => {
     try {
         const employeeId = req.user._id;
 
-        const assignedCommissions = await EmployeeSalesCommission.find({ employeeId })
-            .populate("employeeId", "firstname lastname email")
-            .populate({
-                path: "salesCommissionId",
-                select: "salesCommissionName targetAmount commissionRate assignStatus",
-                match: { assignStatus: "Assigned" }
-            })
-            .select("totalSales salesStatus")
-            .sort({ createdAt: -1 });
-
-        const filteredCommissions = assignedCommissions.filter(item => item.salesCommissionId !== null);
+        const assignedCommissions = await SalesCommission.find({
+            "assignedTo.employeeId": employeeId,
+            "assignedTo.assignStatus": { $in: ["Assigned", "Not Assigned"] }
+        }).populate("assignedTo.employeeId");
 
         return res.status(200).json({
-            message: "Your assigned sales commissions retrieved successfully.",
-            assignedCommissions: filteredCommissions,
+            message: "Your assigned and not assigned sales commissions retrieved successfully.",
+            assignedCommissions,
         });
     } catch (error) {
-        console.error("🚨 Server Error:", error);
+        console.error("Server Error:", error);
         return res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
