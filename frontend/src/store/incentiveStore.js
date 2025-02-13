@@ -401,23 +401,39 @@ export const useIncentiveStore = create((set) => ({
       });
     }
   },
+
+  employeeSalesStatus: [],
   assignedCommissions: [],
   fetchAllAssignedSalesCommissions: async () => {
     try {
-      console.log("Fetching Sales Commissions...");
+      console.log("Fetching Assigned Sales Commissions...");
       const response = await axios.get(`${API_URL}/get-all-assigned-sales-commission`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
   
-      console.log("Sales Commissions Data:", response.data);
-  
+      console.log("Assigned Sales Commissions Data:", response.data);
       set({ assignedCommissions: response.data.assignedCommissions || [] });
     } catch (error) {
-      console.error("Error fetching sales commissions:", error.response?.data?.message || error);
-      set({ error: error.response?.data?.message || "Error fetching commissions", assignedCommissions: [] });
+      console.error("Error fetching assigned sales commissions:", error.response?.data?.message || error);
+      set({ error: error.response?.data?.message || "Error fetching assigned commissions", assignedCommissions: [] });
     }
   },
-
+  
+  fetchAllEmployeesSalesStatus: async () => {
+    try {
+      console.log("Fetching Employee Sales Status...");
+      const response = await axios.get(`${API_URL}/get-all-employee-sales-status`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+  
+      console.log("Employee Sales Status Data:", response.data);
+      set({ employeeSalesStatus: response.data.employeeSalesStatus || [] });
+    } catch (error) {
+      console.error("Error fetching employee sales status:", error.response?.data?.message || error);
+      set({ error: error.response?.data?.message || "Error fetching employee sales status", employeeSalesStatus: [] });
+    }
+  },
+  
 myAssignedCommissions: [],
 fetchMyAssignedSalesCommissions: async () => {
   try {
@@ -428,7 +444,7 @@ fetchMyAssignedSalesCommissions: async () => {
 
     console.log("Sales Commissions Data:", response.data);
 
-    // Store both assigned and not assigned commissions
+    
     set({
       assignedCommissions: response.data.assignedCommissions || [],
       notAssignedCommissions: response.data.notAssignedCommissions || [],

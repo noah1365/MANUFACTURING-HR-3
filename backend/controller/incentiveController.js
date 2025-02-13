@@ -203,7 +203,6 @@ export const createSalesCommission = async (req, res) => {
             salesCommissionName,
             targetAmount,
             commissionRate,
-            assignedTo: [{ assignStatus: "Pending" }],
             status: "Not Available"
         });
 
@@ -377,24 +376,29 @@ export const addMySalesCommission = async (req, res) => {
 
 export { upload };
 
-
 export const getAllAssignedSalesCommissions = async (req, res) => {
     try {
-        const assignedCommissions = await EmployeeSalesCommission.find()
-            .populate("employeeId", "firstName lastName")
-            .populate({
-                path: "salesCommissionId",
-                select: "salesCommissionName targetAmount commissionRate assignStatus",
-                match: { assignStatus: "Assigned" }
-            })
-            .select("totalSales salesStatus")
-            .sort({ createdAt: -1 });
-
-        const filteredCommissions = assignedCommissions.filter(item => item.salesCommissionId !== null);
+        const assignedCommissions = await SalesCommission.find({
+            "assignedTo.assignStatus": { $in: ["Assigned", "Not Assigned"] }
+        }).populate("assignedTo.employeeId");
 
         return res.status(200).json({
-            message: "All assigned sales commissions retrieved successfully.",
-            assignedCommissions: filteredCommissions,
+            message: "All assigned and not assigned sales commissions retrieved successfully.",
+            assignedCommissions,
+        });
+    } catch (error) {
+        console.error("Server Error:", error);
+        return res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+export const getAllEmployeeSalesStatus = async (req, res) => {
+    try {
+        const employeeSalesStatus = await EmployeeSalesCommission.find()
+        .select("employeeId salesStatus totalSales");
+
+        return res.status(200).json({
+            message: "All employee sales status retrieved successfully.",
+            employeeSalesStatus,
         });
     } catch (error) {
         console.error("Server Error:", error);
