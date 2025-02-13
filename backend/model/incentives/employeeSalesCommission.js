@@ -1,44 +1,28 @@
 import mongoose from "mongoose";
 
-const EmployeeSalesCommissionSchema = new mongoose.Schema({
+const EmployeeSalesCommissionSchema = new mongoose.Schema(
+  {
     employeeId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     salesCommissionId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "SalesCommission",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SalesCommission",
+      required: true,
     },
-    totalSales: {
-        type: Number,
-        default: 0
-    },
-    pendingSales: [{ 
-        amount: Number, 
-        addedAt: { type: Date, default: Date.now } 
-    }],
-    approvedSalesHistory: [{ 
-        amount: Number, 
-        approvedAt: { type: Date, default: Date.now }
-    }],
-    status: {
-        type: String,
-        enum: ["In Progress", "Completed"],
-        default: "In Progress"
-    },
-    salesProof: [
-        {
-            url: { type: String, required: true },
-            uploadedAt: { type: Date, default: Date.now } 
-        }
-    ],
+    totalSales: { type: Number, default: 0 },
     salesStatus: {
-        type: String,
-        enum: ["Pending", "Approved", "Denied"],
-        default: "Pending"
-    }
-}, { timestamps: true });
+      type: String,
+      enum: ["In Progress", "Completed"],
+      default: "In Progress",
+    },
+  },
+  { timestamps: true }
+);
 
-export const EmployeeSalesCommission = mongoose.model("EmployeeSalesCommission", EmployeeSalesCommissionSchema);
+export const EmployeeSalesCommission = mongoose.model(
+  "EmployeeSalesCommission",
+  EmployeeSalesCommissionSchema
+);

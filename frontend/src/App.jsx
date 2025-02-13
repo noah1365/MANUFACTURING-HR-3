@@ -58,7 +58,7 @@ import ApplyBenefits from "./pages/employee/benefitsManagement/ApplyBenefits";
 import MyDeductions from './pages/employee/benefitsManagement/MyDeductions';
 
 import EIncentivesOverview from './pages/employee/incentives/EIncentivesOverview';
-import MyCommissions from './pages/employee/incentives/MyCommissions';
+import AvailableSalesCommission from './pages/employee/incentives/AvailableSalesCommission';
 import IncentiveRequest from './pages/employee/incentives/IncentiveRequest';
 import RecognitionLists from './pages/employee/incentives/RecognitionLists';
 import IncentiveHistory from './pages/employee/incentives/IncentiveHistory';
@@ -79,6 +79,8 @@ import ForgotPassword from './components/ForgotPassword';
 import AdminDashboard from './pages/manager/AdminDashboard';
 import BehaviouralAnalytics from './pages/manager/analytics/BehaviouralAnalytics';
 import PredictiveAnalytics from './pages/manager/analytics/PredictiveAnalytics';
+import MySalesCommission from './pages/employee/incentives/MySalesCommission';
+import SalesCommissionRequests from './pages/manager/Incentives/SalesCommissionRequests';
 
 const App = () => {
   const { checkAuth, isAuthenticated, user } = useAuthStore();
@@ -186,6 +188,7 @@ const App = () => {
                       <Route path="/incentives-management" element={<ProtectedRoute><IncentivesManagements /></ProtectedRoute>} />
                       <Route path="/incentives-request" element={<ProtectedRoute><IncentivesRequest /></ProtectedRoute>} />
                       <Route path="/sales-commissions" element={<ProtectedRoute><SalesCommissions /></ProtectedRoute>} />
+                      <Route path="/sales-commission-requests" element={<ProtectedRoute><SalesCommissionRequests /></ProtectedRoute>} />
                       <Route path="/performance-metrics" element={<ProtectedRoute><PerformanceMetrics /></ProtectedRoute>} />
                       <Route path="/recognition-programs" element={<ProtectedRoute><RecognitionPrograms /></ProtectedRoute>} />
 
@@ -217,7 +220,8 @@ const App = () => {
                       <Route path="/incentives-overview" element={<ProtectedRoute><EIncentivesOverview /></ProtectedRoute>} />                    
                       <Route path="/incentive-request" element={<ProtectedRoute><IncentiveRequest /></ProtectedRoute>} />                    
 {/*                       <Route path="/incentive-history" element={<ProtectedRoute><IncentiveHistory /></ProtectedRoute>} />                    
- */}                      <Route path="/my-commissions" element={<ProtectedRoute><MyCommissions /></ProtectedRoute>} />                    
+ */}                      <Route path="/available-commissions" element={<ProtectedRoute><AvailableSalesCommission /></ProtectedRoute>} />                    
+                   <Route path="/my-commissions" element={<ProtectedRoute><MySalesCommission /></ProtectedRoute>} />                    
                   <Route path="/recognition-lists" element={<ProtectedRoute><RecognitionLists /></ProtectedRoute>} />                    
                       
                     </>

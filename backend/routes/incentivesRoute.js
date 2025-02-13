@@ -4,7 +4,7 @@ import express from "express";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { checkRole } from "../middleware/roleMiddleware.js";
 
-import { addMySalesCommission, assignSalesCommission, createIncentive, createRecognitionPrograms, createSalesCommission, deleteIncentive, getAllAssignedSalesCommissions, getAllRecognitionPrograms, getAllRequestIncentives, getAllSalesCommission, getIncentive, getMyRequestIncentives, getMySalesCommissions, requestIncentive, updateIncentive, updateRequestIncentiveStatus, updateSalesCommission, updateSalesStatus } from "../controller/incentiveController.js";
+import { addMySalesCommission, assignSalesCommission, createIncentive, createRecognitionPrograms, createSalesCommission, deleteIncentive, getAllAddedSalesCommissions, getAllAssignedSalesCommissions, getAllRecognitionPrograms, getAllRequestIncentives, getAllSalesCommission, getIncentive, getMyAddedSalesCommissions, getMyAssignedSalesCommissions, getMyRequestIncentives, getMySalesCommissions, requestIncentive, updateConfirmationStatus, updateIncentive, updateRequestIncentiveStatus, updateSalesCommission } from "../controller/incentiveController.js";
 import upload from "../config/multerConfig.js";
 
 const incentiveRoute = express.Router();
@@ -31,9 +31,12 @@ incentiveRoute.post("/create-sales-commission",verifyToken,createSalesCommission
 incentiveRoute.get("/get-all-sales-commission",verifyToken,getAllSalesCommission);
 incentiveRoute.put("/update-sales-commission/:id",verifyToken,updateSalesCommission);
 incentiveRoute.post("/assign-sales-commission",verifyToken,assignSalesCommission);
-incentiveRoute.put("/add-my-sales-commission", verifyToken, upload.single("salesProof"), addMySalesCommission);
-incentiveRoute.put("/update-sales-status", verifyToken, updateSalesStatus);
+incentiveRoute.post("/add-my-sales-commission", verifyToken, upload.single("salesProof"), addMySalesCommission);
+incentiveRoute.put("/update-confirmation-status", verifyToken, updateConfirmationStatus);
 incentiveRoute.get("/get-all-assigned-sales-commission", verifyToken,getAllAssignedSalesCommissions );
+incentiveRoute.get("/get-all-added-sales-commission", verifyToken,getAllAddedSalesCommissions);
+incentiveRoute.get("/get-my-added-sales-commission", verifyToken,getMyAddedSalesCommissions);
+incentiveRoute.get("/get-my-assigned-sales-commission", verifyToken,getMyAssignedSalesCommissions );
 incentiveRoute.get("/my-sales-commission", verifyToken, getMySalesCommissions);
 
 incentiveRoute.post("/create-recognition-program",verifyToken,createRecognitionPrograms);

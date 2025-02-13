@@ -3,7 +3,7 @@ import { useIncentiveStore } from "../../../store/incentiveStore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const MyCommissions = () => {
+const AvailableSalesCommission = () => {
   const { allSalesCommission = [], fetchAllSalesCommission, assignedSalesCommission, isLoading } = useIncentiveStore();
 
   useEffect(() => {
@@ -99,4 +99,4 @@ const MyCommissions = () => {
   );
 };
 
-export default MyCommissions;
+export default AvailableSalesCommission;

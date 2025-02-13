@@ -348,6 +348,74 @@ export const useIncentiveStore = create((set) => ({
     
             throw error;
         }
+    },
+
+    addMySalesCommission: async (myCommission) => {
+      try {
+          console.log("Fetching CSRF token...");
+          const csrfResponse = await axios.get(`${API_URL}/csrf-token`);
+          const csrfToken = csrfResponse.data.csrfToken;
+  
+          console.log("CSRF Token Received:", csrfToken);
+  
+          const response = await axios.post(`${API_URL}/add-my-sales-commission`, myCommission, {
+              headers: { "X-CSRF-Token": csrfToken },
+          });
+  
+          console.log("API Response:", response.data);
+  
+          set((state) => ({
+              allSalesCommission: [...state.allSalesCommission, response.data.commission],
+              error: null,
+          }));
+  
+          return response.data;
+      } catch (error) {
+          console.error("Error assigning commission:", error.response?.data || error.message);
+  
+          set({
+              error: error.response?.data.message || "Error in assigning new commission",
+          });
+  
+          throw error;
+      }
+  },
+
+  myCommissions:[],
+  fetchMySalesCommission: async () => {
+    try {
+      console.log("Fetching Sales Commission...");
+      const response = await axios.get(`${API_URL}/my-sales-commission`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
+      });
+      console.log("API Response:", response.data);
+      set({
+        myCommissions: response.data.myCommissions || [],
+      });
+      
+    } catch (error) {
+      console.error("Error fetching Sales Commission:", error.response?.data?.message || error);
+      set({
+        error: error.response?.data?.message || "Error fetching incentives",
+        myCommissions: [], 
+      });
     }
-    
+  },
+  assignedCommissions: [],
+  fetchAllAssignedSalesCommissions: async () => {
+    try {
+      console.log("Fetching Sales Commissions...");
+      const response = await axios.get(`${API_URL}/get-all-assigned-sales-commission`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+  
+      console.log("Sales Commissions Data:", response.data); // 🔍 Debugging
+  
+      set({ assignedCommissions: response.data.assignedCommissions || [] });
+    } catch (error) {
+      console.error("Error fetching sales commissions:", error.response?.data?.message || error);
+      set({ error: error.response?.data?.message || "Error fetching commissions", assignedCommissions: [] });
+    }
+  },
+  
 }));
