@@ -222,7 +222,7 @@ const App = () => {
                       <Route path="/incentives-overview" element={<ProtectedRoute><EIncentivesOverview /></ProtectedRoute>} />                    
                       <Route path="/incentive-request" element={<ProtectedRoute><IncentiveRequest /></ProtectedRoute>} />                    
 {/*                       <Route path="/incentive-history" element={<ProtectedRoute><IncentiveHistory /></ProtectedRoute>} />                    
- */}                      <Route path="/available-commissions" element={<ProtectedRoute><AvailableSalesCommission /></ProtectedRoute>} />                    
+ */}                      <Route path="/my-assigned-commissions" element={<ProtectedRoute><AvailableSalesCommission /></ProtectedRoute>} />                    
                    <Route path="/my-commissions" element={<ProtectedRoute><MySalesCommission /></ProtectedRoute>} />                    
                   <Route path="/recognition-lists" element={<ProtectedRoute><RecognitionLists /></ProtectedRoute>} />                    
                       
