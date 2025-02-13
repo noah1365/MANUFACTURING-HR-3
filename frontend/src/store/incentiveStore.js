@@ -475,6 +475,23 @@ fetchMyAssignedSalesCommissions: async () => {
       set({ error: error.response?.data?.message || "Error fetching commissions", addedSales: [] });
     }
   },
+  
+  myAddedSales: [],
+  fetchMyAddedSalesCommissions: async () => {
+    try {
+      console.log("Fetching Sales Commissions...");
+      const response = await axios.get(`${API_URL}/get-my-added-sales-commission`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+  
+      console.log("Sales Commissions Data:", response.data);
+      set({ myAddedSales: response.data.myAddedSales || [] });
+    } catch (error) {
+      console.error("Error fetching sales commissions:", error.response?.data?.message || error);
+      set({ error: error.response?.data?.message || "Error fetching commissions", myAddedSales: [] });
+    }
+  },
+  
 SalesHistory:null,
 updateConfirmationStatus: async (salesHistoryId, confirmationStatus) => {
   try {

@@ -476,8 +476,8 @@ export const getMySalesCommissions = async (req, res) => {
         }
 
         const myCommissions = await EmployeeSalesCommission.find({ employeeId })
-            .populate("salesCommissionId", "salesCommissionName targetAmount commissionRate assignStatus")
-            .select("totalSales  salesAmount salesStatus status salesProof createdAt")
+            .populate("salesCommissionId", "salesCommissionName commissionRate targetAmount")  // Only fetch necessary commission details
+            .select("totalSales salesStatus")
             .sort({ createdAt: -1 });
 
         return res.status(200).json({
