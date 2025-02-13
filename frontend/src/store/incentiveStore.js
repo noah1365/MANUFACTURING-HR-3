@@ -381,26 +381,37 @@ export const useIncentiveStore = create((set) => ({
       }
   },
 
-  myCommissions:[],
+  myCommissions: [],
   fetchMySalesCommission: async () => {
     try {
       console.log("Fetching Sales Commission...");
       const response = await axios.get(`${API_URL}/my-sales-commission`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
-      });
-      console.log("API Response:", response.data);
-      set({
-        myCommissions: response.data.myCommissions || [],
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       
+      console.log("API Response:", response.data);
+      console.log('Fetched commissions:', response.data.myCommissions);
+  
+      // Check if myCommissions is an array, and if so, map to flatten nested fields
+      const commissions = response.data.myCommissions.map(commission => ({
+        ...commission,
+        commissionName: commission.salesCommissionId.salesCommissionName, // Flatten nested data
+        targetAmount: commission.salesCommissionId.targetAmount,
+        commissionRate: commission.salesCommissionId.commissionRate,
+      }));
+  
+      set({
+        myCommissions: commissions || [],
+      });
     } catch (error) {
-      console.error("Error fetching Sales Commission:", error.response?.data?.message || error);
+      console.error("Error fetching Sales Commission:", error.response?.data?.message || error.message || error);
       set({
         error: error.response?.data?.message || "Error fetching incentives",
-        myCommissions: [], 
+        myCommissions: [],
       });
     }
   },
+  
 
   employeeSalesStatus: [],
   assignedCommissions: [],

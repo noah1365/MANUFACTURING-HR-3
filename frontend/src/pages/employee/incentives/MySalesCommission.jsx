@@ -18,6 +18,9 @@ const MySalesCommission = () => {
     salesProof: null,
   });
   const [submitError, setSubmitError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCommission, setSelectedCommission] = useState(null);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
 
   useEffect(() => {
     fetchMySalesCommission();
@@ -61,117 +64,226 @@ const MySalesCommission = () => {
         salesAmount: "",
         salesProof: null,
       });
+
+      closeFormModal();
     } catch (error) {
       setSubmitError(
         error.response?.data?.message || "Error adding commission"
       );
       console.error("Error adding sales commission:", error);
 
-
       toast.error("Failed to add sales commission.");
     }
+  };
+
+  const openModal = (commission) => {
+    setSelectedCommission(commission);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedCommission(null);
+  };
+
+  const openFormModal = () => {
+    setIsFormModalOpen(true);
+  };
+
+  const closeFormModal = () => {
+    setIsFormModalOpen(false);
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <ToastContainer />
 
-      <h2 className="text-2xl font-bold text-center mb-4">My Sales Commission</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">
+        My Sales Commission
+      </h2>
 
       {error && <p className="text-red-500 text-center">{error}</p>}
 
       {submitError && <p className="text-red-500 text-center">{submitError}</p>}
 
-      <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-        <div>
-          <label
-            htmlFor="salesCommissionId"
-            className="block text-sm font-semibold"
-          >
-            Commission Name
-          </label>
-          <select
-            name="salesCommissionId"
-            value={formData.salesCommissionId}
-            onChange={handleChange}
-            required
-            className="input input-bordered w-full"
-          >
-            <option value="">Select Commission</option>
-            {myCommissions?.map((commission) => (
-              <option
-                key={commission.salesCommissionId._id}
-                value={commission.salesCommissionId._id}
-              >
-                {commission.salesCommissionId?.salesCommissionName ||
-                  "Unnamed Commission"}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="salesAmount" className="block text-sm font-semibold">
-            Sales Amount
-          </label>
-          <input
-            type="number"
-            id="salesAmount"
-            name="salesAmount"
-            value={formData.salesAmount}
-            onChange={handleChange}
-            required
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="salesProof" className="block text-sm font-semibold">
-            Sales Proof
-          </label>
-          <input
-            type="file"
-            id="salesProof"
-            name="salesProof"
-            onChange={handleFileChange}
-            required
-            className="input input-bordered w-full"
-          />
-        </div>
-
-        <button type="submit" className="btn btn-primary w-full">
-          Add Commission
+      <div className="flex justify-center mb-4">
+        <button onClick={openFormModal} className="btn btn-primary">
+          Add New Commission
         </button>
-      </form>
+      </div>
+
+      {isFormModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <div className="modal-header flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Add Sales Commission
+              </h3>
+              <button
+                onClick={closeFormModal}
+                className="btn btn-sm btn-ghost text-gray-500"
+              >
+                X
+              </button>
+            </div>
+            <div className="modal-body mt-4 space-y-3">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="salesCommissionId"
+                    className="block text-sm font-semibold"
+                  >
+                    Commission Name
+                  </label>
+                  <select
+                    name="salesCommissionId"
+                    value={formData.salesCommissionId}
+                    onChange={handleChange}
+                    required
+                    className="input input-bordered w-full"
+                  >
+                    <option value="">Select Commission</option>
+                    {myCommissions?.map((commission) => (
+                      <option
+                        key={commission.salesCommissionId._id}
+                        value={commission.salesCommissionId._id}
+                      >
+                        {commission.salesCommissionId?.salesCommissionName ||
+                          "Unnamed Commission"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="salesAmount"
+                    className="block text-sm font-semibold"
+                  >
+                    Sales Amount
+                  </label>
+                  <input
+                    type="number"
+                    id="salesAmount"
+                    name="salesAmount"
+                    value={formData.salesAmount}
+                    onChange={handleChange}
+                    required
+                    className="input input-bordered w-full"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="salesProof"
+                    className="block text-sm font-semibold"
+                  >
+                    Sales Proof
+                  </label>
+                  <input
+                    type="file"
+                    id="salesProof"
+                    name="salesProof"
+                    onChange={handleFileChange}
+                    required
+                    className="input input-bordered w-full"
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-primary w-full">
+                  Add Commission
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap space-x-4">
+        {myCommissions.map((commission) => (
+          <div
+            key={commission._id}
+            className="card p-6 mb-4 bg-white shadow-md rounded-lg w-full sm:w-1/2 lg:w-1/3"
+          >
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <p
+                  onClick={() => openModal(commission)}
+                  className="text-md font-semibold text-primary cursor-pointer"
+                >
+                  {commission.salesCommissionId?.salesCommissionName ||
+                    "Unnamed Commission"}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+
+      {isModalOpen && selectedCommission && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <div className="modal-header flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Commission Details
+              </h3>
+              <button
+                onClick={closeModal}
+                className="btn btn-sm btn-ghost text-gray-500"
+              >
+                X
+              </button>
+            </div>
+            <div className="modal-body mt-4 space-y-3">
+              <p className="text-lg font-medium">
+                Name:{" "}
+                {selectedCommission.salesCommissionId?.salesCommissionName}
+              </p>
+              <p className="text-lg font-medium text-green-600">
+                Total Sales: {selectedCommission.totalSales}
+              </p>
+              <p className="text-lg font-medium text-blue-600">
+                Sales Status: {selectedCommission.salesStatus}
+              </p>
+            </div>
+            <div className="modal-footer mt-4">
+              <button onClick={closeModal} className="btn btn-primary">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {myAddedSales.length === 0 ? (
         <p className="text-center">No added commissions available.</p>
       ) : (
-        <table className="table-auto w-full text-left border-collapse">
+        <table className="table w-full mb-4">
           <thead>
-            <tr>
-              <th className="px-4 py-2 border">Commission Name</th>
-              <th className="px-4 py-2 border">Target Amount</th>
-              <th className="px-4 py-2 border">Commission Rate</th>
-              <th className="px-4 py-2 border">Sales Amount</th>
-              <th className="px-4 py-2 border">Sales Proof</th>
-              <th className="px-4 py-2 border">Confirmation Status</th>
+            <tr className="bg-primary text-white">
+              <th className="border px-4 py-2">Commission Name</th>
+              <th className="border px-4 py-2">Target Amount</th>
+              <th className="border px-4 py-2">Commission Rate</th>
+              <th className="border px-4 py-2">Sales Amount</th>
+              <th className="border px-4 py-2">Sales Proof</th>
+              <th className="border px-4 py-2">Confirmation Status</th>
             </tr>
           </thead>
           <tbody>
             {myAddedSales?.map((commission) => (
-              <tr key={commission._id}>
-                <td className="px-4 py-2 border">
+              <tr key={commission._id} className="hover:bg-neutral hover:text-white">
+                <td className="border px-4 py-2">
                   {commission.salesCommissionId?.salesCommissionName ||
                     "Unnamed Commission"}
                 </td>
-                <td className="px-4 py-2 border">
+                <td className="border px-4 py-2">
                   {commission.salesCommissionId?.targetAmount || "N/A"}
                 </td>
-                <td className="px-4 py-2 border">
+                <td className="border px-4 py-2">
                   {commission.salesCommissionId?.commissionRate || "N/A"}
                 </td>
-                <td className="px-4 py-2 border">
+                <td className="border px-4 py-2">
                   {commission.salesAmount || "N/A"}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
@@ -191,8 +303,7 @@ const MySalesCommission = () => {
                     "No Image"
                   )}
                 </td>
-
-                <td className="px-4 py-2 border">
+                <td className="border px-4 py-2">
                   {commission.confirmationStatus || "Pending"}
                 </td>
               </tr>

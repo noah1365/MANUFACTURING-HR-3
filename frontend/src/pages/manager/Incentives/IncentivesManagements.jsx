@@ -241,6 +241,16 @@ const IncentivesManagements = () => {
                 </Link>
             </div>
                  </div>
+                {/*Assigned Commissions Card  */}
+                <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+                <h2 className="card-title">View Added Sales Commissions</h2>
+                <p>Review add sales commissions and manage their requests.</p>
+                <Link to="/added-commissions" className="btn btn-primary">
+                    <button>Review requests</button>
+                </Link>
+            </div>
+                 </div>
                 
                       {/* Recognition Programs Card */}
                       <div className="card bg-base-100 shadow-xl">

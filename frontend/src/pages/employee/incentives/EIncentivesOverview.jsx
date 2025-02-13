@@ -53,6 +53,7 @@ const EIncentivesOverview = () => {
                             </Link>
                         </div>
                     </div>
+                    <div className="card bg-base-100 shadow-xl">
                     <div className="card-body">
                 <h2 className="card-title">Assigned Commissions</h2>
                 <p>View and track your assigned sales commissions.</p>
@@ -60,7 +61,7 @@ const EIncentivesOverview = () => {
                     <button>View Assigned Commissions</button>
                 </Link>
                   </div>
-
+                  </div>
                     <div className="card bg-base-100 shadow-xl">
                         <div className="card-body">
                             <h2 className="card-title">Sales Commissions</h2>

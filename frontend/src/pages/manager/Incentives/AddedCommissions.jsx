@@ -30,55 +30,55 @@ const AddedCommissions = () => {
         <p className="text-gray-500">No added sales commissions found.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-300">
+          <table className="table w-full mb-4">
             <thead>
-              <tr className="bg-gray-200 text-gray-700">
-                <th className="border border-gray-300 px-4 py-2">
+              <tr className="bg-primary text-white">
+                <th className="border px-4 py-2">
                   Employee Name
                 </th>
-                <th className="border border-gray-300 px-4 py-2">
+                <th className="border px-4 py-2">
                   Sales Commission
                 </th>
-                <th className="border border-gray-300 px-4 py-2">
+                <th className="border px-4 py-2">
                   Target Sales
                 </th>
-                <th className="border border-gray-300 px-4 py-2">
+                <th className="border px-4 py-2">
                   Commission Rate
                 </th>
-                <th className="border border-gray-300 px-4 py-2">
+                <th className="border px-4 py-2">
                   Sales Amount
                 </th>
-                <th className="border border-gray-300 px-4 py-2">
+                <th className="border px-4 py-2">
                   Sales Proof
                 </th>
-                <th className="border border-gray-300 px-4 py-2">Action</th>
+                <th className="border px-4 py-2">Action</th>
               </tr>
             </thead>
             <tbody>
               {addedSales.map((sale) => (
-                <tr key={sale._id} className="text-gray-700 text-center">
-                  <td className="border border-gray-300 px-4 py-2">
+                <tr key={sale._id} className="hover:bg-neutral hover:text-white">
+                  <td className="border px-4 py-2">
                     {sale.employeeId
                       ? `${sale.employeeId.firstName} ${sale.employeeId.lastName}`
                       : "No Employee Assigned"}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">
                     {sale.salesCommissionId?.salesCommissionName || "N/A"}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">
                     ₱
                     {sale.salesCommissionId?.targetAmount?.toLocaleString() ||
                       "N/A"}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">
                     {sale.salesCommissionId?.commissionRate
                       ? `${sale.salesCommissionId.commissionRate * 100}%`
                       : "N/A"}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">
                     ₱{sale.salesAmount?.toLocaleString() || "0"}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">
                     {sale.salesProof?.length > 0 ? (
                       <a
                         href={sale.salesProof[0].url}
@@ -96,7 +96,7 @@ const AddedCommissions = () => {
                     )}
                   </td>
 
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">
                     {sale.confirmationStatus === "Pending" ? (
                       <div className="flex justify-center gap-2">
                         <button

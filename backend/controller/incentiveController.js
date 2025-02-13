@@ -216,24 +216,9 @@ export const createSalesCommission = async (req, res) => {
 
 export const getAllSalesCommission = async (req, res) => {
     try {
-        const employeeId = req.user._id;
 
         const allSalesCommissions = await SalesCommission.find({
-            $or: [
-                { "assignedTo": { $size: 0 } },
-                { 
-                    "assignedTo": {
-                        $not: {
-                            $elemMatch: { 
-                                employeeId: employeeId, 
-                                assignStatus: { $in: ["Assigned", "Pending"] }
-                            }
-                        }
-                    }
-                }
-            ]
-        }).populate("assignedTo.employeeId", "name");
-
+        })
         return res.status(200).json(allSalesCommissions);
     } catch (error) {
         return res.status(500).json({ message: "Server Error", error: error.message });
@@ -476,8 +461,8 @@ export const getMySalesCommissions = async (req, res) => {
         }
 
         const myCommissions = await EmployeeSalesCommission.find({ employeeId })
-            .populate("salesCommissionId", "salesCommissionName commissionRate targetAmount")  // Only fetch necessary commission details
-            .select("totalSales salesStatus")
+            .populate("salesCommissionId", "salesCommissionName commissionRate targetAmount")
+            .select("salesStatus totalSales")
             .sort({ createdAt: -1 });
 
         return res.status(200).json({
@@ -535,7 +520,9 @@ export const updateConfirmationStatus = async (req, res) => {
 
             await employeeSalesCommission.save();
         }
-
+        if (confirmationStatus === "Rejected") {
+            salesHistory.confirmationStatus = "Rejected";
+        }
         await salesHistory.save();
 
         return res.status(200).json({
