@@ -1,7 +1,7 @@
 import express from "express";
 import { compensationPlanningValidation } from "../middleware/validationMiddleware.js";
 import { verifyToken } from "../middleware/verifyToken.js";
-import { createCompensationPlan, deleteCompensationPlan, getCompensationPlan, getCompensationPosition, updateCompensationPlan } from "../controller/compensationPlanningController.js";
+import { createCompensationPlan, createStandardCompensation, deleteCompensationPlan, deleteStandardCompensation, updateStandardCompensation, getCompensationPlan, getCompensationPosition, getStandardCompensation, updateCompensationPlan } from "../controller/compensationPlanningController.js";
 
 const compensationRoute = express.Router();
 
@@ -17,5 +17,12 @@ compensationRoute.get("/get-compensation-position",verifyToken,getCompensationPo
 compensationRoute.put("/update-compensation-plan/:id",verifyToken,compensationPlanningValidation,updateCompensationPlan);
 
 compensationRoute.delete("/delete-compensation-plan/:id",verifyToken,deleteCompensationPlan);
+
+
+compensationRoute.post("/create-standard-compensation",verifyToken,createStandardCompensation);
+compensationRoute.get("/get-standard-compensations",verifyToken,getStandardCompensation);
+compensationRoute.put("/update-standard-compensation/:id",verifyToken,updateStandardCompensation);
+compensationRoute.delete("/delete-standard-compensation/:id",verifyToken,deleteStandardCompensation);
+
 
 export default compensationRoute

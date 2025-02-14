@@ -128,21 +128,9 @@ export const compensationPlanningValidation = [
     body('hourlyRate').isFloat({ gt: 0 }).withMessage('Hourly rate must be a positive number.'),
     body('overTimeRate').isFloat({ gt: 0 }).withMessage('Overtime rate must be a positive number.'),
     body('holidayRate').isFloat({ gt: 0 }).withMessage('Holiday rate must be a positive number.'),
-    body('incentives').notEmpty().withMessage('Incentives are required.'),
-    body('benefits').isString().notEmpty().withMessage('Benefits must be a non-empty string.'),
-    body('performanceMetrics').isArray().withMessage('Performance metrics must be an array.')
-        .custom(value => value.every(metric => typeof metric === 'number')).withMessage('Performance metrics must be an array of numbers.'),
-    body('salaryAdjustmentGuidelines').notEmpty().withMessage('Salary adjustment guidelines are required.'),
-    body('effectiveDate').isISO8601().withMessage('Effective date must be a valid date.')
-        .custom(value => {
-            const inputDate = new Date(value);
-            const currentDate = new Date();
-            currentDate.setHours(0, 0, 0, 0);
-            if (inputDate < currentDate) throw new Error('Effective date cannot be in the past.');
-            return true;
-        }),
-    body('comments').optional().isString().withMessage('Comments must be a string.'),
+    
 ];
+
 
 export const reviewRequestValidation = [
     body('action')
