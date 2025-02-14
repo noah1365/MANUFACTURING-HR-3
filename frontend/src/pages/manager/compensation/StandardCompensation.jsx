@@ -35,7 +35,7 @@ const StandardCompensation = () => {
       const response = await createStandardCompensation(formData);
       if (response.success) {
         toast.success(response.message);
-      } else {
+        setFormData({ standardName: "", standardDescription: "", standardStatus: true });      } else {
         toast.error(response.message);
       }
     }
@@ -55,21 +55,19 @@ const StandardCompensation = () => {
     setIsModalOpen(true);
   };
   const handleDelete = async (id) => {
-    try {
-      const response = await deleteStandardCompensation(id);
-  
-      if (response && response.success) {
-        toast.success(response.message || "Deleted successfully.");
+    const isConfirmed = window.confirm("Are you sure you want to delete this compensation plan?");
+  if(isConfirmed){
+    const result = await deleteStandardCompensation(id);
+    if(result.success) {
+      toast.success("Compensation plan deleted successfully!");
         fetchAllStandardCompensations();
-      } else {
-        toast.error(response?.message || "Failed to delete compensation.");
-      }
-    } catch (error) {
-      console.error("Error deleting compensation:", error);
-      toast.error("An error occurred while deleting.");
+    } else {
+      toast.error(result.message);
     }
+  }else{
+    toast.info("Delete action was canceled!");
+  }
   };
-  
   
   return (
     <div>
@@ -155,8 +153,32 @@ const StandardCompensation = () => {
             )}
           </tbody>
         </table>
+
+       <div className="md:hidden">
+          {Array.isArray(standardCompensations) && standardCompensations.length > 0 ? (
+            standardCompensations
+              .filter(standard => standard && standard._id)
+              .map((standard) => (
+                <div key={standard._id} className="border mb-4 p-4 rounded-lg shadow">
+                  <p><strong>Name:</strong> {standard.standardName || 'N/A'}</p>
+                  <p><strong>Description:</strong> {standard.standardDescription || 'N/A'}</p>
+                  <p><strong>Status:</strong> {standard.standardStatus ? 'Available' : 'Not Available'}</p>
+                  <div className="mt-2">
+                    <button onClick={() => handleEdit(standard)} className="bg-primary text-white px-2 py-1 rounded mr-2">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(standard._id)} className="bg-error text-white px-2 py-1 rounded">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <p className="text-center">No compensation plans found!</p>
+          )}
+        </div>
       </div>
-      <ToastContainer />
+    
     </div>
   );
 };

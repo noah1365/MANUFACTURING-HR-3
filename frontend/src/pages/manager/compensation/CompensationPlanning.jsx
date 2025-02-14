@@ -321,6 +321,37 @@ const removeAllowance = (index) => {
               )}
           </tbody>
         </table>
+             <div className="md:hidden">
+          {Array.isArray(compensationPlans) && compensationPlans.length > 0 ? (
+            compensationPlans
+              .filter(plan => plan && plan._id)
+              .map((plan) => (
+                <div key={plan._id} className="border mb-4 p-4 rounded-lg shadow">
+                  <p><strong>Position:</strong> {plan.position || 'N/A'}</p>
+                  <p><strong>Hourly Rate:</strong> {plan.hourlyRate || 'N/A'}</p>
+                  <p><strong>OT Rate:</strong> {plan.overTimeRate || 'N/A'}</p>
+                  <p><strong>Holiday Rate:</strong> {plan.holidayRate || 'N/A'}</p>
+                  <p><strong>{plan.allowances && plan.allowances.length > 0 ? (
+                                <ul>
+                                  {plan.allowances.map((allowance, index) => (
+                                    <li key={index}>{allowance.type}: ₱{allowance.amount}</li>
+                                  ))}
+                                </ul>
+                              ) : 'N/A'}</strong></p>
+                  <div className="mt-2">
+                    <button onClick={() => handleEdit(plan)} className="bg-primary text-white px-2 py-1 rounded mr-2">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(plan._id)} className="bg-error text-white px-2 py-1 rounded">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+          ) : (
+            <p className="text-center">No compensation plans found!</p>
+          )}
+        </div>
         <StandardCompensation/>
       </div>
 
