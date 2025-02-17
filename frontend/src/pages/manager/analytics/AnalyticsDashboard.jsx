@@ -9,11 +9,11 @@ const AnalyticsDashboard = () => {
 
   useEffect(() => {
     const data = [
-      { name: "John", attendance: 95, performance: 88, overtime: 5, taskCompletion: 92, satisfaction: 8.5, absent: 0, compensationScore: 7.5, benefitsScore: 8, incentivesScore: 7 },
-      { name: "Sarah", attendance: 80, performance: 75, overtime: 10, taskCompletion: 80, satisfaction: 7, absent: 2, compensationScore: 6, benefitsScore: 6.5, incentivesScore: 6 },
-      { name: "Mike", attendance: 92, performance: 85, overtime: 7, taskCompletion: 89, satisfaction: 8, absent: 1, compensationScore: 8, benefitsScore: 8.5, incentivesScore: 7.5 },
-      { name: "Emma", attendance: 98, performance: 90, overtime: 3, taskCompletion: 95, satisfaction: 9, absent: 0, compensationScore: 9, benefitsScore: 9.5, incentivesScore: 9 },
-      { name: "David", attendance: 20, performance: 40, overtime: 12, taskCompletion: 30, satisfaction: 1, absent: 3, compensationScore: 1, benefitsScore: 1, incentivesScore: 1 },
+      { name: "John", attendance: 95, performance: 88, overtime: 5, taskCompletion: 92, satisfaction: 8.5, absent: 0, compensationScore: 7.5, benefitsScore: 8, incentivesScore: 7, salaryScore: 8 },
+      { name: "Sarah", attendance: 80, performance: 75, overtime: 10, taskCompletion: 80, satisfaction: 7, absent: 2, compensationScore: 6, benefitsScore: 6.5, incentivesScore: 6, salaryScore: 6.5 },
+      { name: "Mike", attendance: 92, performance: 85, overtime: 7, taskCompletion: 89, satisfaction: 8, absent: 1, compensationScore: 8, benefitsScore: 8.5, incentivesScore: 7.5, salaryScore: 8.2 },
+      { name: "Emma", attendance: 98, performance: 90, overtime: 3, taskCompletion: 95, satisfaction: 9, absent: 0, compensationScore: 9, benefitsScore: 9.5, incentivesScore: 9, salaryScore: 9 },
+      { name: "David", attendance: 20, performance: 40, overtime: 12, taskCompletion: 30, satisfaction: 1, absent: 3, compensationScore: 1, benefitsScore: 1, incentivesScore: 1, salaryScore: 2 },
     ];
     setBehaviorData(data);
   }, []);
@@ -30,6 +30,7 @@ const AnalyticsDashboard = () => {
         emp.compensationScore,
         emp.benefitsScore,
         emp.incentivesScore,
+        emp.salaryScore, // Include salary score in the model
       ]);
 
       const ys = behaviorData.map(emp => {
@@ -40,6 +41,7 @@ const AnalyticsDashboard = () => {
         if (emp.compensationScore < 4) riskScore += 0.4;
         if (emp.benefitsScore < 4) riskScore += 0.3;
         if (emp.incentivesScore < 4) riskScore += 0.3;
+        if (emp.salaryScore < 4) riskScore += 0.2; // Factor in salary score for risk prediction
 
         if (emp.satisfaction >= 8) riskScore -= 0.3;
         if (emp.performance >= 80) riskScore -= 0.3;
@@ -90,6 +92,7 @@ const AnalyticsDashboard = () => {
               <Bar dataKey="performance" fill="#2196F3" name="Performance Score" />
               <Bar dataKey="overtime" fill="#FF9800" name="Overtime (Hrs)" />
               <Bar dataKey="taskCompletion" fill="#9C27B0" name="Task Completion (%)" />
+              <Bar dataKey="salaryScore" fill="#FF5722" name="Salary Score" /> {/* Added Salary Score */}
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -123,6 +126,7 @@ const AnalyticsDashboard = () => {
               <th className="border px-4 py-2">Compensation Score</th>
               <th className="border px-4 py-2">Benefits Score</th>
               <th className="border px-4 py-2">Incentives Score</th>
+              <th className="border px-4 py-2">Salary Score</th> {/* Added Salary Score */}
               <th className="border px-4 py-2">Attrition Risk</th>
             </tr>
           </thead>
@@ -139,6 +143,7 @@ const AnalyticsDashboard = () => {
                 <td className="border px-4 py-2">{emp.compensationScore}</td>
                 <td className="border px-4 py-2">{emp.benefitsScore}</td>
                 <td className="border px-4 py-2">{emp.incentivesScore}</td>
+                <td className="border px-4 py-2">{emp.salaryScore}</td> {/* Added Salary Score */}
                 <td className="border px-4 py-2">{emp.attritionRisk}</td>
               </tr>
             ))}

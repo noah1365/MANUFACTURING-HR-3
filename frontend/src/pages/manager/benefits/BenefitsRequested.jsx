@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useBenefitStore } from '../../../store/benefitStore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { io } from 'socket.io-client';
+
 
 const BenefitsRequested = () => {
   const { benefits, fetchAllRequestBenefits, updateRequestBenefitStatus } = useBenefitStore();
@@ -9,14 +11,32 @@ const BenefitsRequested = () => {
   const [loading, setLoading] = useState(true);
   const processedRequests = benefits.filter(request => request.status === 'Approved' || request.status === 'Denied');
 
+  const socketURL = import.meta.env.MODE === "development" 
+  ? "http://localhost:7687" 
+  : window.location.origin;
+
+const socket = io(socketURL, { withCredentials: true });
+
+
   useEffect(() => {
     document.title = 'Benefit Enrollment Requested';
     const loadRequests = async () => {
       await fetchAllRequestBenefits();
       setLoading(false);
+      socket.on('existingBenefitRequests', (requests) => {
+        setSalaryRequests(requests);
+      });
+  
+      socket.on('newBenefitRequest', (newRequest) => {
+        addSalaryRequest(newRequest);
+      });
+  
+      return () => {
+        socket.disconnect();
+      };
     };
     loadRequests();
-  }, [fetchAllRequestBenefits]);
+  }, [socekt,fetchAllRequestBenefits]);
 
   const handleSelectRequest = (request) => {
     setSelectedRequest(request);

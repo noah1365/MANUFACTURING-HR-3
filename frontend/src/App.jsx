@@ -69,7 +69,7 @@ import SalaryRequest from './pages/employee/payroll/SalaryRequest';
 import MyPaySlip from './pages/employee/payroll/MyPaySlip';
 import MyOvertimeBonuses from './pages/employee/payroll/MyOvertimeBonuses';
 
-import SubmitFeedbacks from './pages/employee/SubmitFeedbacks';
+import EmployeeSurvey from './pages/employee/EmployeeSurvey';
 
 import VerifyAccount from './components/VerifyAccount';
 import ResendVerification from './components/ResendVerification';
@@ -175,7 +175,7 @@ const App = () => {
                       <Route path="/compensation-overview" element={<ProtectedRoute><CompensationOverview /></ProtectedRoute>} />
                       <Route path="/compensation-planning" element={<ProtectedRoute><CompensationPlanning /></ProtectedRoute>} />
                       <Route path="/salary-structure" element={<ProtectedRoute><SalaryStructure /></ProtectedRoute>} />
-                      <Route path="/market-analysis" element={<ProtectedRoute><MarketAnalysis /></ProtectedRoute>} />
+                      {/* <Route path="/market-analysis" element={<ProtectedRoute><MarketAnalysis /></ProtectedRoute>} /> */}
                       <Route path="/grievance-request" element={<ProtectedRoute><GrievanceRequest /></ProtectedRoute>} />
                       
 
@@ -202,7 +202,7 @@ const App = () => {
                   {user?.role === 'Employee' && (
                     <>
                       <Route path="/dashboard" element={<ProtectedRoute><EmployeeDashboard /></ProtectedRoute>} />                    
-                      <Route path="/submit-feedbacks" element={<ProtectedRoute><SubmitFeedbacks /></ProtectedRoute>} />                    
+                      <Route path="/survey" element={<ProtectedRoute><EmployeeSurvey /></ProtectedRoute>} />                    
 
                       <Route path="/settings" element={<ProtectedRoute><SettingsPage/></ProtectedRoute>} />  
                       <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />  

@@ -36,7 +36,7 @@ const EmployeeSidebar = () => {
         <DashboardLink icon={<GiHealthNormal />} text="My Benefits" to="/benefits-overview" isActive={activeLink === 'benefits'} onClick={() => handleLinkClick('benefits')} />
         <DashboardLink icon={<FaStar />} text="My Incentives" to="/incentives-overview" isActive={activeLink === 'incentives'} onClick={() => handleLinkClick('incentives')} />
         <DashboardLink icon={<FaMoneyBillWave />} text="My Salary" to="/my-salary-info" isActive={activeLink === 'salary'} onClick={() => handleLinkClick('salary')} />
-        <DashboardLink icon={<MdFeedback />} text="My Feedback" to="/submit-feedbacks" isActive={activeLink === 'feedbacks'} onClick={() => handleLinkClick('feedbacks')} /> {/* New Feedback link */}
+        <DashboardLink icon={<MdFeedback />} text="My Feedback" to="/survey" isActive={activeLink === 'survey'} onClick={() => handleLinkClick('feedbacks')} /> {/* New Feedback link */}
       </div>
     </div>
   );

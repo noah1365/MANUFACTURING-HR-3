@@ -103,6 +103,8 @@ import upload from "../config/multerConfig.js";
 import { RequestBenefit } from "../model/benefit/requestBenefitModel.js";
 import { BenefitDeduction } from "../model/benefit/benefitDeductionsModel.js";
 import { BenefitDeductionHistory } from "../model/benefit/benefitDeductionHistory.js";
+import { Notification } from "../model/notificationModel.js";
+import { io } from "../index.js";
 
 export const requestBenefit = async (req, res) => {
     try {
@@ -154,8 +156,36 @@ export const requestBenefit = async (req, res) => {
         });
 
         await newRequest.save();
-        res.status(201).json({ message: "Benefit request created successfully", newRequest });
 
+        // Create and emit notification
+        const userId = req.user._id;
+        const user = await User.findById(userId).select('lastName');
+        
+        const managers = await User.find({ role: 'Admin' });
+        const managerIds = managers.map(manager => manager._id);
+        const employeeLastName = user.lastName || "Employee";
+        
+        for (const managerId of managerIds) {
+            const notification = new Notification({
+                userId: managerId,
+                message: `${employeeLastName} created a benefit request`,
+            });
+        
+            await notification.save();
+        }
+        
+        // Emit socket event
+        io.to(managerIds).emit('requestSalaryCreated', {
+            message: `${employeeLastName} created a benefit request`,
+            requestSalary: newRequest,  // Ensure to emit the correct object
+        });
+        
+        // Send response after all is complete
+        res.status(201).json({
+            message: "Benefit request created successfully",
+            newRequest
+        });
+        
     } catch (error) {
         console.error("Error in requestBenefit:", error);
         res.status(500).json({ message: error.message });
@@ -199,7 +229,7 @@ export const updateRequestBenefitStatus = async (req, res) => {
         const { status } = req.body;
         console.log("Received ID:", id);
         console.log("Received Status:", status);
-        
+
         if (!["Approved", "Denied"].includes(status)) {
             return res.status(400).json({ success: false, message: "Invalid status" });
         }
@@ -214,10 +244,26 @@ export const updateRequestBenefitStatus = async (req, res) => {
             return res.status(404).json({ success: false, message: "Request not found" });
         }
 
+        const employee = await User.findById(updatedRequest.employeeId).select('lastName');
+        const employeeLastName = employee.lastName || "Employee";
+
+        const notification = new Notification({
+            userId: updatedRequest.employeeId,
+            message: `Your benefit request has been ${status}`,
+        });
+
+        await notification.save();
+
+        io.to(updatedRequest.employeeId.toString()).emit('requestBenefitStatusUpdated', {
+            message: `Your benefit request has been ${status}`,
+            requestId: updatedRequest._id,
+            status: updatedRequest.status,
+        });
+
         res.status(200).json({ success: true, message: `Request ${status}`, data: updatedRequest });
 
     } catch (error) {
-        console.error("Error updating incentive request:", error);
+        console.error("Error updating benefit request status:", error);
         res.status(500).json({ success: false, message: "Server error" });
     }
 };

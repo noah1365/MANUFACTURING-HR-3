@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useBenefitStore } from "../../../store/benefitStore";
-
+import { io } from 'socket.io-client';
 const ApplyBenefits = () => {
   const {
     requestBenefit,
@@ -11,6 +11,14 @@ const ApplyBenefits = () => {
     fetchMyRequestBenefits,
     myRequestBenefits = [],
   } = useBenefitStore();
+
+  const socketURL = import.meta.env.MODE === "development" 
+  ? "http://localhost:7687" 
+  : window.location.origin;
+
+const socket = io(socketURL, { withCredentials: true });
+
+
   const [loading, setLoading] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
@@ -23,7 +31,22 @@ const ApplyBenefits = () => {
   useEffect(() => {
     fetchBenefit();
     fetchMyRequestBenefits();
-  }, []);
+
+    socket.on('existingBenefitRequests', (requests) => {
+      setSalaryRequests(requests);
+    });
+
+    socket.on('newBenefitRequest', (newRequest) => {
+      addSalaryRequest(newRequest);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+
+  }, [socket]);
+
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,7 +75,6 @@ const ApplyBenefits = () => {
     e.preventDefault();
     setLoading(true);
   
-    // Check if the user has already requested or been approved for the selected benefit
     const existingRequest = myRequestBenefits.find(
       (benefit) => benefit.benefitsName.benefitsName === formData.benefitType
     );
