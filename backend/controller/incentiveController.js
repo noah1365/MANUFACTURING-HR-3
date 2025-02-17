@@ -9,6 +9,8 @@ import { EmployeeSalesCommission } from "../model/incentives/employeeSalesCommis
 import cloudinary from "../config/cloudinaryConfig.js";
 import upload from "../config/multerConfig.js";
 import {SalesHistory} from './../model/incentives/salesHistoryModel.js'
+import { Notification } from "../model/notificationModel.js";
+import { io } from "../index.js";
 
 /* incentives overview crud */
 export const createIncentive = async (req,res) => {
@@ -106,25 +108,51 @@ export const deleteIncentive = async (req, res) => {
 export const requestIncentive = async (req, res) => {
     try {
         const { incentiveType, comments } = req.body;
-        if(!req.user || !req.user._id){
-            return res.status(401).json({message:'User not authenticated.'});
+
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: 'User not authenticated.' });
         }
 
         if (!incentiveType || !comments) {
             return res.status(400).json({ success: false, message: "Select type and provide comments" });
         }
 
-        const isRequestIncentiveExist = await RequestIncentive.findOne({ incentiveType });
+        const isRequestIncentiveExist = await RequestIncentive.findOne({
+            incentiveType,
+            employeeId: req.user._id
+        });
 
         if (isRequestIncentiveExist) {
             return res.status(400).json({ success: false, message: "Incentive request already exists" });
         }
 
-        const newRequest = await RequestIncentive.create({ 
+        const newRequest = await RequestIncentive.create({
             employeeId: req.user._id,
             incentiveType,
-             comments
-             });
+            comments
+        });
+
+        const userId = req.user._id;
+        const user = await User.findById(userId).select('lastName');
+        const employeeLastName = user.lastName || "Employee";
+
+        const managers = await User.find({ role: 'Admin' });
+        const managerIds = managers.map(manager => manager._id);
+
+        for (const managerId of managerIds) {
+            const notification = new Notification({
+                userId: managerId,
+                message: `${employeeLastName} created an incentive request`
+            });
+            await notification.save();
+        }
+
+        managerIds.forEach(managerId => {
+            io.to(managerId.toString()).emit('requestIncentiveCreated', {
+                message: `${employeeLastName} created an incentive request`,
+                requestSalary: newRequest
+            });
+        });
 
         return res.status(201).json({
             success: true,
@@ -137,6 +165,7 @@ export const requestIncentive = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
 
 export const getMyRequestIncentives = async (req,res) => {
     try {
@@ -180,6 +209,21 @@ export const updateRequestIncentiveStatus = async (req, res) => {
         if (!updatedRequest) {
             return res.status(404).json({ success: false, message: "Request not found" });
         }
+
+        const employee = await User.findById(updatedRequest.employeeId).select('email lastName');
+        const employeeLastName = employee.lastName || "Employee";
+
+        const notificationMessage = `Your incentive request has been ${status}`;
+        const notification = new Notification({
+            userId: updatedRequest.employeeId,
+            message: notificationMessage,
+        });
+        await notification.save();
+
+        io.to(updatedRequest.employeeId.toString()).emit('requestIncentiveStatusUpdated', {
+            message: notificationMessage,
+            requestIncentive: updatedRequest
+        });
 
         res.status(200).json({ success: true, message: `Request ${status}`, data: updatedRequest });
 
@@ -348,6 +392,26 @@ export const addMySalesCommission = async (req, res) => {
 
         await newSalesHistory.save();
 
+        const userId = req.user._id;
+        const user = await User.findById(userId).select('lastName');
+        
+        const managers = await User.find({ role: 'Admin' });
+        const managerIds = managers.map(manager => manager._id);
+        const employeeLastName = user.lastName || "Employee";
+        
+        for (const managerId of managerIds) {
+            const notification = new Notification({
+                userId: managerId,
+                message: `${employeeLastName} submitted a new sales commission request`,
+            });
+            await notification.save();
+        }
+        
+        io.to(managerIds).emit('newSalesCommission', {
+            message: `${employeeLastName} submitted a new sales commission request`,
+            salesHistory: newSalesHistory,  
+        });
+
         return res.status(200).json({
             message: "Sales added successfully. Recorded in SalesHistory.",
             newSalesHistory
@@ -492,6 +556,8 @@ export const updateConfirmationStatus = async (req, res) => {
             return res.status(400).json({ message: "Sales record is already approved." });
         }
 
+        const employeeId = salesHistory.employeeId;
+
         if (confirmationStatus === "Approved") {
             salesHistory.confirmationStatus = "Approved";
 
@@ -520,10 +586,28 @@ export const updateConfirmationStatus = async (req, res) => {
 
             await employeeSalesCommission.save();
         }
+
         if (confirmationStatus === "Rejected") {
             salesHistory.confirmationStatus = "Rejected";
         }
+
         await salesHistory.save();
+
+        const employee = await User.findById(employeeId).select('lastName');
+        const employeeLastName = employee.lastName || "Employee";
+
+        const notification = new Notification({
+            userId: employeeId,
+            message: `Your sales commission request has been ${confirmationStatus}.`,
+        });
+
+        await notification.save();
+
+        io.to(employeeId.toString()).emit('salesCommissionStatusUpdated', {
+            message: `Your sales commission request has been ${confirmationStatus}.`,
+            salesHistoryId: salesHistory._id,
+            status: salesHistory.confirmationStatus,
+        });
 
         return res.status(200).json({
             message: `Sales confirmation status updated to '${confirmationStatus}'.`,
@@ -574,12 +658,29 @@ export const createRecognitionPrograms = async (req, res) => {
 
         await newRecognition.save();
 
+        const employee = await User.findById(employeeId).select('lastName');
+        const employeeLastName = employee.lastName || "Employee";
+
+        const notification = new Notification({
+            userId: employeeId,
+            message: `Congratulations! You have been recognized with the award '${awardName}'.`,
+        });
+
+        await notification.save();
+
+        io.to(employeeId.toString()).emit('recognitionProgramCreated', {
+            message: `Congratulations! You have been recognized with the award '${awardName}'.`,
+            recognitionProgramId: newRecognition._id,
+            awardName: newRecognition.awardName,
+        });
+
         return res.status(201).json({ message: "Recognition program created successfully.", data: newRecognition });
     } catch (error) {
         console.error("Error creating recognition program:", error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 
   export const getAllRecognitionPrograms = async (req, res) => {

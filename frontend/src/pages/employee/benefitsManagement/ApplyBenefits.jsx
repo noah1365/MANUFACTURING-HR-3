@@ -44,7 +44,7 @@ const socket = io(socketURL, { withCredentials: true });
       socket.disconnect();
     };
 
-  }, [socket]);
+  }, []);
 
 
 

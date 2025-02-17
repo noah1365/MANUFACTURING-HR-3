@@ -157,7 +157,6 @@ export const requestBenefit = async (req, res) => {
 
         await newRequest.save();
 
-        // Create and emit notification
         const userId = req.user._id;
         const user = await User.findById(userId).select('lastName');
         
@@ -174,13 +173,11 @@ export const requestBenefit = async (req, res) => {
             await notification.save();
         }
         
-        // Emit socket event
         io.to(managerIds).emit('requestSalaryCreated', {
             message: `${employeeLastName} created a benefit request`,
-            requestSalary: newRequest,  // Ensure to emit the correct object
+            requestSalary: newRequest,  
         });
         
-        // Send response after all is complete
         res.status(201).json({
             message: "Benefit request created successfully",
             newRequest
@@ -273,6 +270,7 @@ export const addBenefitDeduction = async (req, res) => {
     try {
         const { employeeId, benefitsName, amount } = req.body;
         console.log("Received data:", req.body); 
+
         if (!mongoose.isValidObjectId(employeeId) || !mongoose.isValidObjectId(benefitsName)) {
             return res.status(400).json({ success: false, message: "Invalid Employee or Benefit ID" });
         }
@@ -309,6 +307,23 @@ export const addBenefitDeduction = async (req, res) => {
         const deductionHistory = new BenefitDeductionHistory({ employeeId, benefitsName, amount });
         await deductionHistory.save();
         console.log(deductionHistory);
+
+        const notification = new Notification({
+            userId: employeeId,
+            message: `A new deduction of ₱${amount} has been added for ${benefit.benefitsName}.`,
+        });
+
+        await notification.save();
+
+        if (io) {
+            io.to(employeeId.toString()).emit("benefitDeductionAdded", {
+                message: `A new deduction of ₱${amount} has been added for ${benefit.benefitsName}.`,
+                amount,
+                benefitsName: benefit.benefitsName,
+                timestamp: new Date(),
+            });
+        }
+
         res.status(201).json({
             success: true,
             message: "Benefit Deduction recorded successfully",
@@ -321,6 +336,7 @@ export const addBenefitDeduction = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
 
 
 export const getAllBenefitDeductions = async (req, res) => {
@@ -357,7 +373,7 @@ export const getMyBenefitDeductions = async (req, res) => {
         const userId = req.user.id;
         const myHistory = await BenefitDeductionHistory.find({ userId })
             .populate("benefitsName", "benefitsName amount")
-            .select("amount createdAt"); // Ensure createdAt is included
+            .select("amount createdAt"); 
 
         res.status(200).json({ success: true, myHistory });
     } catch (error) {
