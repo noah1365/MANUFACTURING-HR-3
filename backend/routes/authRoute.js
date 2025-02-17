@@ -14,7 +14,7 @@ router.get('/csrf-token', (req, res) => {
 router.post("/login",loginValidation,validate,login);
 
 router.get('/check-auth', verifyToken, checkAuth);
-router.get('/users', verifyToken,checkRole('Admin'), getUsers);
+router.get('/users', verifyToken, getUsers);
 router.delete('/delete-user/:id', verifyToken,checkRole('Admin'), deleteUser);
 router.post("/logout",verifyToken,logout);
 

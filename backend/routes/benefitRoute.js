@@ -22,7 +22,7 @@ benefitRoute.get("/my-request-benefits",verifyToken,getMyRequestBenefits);
 benefitRoute.get("/get-all-request-benefits",verifyToken,getAllRequestBenefits);
 benefitRoute.put("/update-request-benefit-status/:id", verifyToken, updateRequestBenefitStatus);
 
-benefitRoute.post("/add-benefit-deduction", verifyToken, checkRole('Admin'), addBenefitDeduction);
+benefitRoute.post("/add-benefit-deduction", verifyToken, addBenefitDeduction);
 benefitRoute.get("/get-all-benefit-deduction", verifyToken, getAllBenefitDeductions);
 benefitRoute.get("/get-benefit-deduction-history", getBenefitDeductionHistory);
 benefitRoute.get("/get-my-deduction-history", verifyToken,getMyBenefitDeductions);

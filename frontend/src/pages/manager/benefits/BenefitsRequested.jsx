@@ -36,7 +36,7 @@ const socket = io(socketURL, { withCredentials: true });
       };
     };
     loadRequests();
-  }, [socekt,fetchAllRequestBenefits]);
+  }, [fetchAllRequestBenefits]);
 
   const handleSelectRequest = (request) => {
     setSelectedRequest(request);

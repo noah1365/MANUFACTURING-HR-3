@@ -27,17 +27,21 @@ const DeductionsManagement = () => {
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
-    fetchBenefit();
-    fetchMyRequestBenefits();
-    fetchBenefitDeductions();
-    fetchBenefitDeductionHistory();
-    fetchUsers().then(() => {
-      if (users) {
-        setEmployees(users); 
+    const fetchData = async () => {
+      await fetchBenefit();
+      await fetchMyRequestBenefits();
+      await fetchBenefitDeductions();
+      await fetchBenefitDeductionHistory();
+      await fetchUsers(); 
+  
+      if (users && users.length > 0) {
+        setEmployees(users);
       }
-    });
-  }, [fetchBenefit, fetchBenefitDeductions,fetchMyRequestBenefits, fetchBenefitDeductionHistory, fetchUsers, users]);
-
+    };
+  
+    fetchData();
+  }, [fetchBenefit, fetchBenefitDeductions, fetchMyRequestBenefits, fetchBenefitDeductionHistory, fetchUsers, users]);
+  
   const handleAddDeduction = async (e) => {
     e.preventDefault();
   
@@ -47,7 +51,7 @@ const DeductionsManagement = () => {
         return;
     }
   
-    const selectedEmployeeDetails = employees.find(employee => employee._id === selectedEmployee);
+    const selectedEmployeeDetails = users.find(user => user._id === selectedEmployee);
     console.log("Selected Benefit ID:", selectedBenefit);
     console.log("My Request Benefits:", myRequestBenefits);
   
@@ -123,24 +127,25 @@ const DeductionsManagement = () => {
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-2">Employee</label>
           <select
-            value={selectedEmployee}
-            onChange={(e) => setSelectedEmployee(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          >
-            <option value="">Select Employee</option>
-            {employees.length > 0 &&
-              employees.map((employee) => (
-                <option key={employee._id} value={employee._id}>
-                  {employee.firstName} {employee.lastName}
-                </option>
-              ))}
-          </select>
+  value={selectedEmployee || ""}  // This ensures it's an empty string if null
+  onChange={(e) => setSelectedEmployee(e.target.value)}
+  className="w-full p-2 border border-gray-300 rounded"
+>
+  <option value="">Select Employee</option>
+  {employees.length > 0 &&
+    employees.map((employee) => (
+      <option key={employee._id} value={employee._id}>
+        {employee.firstName} {employee.lastName}
+      </option>
+    ))}
+</select>
+
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-2">Select Benefit</label>
           <select
-  value={selectedBenefit}
+  value={selectedBenefit || ""}  // Again, set it to an empty string if null
   onChange={(e) => setSelectedBenefit(e.target.value)} 
   className="w-full p-2 border border-gray-300 rounded"
 >
@@ -155,6 +160,7 @@ const DeductionsManagement = () => {
     <option value="">No benefits available</option>
   )}
 </select>
+
 
         </div>
 
