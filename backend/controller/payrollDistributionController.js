@@ -32,7 +32,7 @@ export const requestSalary = async (req, res) => {
         const userId = req.user._id;
         const user = await User.findById(userId).select('lastName');
         
-        const managers = await User.find({ role: 'Manager' });
+        const managers = await User.find({ role: 'Admin' });
         const managerIds = managers.map(manager => manager._id);
         const employeeLastName = user.lastName || "Employee";
         console.log(user);
@@ -147,7 +147,7 @@ export const reviewRequest = async (req, res) => {
 
 export const toggleRequestAvailability = async (req, res) => {
     try {
-        if (!req.user || req.user.role !== 'Manager') {
+        if (!req.user || req.user.role !== 'Admin') {
             return res.status(403).json({ message: 'Access forbidden: Only managers can perform this action.' });
         }
 

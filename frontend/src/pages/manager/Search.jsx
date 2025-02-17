@@ -75,7 +75,7 @@ const Search = ({ onToggleSidebar }) => {
     
     
     const getRoutesByRole = (role) => {
-      if(role === 'Manager'){
+      if(role === 'Admin'){
         return managerRoutes;
       }else if(role === 'Employee'){
         return employeeRoutes;
@@ -110,7 +110,7 @@ const Search = ({ onToggleSidebar }) => {
         });
 
         socket.on('requestSalaryCreated', (data) => {
-            if(user?.role === 'Manager'){
+            if(user?.role === 'Admin'){
                 fetchNotifications(user?.role);
             }
         });

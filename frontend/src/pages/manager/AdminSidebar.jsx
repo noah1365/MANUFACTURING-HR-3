@@ -40,8 +40,8 @@ const AdminSidebar = () => {
         <DashboardLink icon={<FaStar />} text="Incentives Management" to="/incentives-management" isActive={activeLink === 'incentives'} onClick={() => handleLinkClick('incentives')} />
         <DashboardLink icon={<FaMoneyBillWave />} text="Compensation Planning" to="/compensation-overview" isActive={activeLink === 'compensation'} onClick={() => handleLinkClick('compensation')} />
         <DashboardLink icon={<TbCurrencyPeso />} text="Payroll Processing" to="/payroll-management" isActive={activeLink === 'payroll'} onClick={() => handleLinkClick('payroll')} />
-        <DashboardLink icon={<AiOutlineBarChart />} text="Predictive Analytics" to="/predictive-analytics" isActive={activeLink === 'predictive'} onClick={() => handleLinkClick('predictive')} />
-        <DashboardLink icon={<AiOutlineLineChart />} text="Behavioral Analytics" to="/Behavioral-analytics" isActive={activeLink === 'behavioural'} onClick={() => handleLinkClick('behavioral')} />
+        <DashboardLink icon={<AiOutlineBarChart />} text="Analytics" to="/analytics" isActive={activeLink === 'predictive'} onClick={() => handleLinkClick('predictive')} />
+        {/* <DashboardLink icon={<AiOutlineLineChart />} text="Behavioral Analytics" to="/Behavioral-analytics" isActive={activeLink === 'behavioural'} onClick={() => handleLinkClick('behavioral')} /> */}
       </div>
     </div>
   );

@@ -77,8 +77,7 @@ import SettingsPage from './components/SettingsPage';
 import Security from './components/Security';
 import ForgotPassword from './components/ForgotPassword';
 import AdminDashboard from './pages/manager/AdminDashboard';
-import BehaviouralAnalytics from './pages/manager/analytics/BehaviouralAnalytics';
-import PredictiveAnalytics from './pages/manager/analytics/PredictiveAnalytics';
+import AnalyticsDashboard from './pages/manager/analytics/AnalyticsDashboard';
 import MySalesCommission from './pages/employee/incentives/MySalesCommission';
 import AssignedCommissions from './pages/manager/Incentives/AssignedCommissions';
 import AddedCommissions from './pages/manager/Incentives/AddedCommissions';
@@ -127,7 +126,7 @@ const App = () => {
   //   <DefaultComponent />
   // )}
 
-  // {user?.role === 'Manager' ? (
+  // {user?.role === 'Admin' ? (
   //   <ProtectedRoute>
   //     <ManagerDashboard />
   //   </ProtectedRoute>
@@ -145,15 +144,15 @@ const App = () => {
         {isAuthenticated ? (
           <>
             {/* Responsive Sidebar */}
-            {isSidebarVisible && (user?.role === 'Manager' ? <AdminSidebar /> : <EmployeeSidebar />)}            
+            {isSidebarVisible && (user?.role === 'Admin' ? <AdminSidebar /> : <EmployeeSidebar />)}            
             <main className="flex-1 p-4 flex flex-col">
             <Search onToggleSidebar={handleToggleSidebar} />
               <div className="flex-1 max-h-screen md:max-h-auto overflow-y-auto">
                 <Routes>
-                  <Route path="/" element={<Navigate to={user?.role === 'Manager' ? '/dashboard' : '/dashboard'} replace />} />
+                  <Route path="/" element={<Navigate to={user?.role === 'Admin' ? '/dashboard' : '/dashboard'} replace />} />
                   <Route path="/login" element={<RedirectAuthenticatedUser><LogIn /></RedirectAuthenticatedUser>} />
 
-                  {user?.role === 'Manager' && (
+                  {user?.role === 'Admin' && (
                     <>
                     
 {/*                   <Route path="/dashboard" element={<ProtectedRoute><ManagerDashboard /></ProtectedRoute>} />*/}                      <Route path="/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
@@ -195,8 +194,8 @@ const App = () => {
                       <Route path="/recognition-programs" element={<ProtectedRoute><RecognitionPrograms /></ProtectedRoute>} />
 
                       {/* Analytics */}
-                      <Route path="/behavioral-analytics" element={<ProtectedRoute>< BehaviouralAnalytics/></ProtectedRoute>} />
-                      <Route path="/predictive-analytics" element={<ProtectedRoute><PredictiveAnalytics /></ProtectedRoute>} />
+                     {/*  <Route path="/behavioral-analytics" element={<ProtectedRoute>< BehaviouralAnalytics/></ProtectedRoute>} /> */}
+                      <Route path="/analytics" element={<ProtectedRoute><AnalyticsDashboard /></ProtectedRoute>} />
                     </>
                   )}
                   

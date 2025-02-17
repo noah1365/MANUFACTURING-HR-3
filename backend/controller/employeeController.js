@@ -78,15 +78,15 @@ export const registerUser = async (req, res) => {
         const compensationPlans = await CompensationPlanning.find().populate('position');
         const employeePositions = compensationPlans.map(plan => plan.position);
         let role;
-        // if(position === "Manager"){
-        //     role = "Manager";
+        // if(position === "Admin"){
+        //     role = "Admin";
         // }else if(employeePositions.includes(position)){
         //     role = "Employee";
         // }else{
         //     role = req.body.role;
         // }
-        if (position.includes("Manager")) {
-            role = "Manager";
+        if (position.includes("Admin")) {
+            role = "Admin";
         } else if (employeePositions.includes(position)) {
             role = "Employee";
         } else {
@@ -94,10 +94,10 @@ export const registerUser = async (req, res) => {
         }
         
 
-        if(role === "Employee" && position === "Manager"){
+        if(role === "Employee" && position === "Admin"){
             return res.status(400).json({status:false,message:"Conflicting role and position!"});
         }
-        const uniqueRole = role === "Manager" ? "manager" : "employee";
+        const uniqueRole = role === "Admin" ? "admin" : "employee";
         const user = new User({
             position,
             lastName:formattedLastName,
@@ -509,7 +509,7 @@ export const changeRole = async (req,res) => {
         if(!mongoose.isValidObjectId(id)){
             return res.status(400).json({status:false,message:"Invalid benefit ID format."});
         }
-        if(!["Employee", "Manager"].includes(newRole)){
+        if(!["Employee", "Admin"].includes(newRole)){
             return res.status(400).json({success:false,message:"Invalid role"});
         }
 
@@ -522,7 +522,7 @@ export const changeRole = async (req,res) => {
             return res.status(403).json({success:false,message:"You cannot change your role."});
         }
 
-        if(user.uniqueRole === "manager"){
+        if(user.uniqueRole === "admin"){
         user.role = newRole;
         await user.save();
         return res.status(200).json({success:true,message:"User role updated successfully",user});

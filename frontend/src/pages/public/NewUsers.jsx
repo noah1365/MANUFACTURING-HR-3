@@ -37,7 +37,7 @@ const users = [
     },
     gender: 'Female',
     bDate: '1985-05-12',
-    role: 'Manager',
+    role: 'Admin',
   },
 ];
 

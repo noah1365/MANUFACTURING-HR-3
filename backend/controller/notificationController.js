@@ -6,7 +6,7 @@ export const getNotifications = async (req, res) => {
           return res.status(401).json({message: 'User not authenticated.'});
       }
 
-      if(req.user.role === 'Manager'){
+      if(req.user.role === 'Admin'){
           const notifications = await Notification.find({userId:req.user._id}).sort({createdAt: -1});
           return res.status(200).json(notifications);
       }
@@ -42,7 +42,7 @@ export const markAsRead = async (req, res) => {
           await notification.save();
 
           return res.status(200).json({message:'Notification marked as read.'});
-      }else if(req.user.role === 'Manager'){
+      }else if(req.user.role === 'Admin'){
           const notification = await Notification.findById(notificationId);
 
           if(!notification){
@@ -53,11 +53,11 @@ export const markAsRead = async (req, res) => {
           await notification.save();
 
           await Notification.updateMany(
-              { role: 'Manager', read: true },
+              { role: 'Admin', read: true },
               { read: true }
           );
 
-          return res.status(200).json({message:'Notification marked as read for the manager.'});
+          return res.status(200).json({message:'Notification marked as read for the Admin.'});
       } else {
           return res.status(403).json({message:'Access denied. Invalid user role.'});
       }

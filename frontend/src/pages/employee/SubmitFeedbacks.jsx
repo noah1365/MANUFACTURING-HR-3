@@ -93,7 +93,7 @@ const SubmitFeedbacks = () => {
                 className="select select-bordered w-full mb-4"
               >
                 <option value="">Select Position</option>
-                {["CEO", "Secretary", "Production Head", "Resellers Sales Head", "Reseller", "Manager"].map(
+                {["CEO", "Secretary", "Production Head", "Resellers Sales Head", "Reseller", "Admin"].map(
                   (positionItem) => (
                     <option key={positionItem} value={positionItem}>
                       {positionItem}

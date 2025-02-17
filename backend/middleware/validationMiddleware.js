@@ -72,7 +72,7 @@ export const changeRoleValidation = [
         .isMongoId().withMessage("Invalid ID format"),
     body('newRole')
         .exists().withMessage("New role is required")
-        .isIn(["Employee", "Manager"]).withMessage("Invalid role")
+        .isIn(["Employee", "Admin"]).withMessage("Invalid role")
 ];
 export const changePasswordValidation = [
     body("currentPassword")

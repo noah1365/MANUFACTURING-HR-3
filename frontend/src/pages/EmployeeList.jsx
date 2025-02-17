@@ -69,9 +69,9 @@ const EmployeeList = () => {
       setFormData((prev) =>({
         ...prev,
         position: value,
-        role: value === 'Manager' ? 'Manager' : prev.role,
+        role: value === 'Admin' ? 'Admin' : prev.role,
       }));
-      setIsRoleDisabled(value.includes('Manager'));
+      setIsRoleDisabled(value.includes('Admin'));
     }else if(name.includes('address')){
       const addressField = name.split('.')[1];
       setFormData((prev) => ({

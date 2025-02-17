@@ -14,8 +14,8 @@ payrollRoute.post("/request-salary",verifyToken,requestSalary);
 payrollRoute.get("/get-requested-salary",verifyToken,getRequestedSalary);
 payrollRoute.get("/get-my-requested-salary",verifyToken,getMyRequestedSalary);
 
-payrollRoute.put("/review-request/:requestId",verifyToken,checkRole("Manager"),reviewRequestValidation,validate,reviewRequest);
-payrollRoute.put("/toggle-request-availability",verifyToken,checkRole("Manager"),toggleRequestAvailability);
+payrollRoute.put("/review-request/:requestId",verifyToken,checkRole("Admin"),reviewRequestValidation,validate,reviewRequest);
+payrollRoute.put("/toggle-request-availability",verifyToken,checkRole("Admin"),toggleRequestAvailability);
 
 
 export default payrollRoute

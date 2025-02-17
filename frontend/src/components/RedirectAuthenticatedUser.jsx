@@ -10,7 +10,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
     }, [checkAuth]);
 
     if (isAuthenticated) {
-        return <Navigate to={user?.role === 'Manager' ? '/dashboard' : '/dashboard'} replace />;
+        return <Navigate to={user?.role === 'Admin' ? '/dashboard' : '/dashboard'} replace />;
     }
     return <Navigate to="/" replace />;
 };
