@@ -194,3 +194,58 @@ export const deleteStandardCompensation = async (req, res) => {
     }
 };
 
+
+// HR4 INTEGRATION
+import cloudinary from '../config/cloudinaryConfig.js';
+import { Grievance } from "../model/compensation/grievanceModel.js";
+import upload from '../config/multerConfig.js';
+
+// Get all grievance requests
+export const getGrievanceRequests = async (req, res) => {
+  try {
+    const grievances = await Grievance.find();
+    res.status(200).json(grievances);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve grievances' });
+  }
+};
+
+
+
+// UPDATE THEIR REQUESTS
+export const updateGrievanceRequest = async (req, res) => {
+  try {
+    const { adminResponse, remarks } = req.body;
+    const grievanceId = req.params.id;
+    const updateData = { adminResponse, remarks, status: 'Responded' };
+
+    if (req.file) {
+      try {
+        const uploadedFile = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { resource_type: 'auto' },
+            (error, result) => {
+              if (error) return reject(error);
+              return resolve(result);
+            }
+          );
+          stream.end(req.file.buffer);
+        });
+
+        updateData.compensationFile = uploadedFile.secure_url;
+      } catch (uploadError) {
+        return res.status(500).json({ error: 'Cloudinary upload failed' });
+      }
+    }
+
+    const updatedGrievance = await Grievance.findByIdAndUpdate(grievanceId, updateData, { new: true });
+    if (!updatedGrievance) {
+      return res.status(404).json({ error: 'Grievance not found' });
+    }
+    res.status(200).json({ message: 'Grievance updated successfully', grievance: updatedGrievance });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update grievance' });
+  }
+};
+
+export { upload };

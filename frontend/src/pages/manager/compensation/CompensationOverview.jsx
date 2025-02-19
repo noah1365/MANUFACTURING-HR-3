@@ -40,19 +40,6 @@ const CompensationOverview = () => {
           </div>
         </div>
 
-        {/* Salary Structure Card */}
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title">Salary Structure</h2>
-            <p>
-              Define and implement a structured salary system for all positions within the organization.
-            </p>
-            <Link to="/salary-structure" className="btn btn-primary">
-              <button>View Salary Structure</button>
-            </Link>
-          </div>
-        </div>
-
         {/* Grievance Request Card */}
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">

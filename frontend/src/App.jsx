@@ -32,7 +32,6 @@ import PayrollHistory from './pages/manager/payroll/PayrollHistory';
 /* compensation  */
 import CompensationOverview from './pages/manager/compensation/CompensationOverview'; 
 import CompensationPlanning from './pages/manager/compensation/CompensationPlanning';
-import SalaryStructure from './pages/manager/compensation/SalaryStructure';
 import MarketAnalysis from './pages/manager/compensation/MarketAnalysis';
 import GrievanceRequest from './pages/manager/compensation/GrievanceRequest';
 
@@ -174,7 +173,6 @@ const App = () => {
                       {/* Compensation */}
                       <Route path="/compensation-overview" element={<ProtectedRoute><CompensationOverview /></ProtectedRoute>} />
                       <Route path="/compensation-planning" element={<ProtectedRoute><CompensationPlanning /></ProtectedRoute>} />
-                      <Route path="/salary-structure" element={<ProtectedRoute><SalaryStructure /></ProtectedRoute>} />
                       {/* <Route path="/market-analysis" element={<ProtectedRoute><MarketAnalysis /></ProtectedRoute>} /> */}
                       <Route path="/grievance-request" element={<ProtectedRoute><GrievanceRequest /></ProtectedRoute>} />
                       

@@ -1,7 +1,7 @@
 import express from "express";
 import { compensationPlanningValidation } from "../middleware/validationMiddleware.js";
 import { verifyToken } from "../middleware/verifyToken.js";
-import { createCompensationPlan, createStandardCompensation, deleteCompensationPlan, deleteStandardCompensation, updateStandardCompensation, getCompensationPlan, getCompensationPosition, getStandardCompensation, updateCompensationPlan } from "../controller/compensationPlanningController.js";
+import { createCompensationPlan, createStandardCompensation, deleteCompensationPlan, deleteStandardCompensation, updateStandardCompensation, getCompensationPlan, getCompensationPosition, getStandardCompensation, updateCompensationPlan, upload, getGrievanceRequests, updateGrievanceRequest } from "../controller/compensationPlanningController.js";
 
 const compensationRoute = express.Router();
 
@@ -24,5 +24,8 @@ compensationRoute.get("/get-standard-compensations",verifyToken,getStandardCompe
 compensationRoute.put("/update-standard-compensation/:id",verifyToken,updateStandardCompensation);
 compensationRoute.delete("/delete-standard-compensation/:id",verifyToken,deleteStandardCompensation);
 
+
+compensationRoute.get("/get-grievances", verifyToken, getGrievanceRequests);
+compensationRoute.put("/update-grievance/:id", verifyToken, upload.single("file"), updateGrievanceRequest);
 
 export default compensationRoute
